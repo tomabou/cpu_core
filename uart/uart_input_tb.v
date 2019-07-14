@@ -3,10 +3,8 @@
 module uart_input_tb();
     reg clk,reset,rxd;
     wire [7:0] data;
-    wire [10:0] count ;
-    wire [3:0] buffer ;
 
-    uart_input u1(clk,reset,rxd,data,count,buffer);
+    uart_input u1(clk,reset,rxd,data);
 
     initial begin
         rxd = 1;

@@ -1,6 +1,6 @@
-module uart_input(clk, reset,rxd,data,count,buffer);
+module uart_input(clk, reset,rxd,data);
     input clk,reset,rxd;
-    output data,count,buffer;
+    output data;
 
     reg [10:0] count = 11'b0;
     reg [3:0] buffer = 4'b1111;
