@@ -1,7 +1,9 @@
 data/*
 lchika/*
 pll_test/*
+uart/*
 *.exe
 !.gitignore
 !lchika/*.v
 !pll_test/*.v
+!uart/*.v
