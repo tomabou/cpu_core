@@ -3,5 +3,5 @@ lchika/*
 pll_test/*
 *.exe
 !.gitignore
-!/lchika/*.v
-!/pll_test/*.v
+!lchika/*.v
+!pll_test/*.v
