@@ -2,8 +2,13 @@ data/*
 lchika/*
 pll_test/*
 uart/*
+cpu_1/*
+memory/*
 *.exe
 !.gitignore
 !lchika/*.v
 !pll_test/*.v
 !uart/*.v
+!memory/*.v
+!cpu_1/*.v
+!cpu_1/modules/
