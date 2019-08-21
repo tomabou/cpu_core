@@ -25,20 +25,22 @@ module register_tb();
 
     initial begin
         #10;
-        reg_write = 1'b1;
-        write_data = 32'b11111;
-        rdi = 4'b1010;
+        reg_write <= 1'b1;
+        write_data <= 32'b11111;
+        rdi <= 4'b1010;
+        rs1i <= 4'b0;
+        rs2i <= 4'b0;
         #10;
-        reg_write = 1'b0;
-        rs1i = 4'b1010;
+        reg_write <= 1'b0;
+        rs1i <= 4'b1010;
         #10;
-        rs1i = 4'b1111;
-        rs2i = 4'b1010;
-        rdi = 4'b1111;
-        write_data = 32'b110;
-        reg_write = 1'b1;
+        rs1i <= 4'b1111;
+        rs2i <= 4'b1010;
+        rdi <= 4'b1111;
+        write_data <= 32'b110;
+        reg_write <= 1'b1;
         #10;
-        reg_write = 1'b0;
+        reg_write <= 1'b0;
 
 
     end

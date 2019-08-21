@@ -14,8 +14,8 @@ module registers(clk,rs1i,rs2i,rdi,write_data,read_data1,read_data2,reg_write);
 
 
     always @(posedge clk) begin
-        read_data1 <= regs[rs1i];
-        read_data2 <= regs[rs2i];
+        read_data1 <= (rs1i == 4'b0) ? 32'b0 : regs[rs1i];
+        read_data2 <= (rs2i == 4'b0) ? 32'b0 : regs[rs2i];
         if (reg_write == 1'b1) 
             regs[rdi] <= write_data;
     end
