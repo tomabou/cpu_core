@@ -10,18 +10,19 @@ module nibu (clk,show);
     wire [31:0] immediate;
     wire [31:0] operand2;
     wire [31:0] alu_res;
+    reg [31:0] alu_res_buf;
     wire [31:0] memory_read;
 
 
     wire reg_write_ctrl;
-    reg [1:0] reg_write_ctrl_buf;
+    reg [1:0] reg_write_ctrl_buf = 2'b0;
     wire imm_data_ctrl;
-    reg imm_data_ctrl_buf;
+    reg imm_data_ctrl_buf = 1'b0;
     wire [1:0] opcode_alu_ctrl;
     wire [3:0] alu_ctrl;
-    reg [3:0] alu_ctrl_buf;
+    reg [3:0] alu_ctrl_buf = 4'b0;
     wire mem_to_reg_ctrl;
-    reg [1:0] mem_to_reg_ctrl_buf ;
+    reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
 
     assign show = inst[9:0];
 
@@ -42,12 +43,12 @@ module nibu (clk,show);
         reg_write_ctrl,
         imm_data_ctrl,
         opcode_alu_ctrl,
-        mem_to_reg_ctrl_buf[1]);
+        mem_to_reg_ctrl);
     mux mux1(read_data2,immediate,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0,1'b0);
-    mux mux2(memory_read,alu_res,write_data,mem_to_reg_ctrl);
+    mux mux2(alu_res_buf,memory_read,write_data,mem_to_reg_ctrl_buf[1]);
 
 
     always @ (posedge clk) begin
@@ -56,5 +57,6 @@ module nibu (clk,show);
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
+        alu_res_buf <= alu_res;
     end
 endmodule

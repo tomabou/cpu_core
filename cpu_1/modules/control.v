@@ -6,12 +6,16 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
     output reg mem_to_reg;
 
     always @(*) begin
-        reg_write <= 1'b1;
+        case(opcode[6:2])
+            5'b00100: reg_write <= 1'b1;
+            5'b01100: reg_write <= 1'b1;
+            default: reg_write <= 1'b0;
+        endcase
     end
 
     always @(*) begin
         case(opcode[6:5]) 
-            2'b01: imm_data <= 1'b1;
+            2'b00: imm_data <= 1'b1;
             default: imm_data <= 1'b0;
         endcase
     end
@@ -24,7 +28,9 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
     end
 
     always @(*) begin
-        mem_to_reg <= 1'b0;
+        case(opcode[6:2])
+            default: mem_to_reg <= 1'b0;
+        endcase
     end
 
 endmodule
