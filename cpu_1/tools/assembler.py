@@ -14,7 +14,10 @@ def main():
     print("{:032b}".format(x))
     x = imm_op('add', 0, 0, 0)
     print(x)
-    print("{:032b}".format(x))
+    x = imm_op('add', 5, 4, 3)
+    print(x)
+    x = imm_op('add', 6, 5, 12)
+    print(x)
 
 
 if __name__ == '__main__':
