@@ -5,6 +5,7 @@ module nibu (clk,show);
     reg [31:0] pc = 32'b0;
     wire [31:0] inst;
     wire [31:0] write_data;
+    reg [9:0] rdi_buf;
     wire [31:0] read_data1;
     wire [31:0] read_data2;
     wire [31:0] immediate;
@@ -31,7 +32,7 @@ module nibu (clk,show);
         clk,
         inst[19:15],
         inst[24:20],
-        inst[11:7],
+        rdi_buf[9:5],
         write_data,
         read_data1,
         read_data2,
@@ -58,5 +59,6 @@ module nibu (clk,show);
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
         alu_res_buf <= alu_res;
+        rdi_buf <= {rdi_buf[4:0],inst[11:7]};
     end
 endmodule

@@ -12,6 +12,9 @@ def main():
     x = imm_op('add', 4, 0, 9)
     print(x)
     print("{:032b}".format(x))
+    x = imm_op('add', 0, 0, 0)
+    print(x)
+    print("{:032b}".format(x))
 
 
 if __name__ == '__main__':
