@@ -34,7 +34,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
 
-    assign show = show_buf[9:0];
+    assign show = {show_buf[5:0],4'b0};
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
