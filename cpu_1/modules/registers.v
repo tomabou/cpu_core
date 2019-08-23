@@ -5,12 +5,10 @@ module registers(clk,rs1i,rs2i,rdi,write_data,read_data1,read_data2,reg_write);
     input [4:0] rdi;
     input [31:0] write_data;
     input reg_write;
-    output read_data1;
-    output read_data2;
+    output reg [31:0] read_data1;
+    output reg [31:0] read_data2;
 
     reg [31:0] regs [0:31];
-    reg [31:0] read_data1;
-    reg [31:0] read_data2;
 
 
     always @(posedge clk) begin

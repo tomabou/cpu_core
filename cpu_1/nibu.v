@@ -1,9 +1,14 @@
-module nibu (clk,show);
+module nibu (clk,show,segment7_1,segment7_2);
     input clk;
     output [9:0] show;
+    output [6:0] segment7_1;
+    output [6:0] segment7_2;
+
+    reg [31:0] show_buf;
 
     reg [31:0] pc = 32'b0;
     wire [31:0] inst;
+    reg [31:0] inst_buf;
     wire [31:0] write_data;
     reg [9:0] rdi_buf;
     wire [31:0] read_data1;
@@ -25,7 +30,10 @@ module nibu (clk,show);
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
 
-    assign show = inst[9:0];
+    assign show = show_buf[9:0];
+
+    seg7 seg7_1(pc[3:0],segment7_1);
+    seg7 seg7_2(pc[7:4],segment7_2);
 
     inst_memory im1(clk,pc,inst);
     registers regs1(
@@ -60,5 +68,7 @@ module nibu (clk,show);
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
+        inst_buf <= inst;
+        show_buf <= {inst[31:8],immediate[7:0]};
     end
 endmodule

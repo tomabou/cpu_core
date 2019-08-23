@@ -1,9 +1,7 @@
 module immgen(clk,inst,imm);
     input clk;
     input [31:0] inst;
-    output imm;
-
-    reg [31:0] imm = 32'b0;
+    output reg [31:0] imm = 32'b0;
 
     wire itype;
     assign itype = inst[4:2] == 3'b100;
