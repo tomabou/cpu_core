@@ -16,7 +16,7 @@ def main():
     print(x)
     x = imm_op('add', 5, 4, 3)
     print(x)
-    x = imm_op('add', 6, 5, 12)
+    x = imm_op('add', 6, 5, 13)
     print(x)
 
 

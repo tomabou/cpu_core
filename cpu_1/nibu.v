@@ -8,7 +8,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     reg [31:0] show_buf;
 
-    reg [31:0] pc = 32'b0;
+    wire [31:0] address;
+    wire [31:0] next_address;
     wire [31:0] inst;
     reg [31:0] inst_buf;
     wire [31:0] write_data;
@@ -20,6 +21,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire [31:0] alu_res;
     reg [31:0] alu_res_buf;
     wire [31:0] memory_read;
+
 
 
     wire reg_write_ctrl;
@@ -34,12 +36,15 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     assign show = show_buf[9:0];
 
-    seg7 seg7_1(pc[5:2],segment7_1);
-    seg7 seg7_2(pc[9:6],segment7_2);
+    seg7 seg7_1(address[5:2],segment7_1);
+    seg7 seg7_2(address[9:6],segment7_2);
     seg7 seg7_3(inst_buf[3:0],segment7_3);
     seg7 seg7_4(inst_buf[7:4],segment7_4);
 
-    inst_memory im1(clk,pc,inst);
+
+    pc pc1(clk,next_address,address);
+    add add1(address,32'b100,next_address);
+    inst_memory im1(clk,address,inst);
     registers regs1(
         clk,
         inst[19:15],
@@ -65,7 +70,6 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
 
     always @ (posedge clk) begin
-        pc <= pc + 32'b100;
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
@@ -73,6 +77,6 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         inst_buf <= inst;
-        show_buf <= {inst[31:8],immediate[7:0]};
+        show_buf <= alu_res;
     end
 endmodule
