@@ -1,8 +1,10 @@
-module nibu (clk,show,segment7_1,segment7_2);
+module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     input clk;
     output [9:0] show;
     output [6:0] segment7_1;
     output [6:0] segment7_2;
+    output [6:0] segment7_3;
+    output [6:0] segment7_4;
 
     reg [31:0] show_buf;
 
@@ -32,8 +34,10 @@ module nibu (clk,show,segment7_1,segment7_2);
 
     assign show = show_buf[9:0];
 
-    seg7 seg7_1(pc[3:0],segment7_1);
-    seg7 seg7_2(pc[7:4],segment7_2);
+    seg7 seg7_1(pc[5:2],segment7_1);
+    seg7 seg7_2(pc[9:6],segment7_2);
+    seg7 seg7_3(inst_buf[3:0],segment7_3);
+    seg7 seg7_4(inst_buf[7:4],segment7_4);
 
     inst_memory im1(clk,pc,inst);
     registers regs1(
