@@ -14,15 +14,17 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
     end
 
     always @(*) begin
-        case(opcode[6:5]) 
-            2'b00: imm_data <= 1'b1;
+        case(opcode[6:2]) 
+            5'b00100: imm_data <= 1'b1;
+            5'b01100: imm_data <= 1'b0;
             default: imm_data <= 1'b0;
         endcase
     end
 
     always @(*) begin
-        case(opcode[4:2])
-            3'b100: opcode_alu <= opcode[5] ? 2'b11 : 2'b01;
+        case(opcode[6:2])
+            5'b00100: opcode_alu <= 2'b01;
+            5'b01100: opcode_alu <= 2'b11;
             default: opcode_alu <= 2'b10;
         endcase
     end

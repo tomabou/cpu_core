@@ -6,9 +6,11 @@ module alu(data1,data2,out,ctrl);
 
     always @(*) begin
         case(ctrl)
-            0: out <= data1&data2;
-            2: out <= data1+data2;
-            3: out <= data1-data2;
+            0: out <= data1 & data2;
+            1: out <= data1 | data2;
+            2: out <= data1 + data2;
+            3: out <= data1 - data2;
+            4: out <= data1 ^ data2;
             default: out = 0;
         endcase
     end
