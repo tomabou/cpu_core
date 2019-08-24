@@ -102,3 +102,23 @@ io
 それともフルスクラッチで書くか
 その前に多分アセンブラ(to mif file)が必要だけど
 
+
+8/24
+
+2オペランド演算は多分動いてる
+mifファイルをmodelsim側から読む方法が分からないので、
+mifを弄るたびに起動し直すのがめんどくさい
+ので、先にテストファイルを作る必要がある
+これは多分アセンブラが必要
+アセンブラは軽井沢で作るかな
+
+このdataflowだと、PCを読む方法がないので、AUIPC(add upper immediate to pc)が実装できない
+あとJAL JALRも
+JALはPCをwrite registerに流し込めれば大丈夫
+JALRはそれに加えてregisterの値をPCに足す部分が必要
+aluを利用するのか、それとも別のmoduleを用意するのか
+conditional branchは実装できる
+
+JALをまず実装して、その後conditional branch
+JALRってジャンプ先計算する前にregisterから読みださなきゃいけないからパフォーマンスどうしても落ちそう
+でもかなり遠いところに飛ぶときしか使わないから、まあ大丈夫なのかな

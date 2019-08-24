@@ -1,22 +1,39 @@
 
 
-def imm_op(op, rd, rs1, imm):
-    op_imm = 0b0010011
+def op_imm(op, rd, rs1, imm):
+    op_imm_code = 0b0010011
     if op == 'add':
         func3 = 0b000
-    x = imm * (2**20) + rs1 * (2**15) + func3 * (2**12) + rd * (2**7) + op_imm
+    x = imm * (2**20) + rs1 * (2**15) + func3 * \
+        (2**12) + rd * (2**7) + op_imm_code
+    return x
+
+
+def op(op, rd, rs1, rs2):
+    op_imm_code = 0b0110011
+    if op == 'add':
+        func3 = 0b000
+        func7 = 0b0000000
+    if op == 'sub':
+        func3 = 0b000
+        func7 = 0b0100000
+    x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
+        func3 * (2**12) + rd * (2**7) + op_imm_code
+
     return x
 
 
 def main():
-    x = imm_op('add', 4, 0, 9)
+    x = op_imm('add', 4, 0, 9)
     print(x)
     print("{:032b}".format(x))
-    x = imm_op('add', 0, 0, 0)
+    x = op_imm('add', 0, 0, 0)
     print(x)
-    x = imm_op('add', 5, 4, 3)
+    x = op_imm('add', 5, 4, 3)
     print(x)
-    x = imm_op('add', 6, 5, 13)
+    x = op_imm('add', 6, 5, 13)
+    print(x)
+    x = op('add', 7, 6, 5)
     print(x)
 
 
