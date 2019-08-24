@@ -1,9 +1,10 @@
-module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
+module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch);
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;
     output reg [1:0] opcode_alu;
     output reg mem_to_reg;
+    output reg branch;
 
     always @(*) begin
         case(opcode[6:2])
@@ -33,6 +34,14 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
     always @(*) begin
         case(opcode[6:2])
             default: mem_to_reg <= 1'b0;
+        endcase
+    end
+
+    always @(*) begin
+        case(opcode[6:2])
+            5'b11011: branch <= 1'b1;
+            5'b11000: branch <= 1'b1;
+            default: branch <= 1'b0;
         endcase
     end
 

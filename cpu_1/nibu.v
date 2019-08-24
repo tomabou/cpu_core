@@ -10,6 +10,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     wire [31:0] address;
     wire [31:0] next_address;
+    wire [31:0] next_address_jump;
+    wire [31:0] chosen_next_address;
     wire [31:0] inst;
     reg [31:0] inst_buf;
     wire [31:0] write_data;
@@ -17,6 +19,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire [31:0] read_data1;
     wire [31:0] read_data2;
     wire [31:0] immediate;
+    reg [31:0] immediate_buf;
     wire [31:0] operand2;
     wire [31:0] alu_res;
     reg [31:0] alu_res_buf;
@@ -33,6 +36,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     reg [3:0] alu_ctrl_buf = 4'b0;
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
+    wire branch_ctrl;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -42,8 +46,10 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     seg7 seg7_4(inst_buf[7:4],segment7_4);
 
 
-    pc pc1(clk,next_address,address);
+    pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
+    add add_jump(address,immediate,next_address_jump);
+    mux mux_pc(next_address,next_address_jump,chosen_next_address,branch_ctrl);
     inst_memory im1(clk,address,inst);
     registers regs1(
         clk,
@@ -55,14 +61,15 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         read_data2,
         reg_write_ctrl_buf[1]);
 
-    immgen ig1(clk,inst,immediate);
+    immgen ig1(inst,immediate);
     control ctr1(
         inst[6:0],
         reg_write_ctrl,
         imm_data_ctrl,
         opcode_alu_ctrl,
-        mem_to_reg_ctrl);
-    mux mux1(read_data2,immediate,operand2,imm_data_ctrl_buf);
+        mem_to_reg_ctrl,
+        branch_ctrl);
+    mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0,1'b0);
@@ -70,6 +77,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
 
     always @ (posedge clk) begin
+        immediate_buf <= immediate;
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
