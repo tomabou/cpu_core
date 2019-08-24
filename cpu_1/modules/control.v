@@ -7,8 +7,9 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg);
 
     always @(*) begin
         case(opcode[6:2])
-            5'b00100: reg_write <= 1'b1;
-            5'b01100: reg_write <= 1'b1;
+            5'b00100: reg_write <= 1'b1;//op_imm
+            5'b01100: reg_write <= 1'b1;//op
+            5'b11011: reg_write <= 1'b1;//JAL
             default: reg_write <= 1'b0;
         endcase
     end
