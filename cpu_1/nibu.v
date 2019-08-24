@@ -12,6 +12,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire [31:0] next_address;
     wire [31:0] next_address_jump;
     wire [31:0] chosen_next_address;
+    reg [31:0] next_address_d1;
+    reg [31:0] next_address_d2;
     wire [31:0] inst;
     reg [31:0] inst_buf;
     wire [31:0] write_data;
@@ -37,6 +39,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
     wire branch_ctrl;
+    wire wb_pc_ctrl;
+    reg [1:0] wb_pc_ctrl_buf = 2'b0;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -68,20 +72,27 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         imm_data_ctrl,
         opcode_alu_ctrl,
         mem_to_reg_ctrl,
-        branch_ctrl);
+        branch_ctrl,
+        wb_pc_ctrl);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0,1'b0);
-    mux mux2(alu_res_buf,memory_read,write_data,mem_to_reg_ctrl_buf[1]);
+
+    wire [31:0] mux2_to_wrbpc;
+    mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
+    mux mux_wrbpc(mux2_to_wrbpc,next_address_d2,write_data,wb_pc_ctrl_buf[1]);
 
 
     always @ (posedge clk) begin
+        next_address_d1 <= next_address;
+        next_address_d2 <= next_address_d1;
         immediate_buf <= immediate;
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
+        wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         inst_buf <= inst;
