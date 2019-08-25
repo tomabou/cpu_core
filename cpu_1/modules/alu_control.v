@@ -20,6 +20,7 @@ module alu_control(funct,alu_opcode,alu_ctrl);
                 5: alu_ctrl <= 4'd8;
                 6: alu_ctrl <= 4'd9;
                 7: alu_ctrl <= 4'd10;
+                default: alu_ctrl <= 4'd5;
             endcase
         else
             alu_ctrl <= 4'd2;
