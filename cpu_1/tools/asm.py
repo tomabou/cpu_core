@@ -39,7 +39,11 @@ def decode_op(tks):
     OP_IMM = ['addi', 'slti', 'sltiu', 'xori', 'ori', 'andi']
     if tks[0] in OP_IMM:
         return op_imm(tks[0], tks[1], tks[2], tks[3])
-    return 0
+    return -1
+
+
+def is_not_label(tks):
+    return tks[0][-1] != ':'
 
 
 def rename_register(tk):
@@ -123,14 +127,28 @@ def create(content):
     content = map(pseudoinst, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     print(list(content))
+    content = filter(is_not_label, content)
     content = list(map(decode_op, content))
     return content
 
 
 def create_mif(content: List[int], filename):
     print(filename)
+    head = [
+        "WIDTH=32;",
+        "DEPTH=16384;",
+        "ADDRESS_RADIX=UNS;",
+        "DATA_RADIX=UNS;",
+        "CONTENT BEGIN"]
+    end = ["END;"]
+
+    body = []
+    for i, x in enumerate(content):
+        body.append("   {} : {};".format(i, x))
+    data = head+body+end
+    data = map(lambda x: x+'\n', data)
     with open(filename, 'w') as file:
-        file.write('Your text goes here')
+        file.writelines(data)
 
 
 def main(filename):

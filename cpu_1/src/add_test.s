@@ -1,7 +1,8 @@
 ; addtest
 # addtest
 
-:main
+main:
+    nop
     addi t0, zero, 9
     nop 3
     addi t1, zero, 4
