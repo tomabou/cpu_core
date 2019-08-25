@@ -28,6 +28,7 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc);
         case(opcode[6:2])
             5'b00100: opcode_alu <= 2'b01;
             5'b01100: opcode_alu <= 2'b11;
+            5'b11000: opcode_alu <= 2'b00; //BRANCH
             default: opcode_alu <= 2'b10;
         endcase
     end
