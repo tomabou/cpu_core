@@ -32,6 +32,18 @@ def op(op, rd, rs1, rs2):
     return x
 
 
+def jal(op, rd, offset):
+    jal_opcode = 0b1101111
+    rd = int(rd[1:])
+    b30_21 = (2**10 - 1) & (offset >> 1)
+    b20 = (1) & (offset >> 11)
+    b19_12 = (2**8 - 1) & (offset >> 12)
+    b31 = 1 & (offset >> 20)
+    x = (b31 << 31) + (b30_21 << 21) + (b20 << 20) + \
+        (b19_12 << 12) + (rd << 7) + jal_opcode
+    return x
+
+
 def decode_op(tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
