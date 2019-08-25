@@ -1,4 +1,4 @@
-module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc);
+module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond_b);
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;
@@ -6,6 +6,9 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc);
     output reg mem_to_reg;
     output reg branch;
     output reg wb_pc;
+    output cond_b;
+
+    assign cond_b = (opcode == 7'b1100011); 
 
     always @(*) begin
         case(opcode[6:2])
@@ -46,5 +49,6 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc);
             default: {branch,wb_pc} <= 2'b00;
         endcase
     end
+
 
 endmodule
