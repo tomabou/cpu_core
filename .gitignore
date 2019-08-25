@@ -14,3 +14,4 @@ memory/*
 !cpu_1/*.mif
 !cpu_1/modules/
 !cpu_1/tools/
+!cpu_1/src/
