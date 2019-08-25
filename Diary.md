@@ -138,3 +138,7 @@ register forwardingとか実装するか？？
 別にパイプラインしなくても定数倍遅くなってそれで終わり
 
 jalは実装できたので次はconditional branchを実装する
+conditional branchも多分大体実装できているように見える
+
+次はメモリを実装して、fiboを計算する
+1から10までの和とかを計算しても良いかもしれない
