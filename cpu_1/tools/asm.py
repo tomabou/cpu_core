@@ -44,6 +44,29 @@ def jal(op, rd, offset):
     return x
 
 
+def branch(op, rs1, rs2, offset):
+    branch_opcode = 0b1100011
+    tmp = {
+        'beq': 0,
+        'bne': 1,
+        'blt': 4,
+        'bge': 5,
+        'bltu': 6,
+        'bgeu': 7,
+    }
+    func3 = tmp[op]
+    rs1 = int(rs1[1:])
+    rs2 = int(rs2[1:])
+
+    b11_8 = (2**4-1) & (offset >> 1)
+    b30_25 = (2**6 - 1) & (offset >> 5)
+    b7 = 1 & (offset >> 11)
+    b31 = 1 & (offset >> 12)
+
+    x = (b31 << 31) + (b30_25 << 25) + (rs2 << 20)+(rs1 << 15) + \
+        (func3 << 12) + (b11_8 << 8) + (b7 << 7)+branch_opcode
+
+
 def decode_op(labels, index, tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
@@ -54,6 +77,12 @@ def decode_op(labels, index, tks):
     if tks[0] == 'jal':
         offset = labels[tks[2]] - 4*index
         return jal(tks[0], tks[1], offset)
+
+    BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']
+    if tks[0] in BRANCH:
+        offset = labels[tks[2]] - 4*index
+        return branch(tks[0], tks[1], tks[2], offset)
+
     return -1
 
 
