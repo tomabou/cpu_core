@@ -40,6 +40,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
     wire branch_ctrl;
+    reg [2:0] branch_ctrl_buf;
     wire wb_pc_ctrl;
     reg [1:0] wb_pc_ctrl_buf = 2'b0;
 
@@ -54,7 +55,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
     add add_jump(address_buf,immediate,next_address_jump);//imm is delay 1clk;
-    mux mux_pc(next_address,next_address_jump,chosen_next_address,branch_ctrl);
+    mux mux_pc(next_address,next_address_jump,chosen_next_address,branch_ctrl&(~branch_ctrl_buf[0]));
     inst_memory im1(clk,address,inst);
     registers regs1(
         clk,
@@ -64,7 +65,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         write_data,
         read_data1,
         read_data2,
-        reg_write_ctrl_buf[1]);
+        reg_write_ctrl_buf[1]&(~branch_ctrl_buf[2]));
 
     immgen ig1(inst,immediate);
     control ctr1(
@@ -94,6 +95,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
+        branch_ctrl_buf <= {branch_ctrl_buf[1:0],branch_ctrl&(~branch_ctrl_buf[0])};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
