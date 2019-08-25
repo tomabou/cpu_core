@@ -65,6 +65,7 @@ def branch(op, rs1, rs2, offset):
 
     x = (b31 << 31) + (b30_25 << 25) + (rs2 << 20)+(rs1 << 15) + \
         (func3 << 12) + (b11_8 << 8) + (b7 << 7)+branch_opcode
+    return x
 
 
 def decode_op(labels, index, tks):
@@ -80,7 +81,7 @@ def decode_op(labels, index, tks):
 
     BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']
     if tks[0] in BRANCH:
-        offset = labels[tks[2]] - 4*index
+        offset = labels[tks[3]] - 4*index
         return branch(tks[0], tks[1], tks[2], offset)
 
     return -1
