@@ -44,18 +44,40 @@ def jal(op, rd, offset):
     return x
 
 
-def decode_op(tks):
+def decode_op(labels, index, tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
         return op(tks[0], tks[1], tks[2], tks[3])
     OP_IMM = ['addi', 'slti', 'sltiu', 'xori', 'ori', 'andi']
     if tks[0] in OP_IMM:
         return op_imm(tks[0], tks[1], tks[2], tks[3])
+    if tks[0] == 'jal':
+        offset = labels[tks[2]] - 4*index
+        return jal(tks[0], tks[1], offset)
     return -1
+
+
+def decode_op_func(content, labels):
+    new_content = []
+    for i, tks in enumerate(content):
+        new_content.append(decode_op(labels, i, tks))
+    return new_content
 
 
 def is_not_label(tks):
     return tks[0][-1] != ':'
+
+
+def label_func(content: List[List[str]]):
+    new_content = []
+    labels = dict()
+    for tks in content:
+        if is_not_label(tks):
+            new_content.append(tks)
+        else:
+            labels[tks[0][:-1]] = 4*len(new_content)
+
+    return new_content, labels
 
 
 def rename_register(tk):
@@ -108,10 +130,10 @@ def pseudoinst(tks):
 
 
 def repeate_nop(tks):
-    if len(tks) != 2:
-        return [tks]
-    if tks[0] == 'nop':
+    if tks[0] == 'nop' and len(tks) == 2:
         return int(tks[1]) * [['nop']]
+    else:
+        return [tks]
 
 
 def tokens(string: str):
@@ -138,9 +160,10 @@ def create(content):
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = map(pseudoinst, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
+    content, labels = label_func(content)
     print(list(content))
-    content = filter(is_not_label, content)
-    content = list(map(decode_op, content))
+    print(labels)
+    content = decode_op_func(content, labels)
     return content
 
 
