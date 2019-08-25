@@ -10,6 +10,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     wire [31:0] address;
     reg [31:0] address_buf;
+    reg [31:0] address_buf2;
     wire [31:0] next_address;
     wire [31:0] next_address_jump;
     wire [31:0] chosen_next_address;
@@ -40,11 +41,15 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire mem_to_reg_ctrl;
     reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
     wire branch_ctrl;
-    reg [2:0] branch_ctrl_buf;
+    reg branch_ctrl_buf =1'b0;
+    wire do_branch;
+    reg [2:0] do_branch_buf = 3'b0;
     wire wb_pc_ctrl;
     reg [1:0] wb_pc_ctrl_buf = 2'b0;
 
     assign show = {show_buf[5:0],4'b0};
+
+    assign do_branch = branch_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
@@ -54,8 +59,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
-    add add_jump(address_buf,immediate,next_address_jump);//imm is delay 1clk;
-    mux mux_pc(next_address,next_address_jump,chosen_next_address,branch_ctrl&(~branch_ctrl_buf[0]));
+    add add_jump(address_buf2,immediate_buf,next_address_jump);//imm_buff is delay 2clk;
+    mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
     inst_memory im1(clk,address,inst);
     registers regs1(
         clk,
@@ -65,7 +70,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         write_data,
         read_data1,
         read_data2,
-        reg_write_ctrl_buf[1]&(~branch_ctrl_buf[2]));
+        reg_write_ctrl_buf[1]&(~do_branch_buf[1]) & (~do_branch_buf[2]));
 
     immgen ig1(inst,immediate);
     control ctr1(
@@ -90,12 +95,14 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         next_address_d1 <= next_address;
         next_address_d2 <= next_address_d1;
         address_buf <= address;
+        address_buf2 <= address_buf;
         immediate_buf <= immediate;
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
-        branch_ctrl_buf <= {branch_ctrl_buf[1:0],branch_ctrl&(~branch_ctrl_buf[0])};
+        branch_ctrl_buf <= branch_ctrl;
+        do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
