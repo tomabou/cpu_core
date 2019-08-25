@@ -3,7 +3,7 @@
 main:
     nop
     addi t0, zero, 3
-    nop3
+    nop 3
 loop:
     addi t0,t0 1
     nop 3

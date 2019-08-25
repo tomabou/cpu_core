@@ -9,11 +9,12 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     reg [31:0] show_buf;
 
     wire [31:0] address;
+    reg [31:0] address_buf;
     wire [31:0] next_address;
     wire [31:0] next_address_jump;
     wire [31:0] chosen_next_address;
-    reg [31:0] next_address_d1;
-    reg [31:0] next_address_d2;
+    reg [31:0] next_address_d1 = 32'b0;
+    reg [31:0] next_address_d2 = 32'b0;
     wire [31:0] inst;
     reg [31:0] inst_buf;
     wire [31:0] write_data;
@@ -52,7 +53,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
-    add add_jump(address,immediate,next_address_jump);
+    add add_jump(address_buf,immediate,next_address_jump);//imm is delay 1clk;
     mux mux_pc(next_address,next_address_jump,chosen_next_address,branch_ctrl);
     inst_memory im1(clk,address,inst);
     registers regs1(
@@ -87,6 +88,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     always @ (posedge clk) begin
         next_address_d1 <= next_address;
         next_address_d2 <= next_address_d1;
+        address_buf <= address;
         immediate_buf <= immediate;
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
