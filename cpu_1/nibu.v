@@ -87,7 +87,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
-    data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0,1'b0);
+    data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0);
 
     wire [31:0] mux2_to_wrbpc;
     mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
