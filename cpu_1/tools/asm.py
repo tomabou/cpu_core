@@ -68,6 +68,27 @@ def branch(op, rs1, rs2, offset):
     return x
 
 
+def load(op, rd, rs1, offset):
+    rd = int(rd[1:])
+    rs1 = int(rs[1:])
+    funct3 = 0b010
+    opcode = 0b0000011
+    x = (offset << 20) + (rs1 << 15) + (funct3 << 12) + (rd << 7) + opcode
+    return x
+
+
+def store(op, base, src, offset):
+    base = int(base[1:])
+    src = int(src[1:])
+    funct3 = 0b010
+    opcode = 0b0100011
+    imm11_5 = (offset >> 5) & (2**7-1)
+    imm4_0 = offset & (2**5-1)
+    x = (imm11_5 << 25) + (src << 20)+(base << 15) + \
+        (funct3 << 12)+(imm4_0 << 7) + opcode
+    return x 
+
+
 def decode_op(labels, index, tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
