@@ -78,7 +78,7 @@ def load(op, rd, rs1, offset):
     return x
 
 
-def store(op, base, src, offset):
+def store(op, src, base, offset):
     base = int(base[1:])
     src = int(src[1:])
     offset = int(offset)
