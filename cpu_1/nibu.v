@@ -48,6 +48,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     reg [1:0] wb_pc_ctrl_buf = 2'b0;
     wire is_cond_b;
     reg is_cond_b_buf = 1'b0;
+    wire mem_write_ctrl;
+    reg mem_write_ctrl_buf;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -83,11 +85,13 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         mem_to_reg_ctrl,
         branch_ctrl,
         wb_pc_ctrl,
-        is_cond_b);
+        is_cond_b,
+        mem_write_ctrl);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
-    data_memory dm1(clk,alu_res,read_data2,memory_read, 1'b0);
+    data_memory dm1(clk,alu_res,read_data2,memory_read, 
+        mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]));
 
     wire [31:0] mux2_to_wrbpc;
     mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
@@ -107,6 +111,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
         branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
+        mem_write_ctrl_buf <= mem_write_ctrl;
         is_cond_b_buf <= is_cond_b;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};

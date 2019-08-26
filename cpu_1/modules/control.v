@@ -1,14 +1,17 @@
-module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond_b);
+module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond_b,store);
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;
     output reg [1:0] opcode_alu;
-    output reg mem_to_reg;
+    output mem_to_reg;
     output reg branch;
     output reg wb_pc;
     output cond_b;
+    output store;
 
     assign cond_b = (opcode == 7'b1100011); 
+    assign store = (opcode == 7'b0100011);
+    assign mem_to_reg = (opcode == 7'b0000011);//load
 
     always @(*) begin
         case(opcode[6:2])
@@ -36,11 +39,6 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond
         endcase
     end
 
-    always @(*) begin
-        case(opcode[6:2])
-            default: mem_to_reg <= 1'b0;
-        endcase
-    end
 
     always @(*) begin
         case(opcode[6:2])

@@ -4,7 +4,7 @@ module data_memory_tb();
     reg [31:0] addr;
     reg [31:0] writedata;
     wire [31:0] readdata;
-    reg [31:0] writectrl;
+    reg writectrl;
 
     data_memory u1(clk,addr,writedata,readdata,writectrl);
 
