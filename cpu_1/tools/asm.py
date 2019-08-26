@@ -70,7 +70,8 @@ def branch(op, rs1, rs2, offset):
 
 def load(op, rd, rs1, offset):
     rd = int(rd[1:])
-    rs1 = int(rs[1:])
+    rs1 = int(rs1[1:])
+    offset = int(offset)
     funct3 = 0b010
     opcode = 0b0000011
     x = (offset << 20) + (rs1 << 15) + (funct3 << 12) + (rd << 7) + opcode
@@ -80,13 +81,14 @@ def load(op, rd, rs1, offset):
 def store(op, base, src, offset):
     base = int(base[1:])
     src = int(src[1:])
+    offset = int(offset)
     funct3 = 0b010
     opcode = 0b0100011
     imm11_5 = (offset >> 5) & (2**7-1)
     imm4_0 = offset & (2**5-1)
     x = (imm11_5 << 25) + (src << 20)+(base << 15) + \
         (funct3 << 12)+(imm4_0 << 7) + opcode
-    return x 
+    return x
 
 
 def decode_op(labels, index, tks):
@@ -104,6 +106,13 @@ def decode_op(labels, index, tks):
     if tks[0] in BRANCH:
         offset = labels[tks[3]] - 4*index
         return branch(tks[0], tks[1], tks[2], offset)
+
+    LOAD = ['lw']
+    if tks[0] in LOAD:
+        return load(tks[0], tks[1], tks[2], tks[3])
+    STORE = ['sw']
+    if tks[0] in STORE:
+        return store(tks[0], tks[1], tks[2], tks[3])
 
     return -1
 
@@ -180,6 +189,16 @@ def pseudoinst(tks):
     return tks
 
 
+def decode_ls(tks):
+    tmp = ['lw', 'sw']
+    if not tks[0] in tmp:
+        return tks
+
+    print(tks)
+    offset, base = tks[2].replace(')', '').split('(')
+    return [tks[0], tks[1], base, offset]
+
+
 def repeate_nop(tks):
     if tks[0] == 'nop' and len(tks) == 2:
         return int(tks[1]) * [['nop']]
@@ -210,6 +229,7 @@ def create(content):
     content = map(tokens, content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = map(pseudoinst, content)
+    content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     content, labels = label_func(content)
     print(list(content))
