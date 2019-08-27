@@ -14,6 +14,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
     reg [31:0] address_buf;
     reg [31:0] address_buf2;
     wire [31:0] next_address;
+    wire [31:0] next_address_immjump;
     wire [31:0] next_address_jump;
     wire [31:0] chosen_next_address;
     reg [31:0] next_address_d1 = 32'b0;
@@ -52,7 +53,9 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
     wire is_cond_b;
     reg is_cond_b_buf = 1'b0;
     wire mem_write_ctrl;
-    reg mem_write_ctrl_buf;
+    reg mem_write_ctrl_buf = 1'b0;
+    wire jalr_ctrl;
+    reg jalr_ctrl_buf = 1'b0;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -68,7 +71,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
-    add add_jump(address_buf2,immediate_buf,next_address_jump);//imm_buff is delay 2clk;
+    add add_jump(address_buf2,immediate_buf,next_address_immjump);//imm_buff is delay 2clk;
+    mux mux_jalr(next_address_immjump,alu_res,next_address_jump,jalr_ctrl_buf);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
     inst_memory im1(clk,address,inst);
     registers regs1(
@@ -91,7 +95,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
         branch_ctrl,
         wb_pc_ctrl,
         is_cond_b,
-        mem_write_ctrl);
+        mem_write_ctrl,
+        jalr_ctrl);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
@@ -118,6 +123,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         mem_write_ctrl_buf <= mem_write_ctrl;
+        jalr_ctrl_buf <= jalr_ctrl;
         is_cond_b_buf <= is_cond_b;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};

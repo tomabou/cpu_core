@@ -7,8 +7,10 @@ module nibu_tb();
     wire [6:0] seg2;
     wire [6:0] seg3;
     wire [6:0] seg4;
+    wire [6:0] seg5;
+    wire [6:0] seg6;
 
-    nibu u1(clk,show,seg1,seg2,seg3,seg4);
+    nibu u1(clk,show,seg1,seg2,seg3,seg4,seg5,seg6);
 
     initial clk = 1'b0;
     always #10
