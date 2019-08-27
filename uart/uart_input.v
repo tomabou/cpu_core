@@ -23,7 +23,7 @@ module uart_input(clk, rxd,data);
         else begin
             clk_count <= (clk_count==2'b11) ? 2'b0: clk_count+2'b1;
             if(clk_count == 2'b01) begin
-                in_data <= {in_data[6:0],rcv_data[2]};
+                in_data <= {rcv_data[2],in_data[7:1]};
                 if (data_count == 4'b1001) begin
                     data <= in_data;
                     data_count <= 4'b0;
