@@ -7,12 +7,25 @@ def op_imm(op, rd, rs1, imm):
     rd = int(rd[1:])
     rs1 = int(rs1[1:])
     imm = int(imm)
+    imm = imm & (2**12 - 1)
     op_imm_code = 0b0010011
     if op == 'addi':
         func3 = 0b000
     x = imm * (2**20) + rs1 * (2**15) + func3 * \
         (2**12) + rd * (2**7) + op_imm_code
     return x
+
+
+def jalr(op, rd, rs1, imm):
+    rd = int(rd[1:])
+    rs1 = int(rs1[1:])
+    imm = int(imm)
+    imm = imm & (2**12 - 1)
+    opcode = 0b1100111
+    func3 = 0b000
+    x = imm * (2**20) + rs1 * (2**15) + func3 * \
+        (2**12) + rd * (2**7) + opcode
+    return x & (2**32 - 1)
 
 
 def op(op, rd, rs1, rs2):
@@ -101,6 +114,12 @@ def decode_op(labels, index, tks):
     if tks[0] == 'jal':
         offset = labels[tks[2]] - 4*index
         return jal(tks[0], tks[1], offset)
+    if tks[0] == 'jalr':
+        if type(tks[3]) != int:
+            offset = labels[tks[3]] - 4*index
+        else:
+            offset = tks[3]
+        return jalr(tks[0], tks[1], tks[2], offset)
 
     BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']
     if tks[0] in BRANCH:
@@ -186,6 +205,10 @@ def pseudoinst(tks):
         return ['addi', 'x0', 'x0', 0]
     if (tks[0] == 'j'):
         return ['jal', 'x0', tks[1]]
+    if (tks[0] == 'call'):
+        return ['jalr', 'x1', 'x0', tks[1]]
+    if (tks[0] == 'ret'):
+        return ['jalr', 'x0', 'x1', 0]
     return tks
 
 
