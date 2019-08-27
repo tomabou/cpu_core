@@ -1,39 +1,37 @@
 `timescale 1 ns/ 1ps
 
 module uart_input_tb();
-    reg clk,reset,rxd;
+    reg clk,rxd;
     wire [7:0] data;
 
-    uart_input u1(clk,reset,rxd,data);
+    uart_input u1(clk,rxd,data);
 
     initial begin
         rxd = 1;
-        #200000 rxd = 0;
-        #104166 rxd =1 ;
-        #104166 rxd =0 ;
-        #104166 rxd =1 ;
-        #104166 rxd =1 ;
-        #104166 rxd =0 ;
-        #104166 rxd =1 ;
-        #104166 rxd =0 ;
-        #104166 rxd =0 ;
-        #104166 rxd = 1;
-        #222200 rxd = 0;
-        #104166 rxd =1 ;
-        #104166 rxd =1 ;
-        #104166 rxd =1 ;
-        #104166 rxd =1 ;
-        #104166 rxd =0 ;
-        #104166 rxd =0 ;
-        #104166 rxd =0 ;
-        #104166 rxd =0 ;
-        #104166 rxd = 1;
-        #300000 $finish;
+        #53 rxd = 0;
+        #40 rxd =1 ;
+        #40 rxd =0 ;
+        #40 rxd =1 ;
+        #40 rxd =1 ;
+        #40 rxd =0 ;
+        #40 rxd =1 ;
+        #40 rxd =0 ;
+        #40 rxd =0 ;
+        #40 rxd = 1;
+        #40 rxd = 0;
+        #40 rxd =1 ;
+        #40 rxd =1 ;
+        #40 rxd =1 ;
+        #40 rxd =1 ;
+        #40 rxd =0 ;
+        #40 rxd =0 ;
+        #40 rxd =0 ;
+        #40 rxd =0 ;
+        #40 rxd = 1;
     end
 
     initial clk = 1'b0;
-    initial reset = 1'b1;
-    always #10
+    always #5
         clk = ~clk;
 
 endmodule
