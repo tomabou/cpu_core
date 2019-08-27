@@ -12,6 +12,7 @@ loop:
     addi sp, sp, 4
     nop 3
     sw t0, 4(sp)
+    sw t0, 0(zero)
     nop 3
     j loop
     nop 10

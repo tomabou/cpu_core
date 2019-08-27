@@ -22,9 +22,12 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond
         endcase
     end
 
+    //jal use immediate directly.
     always @(*) begin
         case(opcode[6:2]) 
             5'b00100: imm_data <= 1'b1;
+            5'b00000: imm_data <= 1'b1;
+            5'b01000: imm_data <= 1'b1;
             5'b01100: imm_data <= 1'b0;
             default: imm_data <= 1'b0;
         endcase

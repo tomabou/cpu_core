@@ -1,10 +1,12 @@
-module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
+module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segment7_6);
     input clk;
     output [9:0] show;
     output [6:0] segment7_1;
     output [6:0] segment7_2;
     output [6:0] segment7_3;
     output [6:0] segment7_4;
+    output [6:0] segment7_5;
+    output [6:0] segment7_6;
 
     reg [31:0] show_buf;
 
@@ -28,6 +30,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     wire [31:0] alu_res;
     reg [31:0] alu_res_buf;
     wire [31:0] memory_read;
+    wire [15:0] seg_io;
 
 
 
@@ -57,8 +60,10 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
-    seg7 seg7_3(inst_buf[3:0],segment7_3);
-    seg7 seg7_4(inst_buf[7:4],segment7_4);
+    seg7 seg7_3(seg_io[3:0],segment7_3);
+    seg7 seg7_4(seg_io[7:4],segment7_4);
+    seg7 seg7_5(seg_io[11:8],segment7_5);
+    seg7 seg7_6(seg_io[15:12],segment7_6);
 
 
     pc pc1(clk,chosen_next_address,address);
@@ -91,7 +96,8 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 
-        mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]));
+        mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
+        seg_io);
 
     wire [31:0] mux2_to_wrbpc;
     mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
