@@ -19,6 +19,7 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
     wire [31:0] chosen_next_address;
     reg [31:0] next_address_d1 = 32'b0;
     reg [31:0] next_address_d2 = 32'b0;
+    reg [31:0] next_address_d3 = 32'b0;
     wire [31:0] inst;
     reg [31:0] inst_buf;
     wire [31:0] write_data;
@@ -106,12 +107,13 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
 
     wire [31:0] mux2_to_wrbpc;
     mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
-    mux mux_wrbpc(mux2_to_wrbpc,next_address_d2,write_data,wb_pc_ctrl_buf[1]);
+    mux mux_wrbpc(mux2_to_wrbpc,next_address_d3,write_data,wb_pc_ctrl_buf[1]);
 
 
     always @ (posedge clk) begin
         next_address_d1 <= next_address;
         next_address_d2 <= next_address_d1;
+        next_address_d3 <= next_address_d2;
         address_buf <= address;
         address_buf2 <= address_buf;
         immediate_buf <= immediate;

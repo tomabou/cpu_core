@@ -21,6 +21,7 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond
             5'b01100: reg_write <= 1'b1;//op
             5'b11011: reg_write <= 1'b1;//JAL
             5'b11001: reg_write <= 1'b1;//JALR
+            5'b00000: reg_write <= 1'b1;//LOAD
             default: reg_write <= 1'b0;
         endcase
     end
@@ -52,6 +53,7 @@ module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond
     always @(*) begin
         case(opcode[6:2])
             5'b11011: {branch,wb_pc} <= 2'b11;
+            5'b11001: {branch,wb_pc} <= 2'b11;
             5'b11000: {branch,wb_pc} <= 2'b10;
             default: {branch,wb_pc} <= 2'b00;
         endcase

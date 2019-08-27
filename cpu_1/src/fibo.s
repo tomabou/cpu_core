@@ -1,13 +1,14 @@
 main:                                   # @main
-        addi    sp, zero, 2048
+        addi    sp, zero, 1024
         addi    a0, zero, 6
         nop 3
         call    fibo(int)
 end:
         j       end
 fibo(int):                               # @fibo(int)
-        sw      a0, 0(zero)
         addi    sp, sp, -16
+        sw      a0, 0(zero)
+        nop 2
         sw      ra, 12(sp)
         sw      s1, 8(sp)
         sw      s2, 4(sp)

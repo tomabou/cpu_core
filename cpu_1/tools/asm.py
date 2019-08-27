@@ -116,7 +116,7 @@ def decode_op(labels, index, tks):
         return jal(tks[0], tks[1], offset)
     if tks[0] == 'jalr':
         if type(tks[3]) != int:
-            offset = labels[tks[3]] - 4*index
+            offset = labels[tks[3]]
         else:
             offset = tks[3]
         return jalr(tks[0], tks[1], tks[2], offset)
