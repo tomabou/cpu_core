@@ -1,6 +1,7 @@
-module uart_input(clk, rxd,data);
+module uart_input(clk, rxd,data,receive);
     input clk,rxd;
     output data;
+    output reg receive = 1'b0;
 
     reg [3:0] buffer = 4'b1111;
     reg [3:0] rcv_data = 3'b111;
@@ -15,6 +16,7 @@ module uart_input(clk, rxd,data);
         buffer <= {buffer[2:0],rxd};
         rcv_data <= {rcv_data[2:0],buffer[3]};
         if( is_rcv == 1'b0) begin
+            receive <= 1'b0;
             if (rcv_data[2:0] == 3'b000) begin
                 is_rcv <= 1'b1;
                 clk_count <= 2'b0;
@@ -28,6 +30,7 @@ module uart_input(clk, rxd,data);
                     data <= in_data;
                     data_count <= 4'b0;
                     is_rcv <= 1'b0;
+                    receive <= 1'b1;
                     end
                     else
                         data_count <= data_count + 4'b1;
