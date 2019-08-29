@@ -10,7 +10,8 @@ module nibu (
     uart_in,
     uart_out,
     uart_rdreq,
-    uart_wrreq);
+    uart_wrreq,
+    uart_empty);
 
     input clk;
     output [9:0] show;
@@ -120,10 +121,13 @@ module nibu (
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
+        mem_read_ctrl,
+        uart_empty,
         uart_in,
         uart_out,
         uart_wrreq,
         uart_rdreq,
+        uart_empty,
         seg_io);
 
     wire [31:0] mux2_to_wrbpc;

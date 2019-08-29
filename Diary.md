@@ -224,3 +224,5 @@ lui auipcを実装
 
 windows updataで1903 buildになった
 不具合が出ないといいけど
+
+memory mapped ioだと、readに冪等性がなくなるので、read ctrlが必要になる
