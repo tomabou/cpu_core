@@ -1,4 +1,14 @@
-module control(opcode,reg_write,imm_data,opcode_alu,mem_to_reg,branch,wb_pc,cond_b,store,jalr);
+module control(
+    opcode,
+    reg_write,
+    imm_data,
+    opcode_alu,
+    mem_to_reg,
+    branch,
+    wb_pc,
+    cond_b,
+    store,
+    jalr);
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;

@@ -1,4 +1,14 @@
-module uart(slow_clk,rxd,txd,clk,wrreq,write_data,rdreq,read_data,empty);
+module uart(
+    slow_clk,
+    rxd,
+    txd,
+    clk,
+    wrreq,
+    write_data,
+    rdreq,
+    read_data,
+    empty);
+
     input slow_clk;
     input rxd;
     output txd;
