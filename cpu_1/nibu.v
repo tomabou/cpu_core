@@ -1,4 +1,17 @@
-module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segment7_6);
+module nibu (
+    clk,
+    show,
+    segment7_1,
+    segment7_2,
+    segment7_3,
+    segment7_4,
+    segment7_5,
+    segment7_6,
+    uart_in,
+    uart_out,
+    uart_rdreq,
+    uart_wrreq);
+
     input clk;
     output [9:0] show;
     output [6:0] segment7_1;
@@ -7,6 +20,10 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
     output [6:0] segment7_4;
     output [6:0] segment7_5;
     output [6:0] segment7_6;
+    input [7:0] uart_in;
+    output [7:0] uart_out;
+    output uart_wrreq;
+    output uart_rdreq;
 
     reg [31:0] show_buf;
 
@@ -103,6 +120,10 @@ module nibu (clk,show,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,seg
     alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
+        uart_in,
+        uart_out,
+        uart_wrreq,
+        uart_rdreq,
         seg_io);
 
     wire [31:0] mux2_to_wrbpc;

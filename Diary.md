@@ -221,3 +221,6 @@ uartioの実装 (rcvのテストベンチを動かしたところまでやった
 coreにclockを流し込む
 lui auipcを実装
 対話式でフィボナッチ数列を計算する
+
+windows updataで1903 buildになった
+不具合が出ないといいけど
