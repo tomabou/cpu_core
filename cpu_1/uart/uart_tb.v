@@ -42,6 +42,13 @@ module uart_tb();
         rdreq <= 1;
         #8;
         rdreq <= 1;
+        #4;
+        rdreq <= 0;
+        write_data <= 8'b10101010;
+        wrreq <= 1;
+        #4;
+        write_data <= 8'b0;
+        wrreq <= 0;
     end
 
     initial clk <= 1'b1;
