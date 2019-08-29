@@ -23,7 +23,7 @@ module data_memory(
     always @ (*) begin
         if (~isuart_pre) 
             readdata<=ram_readdata;
-        else if (~empty)
+        else if (~empty_pre)
             readdata<={24'b0,uart_in};
         else
             readdata<={32{1'b1}};

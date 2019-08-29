@@ -30,8 +30,8 @@ module nibu (
     reg [31:0] show_buf;
 
     wire [31:0] address;
-    reg [31:0] address_buf;
-    reg [31:0] address_buf2;
+    reg [31:0] address_buf = 32'b0;
+    reg [31:0] address_buf2 = 32'b0;
     wire [31:0] next_address;
     wire [31:0] next_address_immjump;
     wire [31:0] next_address_jump;

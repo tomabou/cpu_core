@@ -1,5 +1,6 @@
-module akari(clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segment7_6,txd);
-    input clk;
+module akari(slow_clk,core_clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segment7_6,txd);
+    input slow_clk;
+    input core_clk;
     input rxd;
     output [6:0] segment7_1;
     output [6:0] segment7_2;
@@ -8,8 +9,6 @@ module akari(clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segm
     output [6:0] segment7_5;
     output [6:0] segment7_6;
     output txd;
-    wire slow_clk;
-    wire core_clk;
     wire [9:0] show;
 
     wire [7:0] uart_in;
@@ -18,8 +17,6 @@ module akari(clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segm
     wire uart_wrreq;
     wire uart_empty;
 
-    pll_slow pll_slow1(clk,slow_clk);
-    pll_core pll_core1(clk,core_clk);
     nibu nibu1(
         core_clk,
         show,
@@ -41,7 +38,7 @@ module akari(clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,segment7_5,segm
         uart_out,
         uart_rdreq,
         uart_in,
-        empty);
+        uart_empty);
 
 
 endmodule

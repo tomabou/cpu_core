@@ -23,6 +23,7 @@ module uart(
     wire from_cpu_empty;
     wire [7:0] rcv_data;
     wire [7:0] from_cpu;
+    wire rcv;
     reg send_enable;
     reg rd_fromcpu;
     uart_rcv uart_rcv1(slow_clk,rxd,rcv_data,rcv);
