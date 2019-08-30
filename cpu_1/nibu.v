@@ -47,6 +47,7 @@ module nibu (
     wire [31:0] read_data2;
     wire [31:0] immediate;
     reg [31:0] immediate_buf;
+    wire [31:0] operand1;
     wire [31:0] operand2;
     wire [31:0] alu_res;
     reg [31:0] alu_res_buf;
@@ -76,6 +77,8 @@ module nibu (
     reg mem_write_ctrl_buf = 1'b0;
     wire jalr_ctrl;
     reg jalr_ctrl_buf = 1'b0;
+    wire [1:0] ope1_ctrl;
+    reg [1:0] ope1_ctrl_buf;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -116,10 +119,12 @@ module nibu (
         wb_pc_ctrl,
         is_cond_b,
         mem_write_ctrl,
-        jalr_ctrl);
+        jalr_ctrl,
+        ope1_ctrl);
+    mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
-    alu alu1(read_data1,operand2,alu_res,alu_ctrl_buf);
+    alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
     data_memory dm1(clk,alu_res,read_data2,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         mem_to_reg_ctrl_buf[0],
@@ -151,6 +156,7 @@ module nibu (
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         mem_write_ctrl_buf <= mem_write_ctrl;
         jalr_ctrl_buf <= jalr_ctrl;
+        ope1_ctrl_buf <= ope1_ctrl;
         is_cond_b_buf <= is_cond_b;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};

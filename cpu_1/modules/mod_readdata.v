@@ -6,9 +6,9 @@ module mod_readdata (readdata,addr,ctrl,moddata);
 
     always @ (*) begin
         if (ctrl == 2'b10) 
-            moddata<= addr;
+            moddata<= addr; //auipc
         else if (ctrl == 2'b01)
-            moddata <= 32'b0;
+            moddata <= 32'b0; //lui
         else
             moddata <= readdata;
     end

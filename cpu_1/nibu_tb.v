@@ -9,8 +9,14 @@ module nibu_tb();
     wire [6:0] seg4;
     wire [6:0] seg5;
     wire [6:0] seg6;
+    reg uart_empty;
+    reg [7:0] uart_in;
+    wire [7:0] uart_out;
+    wire uart_wrreq;
+    wire uart_rdreq;
 
-    nibu u1(clk,show,seg1,seg2,seg3,seg4,seg5,seg6);
+    nibu u1(clk,show,seg1,seg2,seg3,seg4,seg5,seg6,
+        uart_empty,uart_in,uart_out,uart_wrreq,uart_rdreq);
 
     initial clk = 1'b0;
     always #10
