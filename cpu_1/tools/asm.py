@@ -104,6 +104,15 @@ def store(op, src, base, offset):
     return x
 
 
+def utype(op, rd, offset):
+    rd = int(rd[1:])
+    if op == 'auipc':
+        opcode = 0b0010111
+    elif op == 'lui':
+        opcode = 0b0110111
+    return offset + (rd << 7) + opcode
+
+
 def decode_op(labels, index, tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
@@ -116,10 +125,23 @@ def decode_op(labels, index, tks):
         return jal(tks[0], tks[1], offset)
     if tks[0] == 'jalr':
         if type(tks[3]) != int:
-            offset = labels[tks[3]]
+            offset = labels[tks[3]] - 4*index
         else:
             offset = tks[3]
         return jalr(tks[0], tks[1], tks[2], offset)
+    if tks[0] == 'jalr_call':
+        assert(type(tks[3]) != int)
+        offset = labels[tks[3]] - 4*(index-1)
+        offset = (2**12-1) & offset
+        return jalr(tks[0], tks[1], tks[2], offset)
+
+    if tks[0] == 'auipc':
+        if type(tks[2]) != int:
+            offset = labels[tks[3]] - 4*index
+            offset = ((2**20-1) << 12) & offset
+        else:
+            offset = tks[3]
+        return offset(tks[0], tks[1], offset)
 
     BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']
     if tks[0] in BRANCH:
@@ -205,11 +227,19 @@ def pseudoinst(tks):
         return ['addi', 'x0', 'x0', 0]
     if (tks[0] == 'j'):
         return ['jal', 'x0', tks[1]]
-    if (tks[0] == 'call'):
-        return ['jalr', 'x1', 'x0', tks[1]]
     if (tks[0] == 'ret'):
         return ['jalr', 'x0', 'x1', 0]
     return tks
+
+
+def decode_call(tks):
+    if (tks[0] == 'call'):
+        # return [['jal', 'x1', 'x0', tks[1]]]
+        return [
+            ['auipc', 'x6', tks[1]],
+            ['jalr_call', 'x1', 'x6', tks[1]]
+        ]
+    return [tks]
 
 
 def decode_ls(tks):
@@ -252,6 +282,7 @@ def create(content):
     content = map(tokens, content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = map(pseudoinst, content)
+    content = list(itertools.chain.from_iterable(map(decode_call, content)))
     content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     content, labels = label_func(content)
