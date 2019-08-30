@@ -131,17 +131,20 @@ def decode_op(labels, index, tks):
         return jalr(tks[0], tks[1], tks[2], offset)
     if tks[0] == 'jalr_call':
         assert(type(tks[3]) != int)
-        offset = labels[tks[3]] - 4*(index-1)
+        offset = labels[tks[3]] - 4*(index-4)
         offset = (2**12-1) & offset
         return jalr(tks[0], tks[1], tks[2], offset)
 
     if tks[0] == 'auipc':
         if type(tks[2]) != int:
-            offset = labels[tks[3]] - 4*index
-            offset = ((2**20-1) << 12) & offset
+            offset = labels[tks[2]] - 4*index
+            small_offset = (2**12-1) & offset
+            if (small_offset >> 11 == 1):
+                small_offset = small_offset + ((2**20-1) << 12)
+            offset = (2**32 - 1) & (offset - small_offset)
         else:
             offset = tks[3]
-        return offset(tks[0], tks[1], offset)
+        return utype(tks[0], tks[1], offset)
 
     BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']
     if tks[0] in BRANCH:
@@ -237,6 +240,9 @@ def decode_call(tks):
         # return [['jal', 'x1', 'x0', tks[1]]]
         return [
             ['auipc', 'x6', tks[1]],
+            ['nop'],
+            ['nop'],
+            ['nop'],
             ['jalr_call', 'x1', 'x6', tks[1]]
         ]
     return [tks]
@@ -247,7 +253,6 @@ def decode_ls(tks):
     if not tks[0] in tmp:
         return tks
 
-    print(tks)
     offset, base = tks[2].replace(')', '').split('(')
     return [tks[0], tks[1], base, offset]
 
@@ -281,12 +286,13 @@ def create(content):
     content = filter(is_effect_line, content)
     content = map(tokens, content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
-    content = map(pseudoinst, content)
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
+    content = map(pseudoinst, content)
     content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     content, labels = label_func(content)
-    print(list(content))
+    for tks in list(content):
+        print(tks)
     print(labels)
     content = decode_op_func(content, labels)
     return content

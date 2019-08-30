@@ -78,7 +78,7 @@ module nibu (
     wire jalr_ctrl;
     reg jalr_ctrl_buf = 1'b0;
     wire [1:0] ope1_ctrl;
-    reg [1:0] ope1_ctrl_buf;
+    reg [1:0] ope1_ctrl_buf = 2'b0;
 
     assign show = {show_buf[5:0],4'b0};
 

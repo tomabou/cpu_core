@@ -40,6 +40,8 @@ module control(
             5'b11011: reg_write <= 1'b1;//JAL
             5'b11001: reg_write <= 1'b1;//JALR
             5'b00000: reg_write <= 1'b1;//LOAD
+            5'b01101: reg_write <= 1'b1; //lui
+            5'b00101: reg_write <= 1'b1; //auipc
             default: reg_write <= 1'b0;
         endcase
     end
@@ -52,6 +54,8 @@ module control(
             5'b01000: imm_data <= 1'b1;//store
             5'b11001: imm_data <= 1'b1;//jalr
             5'b01100: imm_data <= 1'b0;//op
+            5'b01101: imm_data <= 1'b1; //lui
+            5'b00101: imm_data <= 1'b1; //auipc
             default: imm_data <= 1'b0;
         endcase
     end
