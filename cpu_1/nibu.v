@@ -40,7 +40,6 @@ module nibu (
     reg [31:0] next_address_d2 = 32'b0;
     reg [31:0] next_address_d3 = 32'b0;
     wire [31:0] inst;
-    reg [31:0] inst_buf;
     wire [31:0] write_data;
     reg [9:0] rdi_buf;
     wire [31:0] read_data1;
@@ -97,7 +96,6 @@ module nibu (
     add add_jump(address_buf2,immediate_buf,next_address_immjump);//imm_buff is delay 2clk;
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,jalr_ctrl_buf);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
-    inst_memory im1(clk,address,inst);
     registers regs1(
         clk,
         inst[19:15],
@@ -125,7 +123,9 @@ module nibu (
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
-    data_memory dm1(clk,alu_res,read_data2,memory_read, 
+    memory mem1(clk,
+        address,inst,
+        alu_res,read_data2,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         mem_to_reg_ctrl_buf[0],
         uart_empty,
@@ -160,7 +160,6 @@ module nibu (
         is_cond_b_buf <= is_cond_b;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
-        inst_buf <= inst;
         show_buf <= alu_res;
     end
 endmodule
