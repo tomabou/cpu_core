@@ -302,7 +302,7 @@ def create_mif(content: List[int], filename):
     print(filename)
     head = [
         "WIDTH=32;",
-        "DEPTH=16384;",
+        "DEPTH=32768;",
         "ADDRESS_RADIX=UNS;",
         "DATA_RADIX=UNS;",
         "CONTENT BEGIN"]
