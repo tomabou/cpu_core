@@ -287,7 +287,8 @@ branch命令に関しては、branchのpredictionを外したらメモリへの�
 2port ramにした
 fiboが13を出力することを確認 
 mifファイルのディレクトリ指定がちょっと謎
-
+プログラムローダーのためにbitshiftが必要なので
+bitshiftを実装する
 
 
 
