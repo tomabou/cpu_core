@@ -1,0 +1,1 @@
+    sw      ra, 0(zero)
