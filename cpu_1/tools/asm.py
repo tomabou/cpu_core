@@ -9,8 +9,20 @@ def op_imm(op, rd, rs1, imm):
     imm = int(imm)
     imm = imm & (2**12 - 1)
     op_imm_code = 0b0010011
-    if op == 'addi':
-        func3 = 0b000
+    func3_set = {
+        'addi': 0,
+        'slli': 1,
+        'xori': 4,
+        'srli': 5,
+        'srai': 5,
+        'ori': 6,
+        'andi': 7
+    }
+    func3 = func3_set[op]
+
+    if op == 'srai':
+        imm = imm + 0b0100000_00000
+
     x = imm * (2**20) + rs1 * (2**15) + func3 * \
         (2**12) + rd * (2**7) + op_imm_code
     return x
@@ -33,12 +45,21 @@ def op(op, rd, rs1, rs2):
     rs1 = int(rs1[1:])
     rs2 = int(rs2[1:])
     op_imm_code = 0b0110011
-    if op == 'add':
-        func3 = 0b000
-        func7 = 0b0000000
-    if op == 'sub':
-        func3 = 0b000
+    func3_set = {
+        'add': 0,
+        'sub': 0,
+        'sll': 1,
+        'xor': 4,
+        'srl': 5,
+        'sra': 5,
+        'or': 6,
+        'and': 7
+    }
+    func3 = func3_set[op]
+    if op == 'sub' or op == 'sra':
         func7 = 0b0100000
+    else:
+        func7 = 0
     x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
         func3 * (2**12) + rd * (2**7) + op_imm_code
 
@@ -232,6 +253,8 @@ def pseudoinst(tks):
         return ['jal', 'x0', tks[1]]
     if (tks[0] == 'ret'):
         return ['jalr', 'x0', 'x1', 0]
+    if (tks[0] == 'jalr' and len(tks) == 2):
+        return ['jalr', 'x1', tks[1], 0]
     return tks
 
 
@@ -270,6 +293,16 @@ def tokens(string: str):
     return token
 
 
+def commentout(string: str):
+    x = ''
+    for c in string:
+        if c == '#' or c == ';':
+            return x
+        else:
+            x = x + c
+    return x
+
+
 def is_effect_line(string):
     for c in string:
         if c == '#':
@@ -284,6 +317,7 @@ def is_effect_line(string):
 def create(content):
     content = content.splitlines()
     content = filter(is_effect_line, content)
+    content = map(commentout, content)
     content = map(tokens, content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
