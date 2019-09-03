@@ -63,8 +63,8 @@ module control(
     // 2'b10 always alu add
     always @(*) begin
         case(opcode[6:2])
-            5'b00100: opcode_alu <= 2'b01;
-            5'b01100: opcode_alu <= 2'b11;
+            5'b00100: opcode_alu <= 2'b01; //opimm
+            5'b01100: opcode_alu <= 2'b11; // op
             5'b11000: opcode_alu <= 2'b00; //BRANCH
             5'b11001: opcode_alu <= 2'b10; //jalr
             default: opcode_alu <= 2'b10;

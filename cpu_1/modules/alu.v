@@ -17,6 +17,9 @@ module alu(data1,data2,out,ctrl);
             8: out <= data1 >= data2;
             9: out <= $signed(data1) < $signed(data2);
             10: out <= $signed(data1) >= $signed(data2);
+            11: out <= data1 << data2[4:0];
+            12: out <= data1 >> data2[4:0];
+            13: out <= $signed(data1) >>> data2[4:0];
             default: out <= 32'b0;
         endcase
     end
