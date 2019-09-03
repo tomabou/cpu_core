@@ -16,4 +16,5 @@ memory/*
 !cpu_1/tools/
 !cpu_1/src/
 !cpu_1/uart/
+cpu_1/src/*.bin
 *.pyc

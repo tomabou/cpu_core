@@ -356,11 +356,26 @@ def create_mif(content: List[int], filename):
         file.writelines(data)
 
 
+def create_bin(content: List[int], filename):
+    tmp = []
+    for i, x in enumerate(content):
+        if i > 0:
+            tmp.append(1)
+        for _ in range(4):
+            tmp.append(x & (2**8-1))
+            x = x >> 8
+    tmp.append(2)
+    array = bytearray(tmp)
+    with open(filename, 'wb') as file:
+        file.write(array)
+
+
 def main(filename):
     data = open(filename, 'r')
     content = data.read()
     res = create(content)
     create_mif(res, filename[:-1]+'mif')
+    create_bin(res, filename[:-1]+'bin')
     data.close()
 
 
