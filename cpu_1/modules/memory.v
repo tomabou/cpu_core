@@ -45,7 +45,7 @@ module memory(
         32'b0,
         writedata,
         1'b0,
-        writectrl,
+        writectrl & (addr != 32'b000) & (addr != 32'b100),
         readdata_inst,
         ram_readdata);
 

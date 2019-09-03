@@ -44,6 +44,8 @@ module nibu (
     reg [9:0] rdi_buf;
     wire [31:0] read_data1;
     wire [31:0] read_data2;
+    reg [4:0] rsi1_buf;
+    reg [4:0] rsi2_buf;
     wire [31:0] immediate;
     reg [31:0] immediate_buf;
     wire [31:0] operand1;
@@ -147,6 +149,8 @@ module nibu (
         address_buf <= address;
         address_buf2 <= address_buf;
         immediate_buf <= immediate;
+        rsi1_buf <= inst[19:15];
+        rsi2_buf <= inst[24:20];
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
