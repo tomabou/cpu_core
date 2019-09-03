@@ -138,7 +138,8 @@ def decode_op(labels, index, tks):
     OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
     if tks[0] in OP:
         return op(tks[0], tks[1], tks[2], tks[3])
-    OP_IMM = ['addi', 'slti', 'sltiu', 'xori', 'ori', 'andi']
+    OP_IMM = ['addi', 'slti', 'sltiu', 'xori',
+              'ori', 'andi', 'slli', 'srli', 'srai']
     if tks[0] in OP_IMM:
         return op_imm(tks[0], tks[1], tks[2], tks[3])
     if tks[0] == 'jal':
@@ -165,6 +166,10 @@ def decode_op(labels, index, tks):
             offset = (2**32 - 1) & (offset - small_offset)
         else:
             offset = tks[3]
+        return utype(tks[0], tks[1], offset)
+
+    if tks[0] == 'lui':
+        offset = int(tks[2]) << 12
         return utype(tks[0], tks[1], offset)
 
     BRANCH = ['beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu']

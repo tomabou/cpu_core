@@ -127,7 +127,7 @@ module nibu (
         address,inst,
         alu_res,read_data2,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
-        mem_to_reg_ctrl_buf[0],
+        mem_to_reg_ctrl_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         uart_empty,
         uart_in,
         uart_out,
