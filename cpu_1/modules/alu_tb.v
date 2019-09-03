@@ -10,13 +10,13 @@ module alu_tb();
     initial begin
         ctrl <= 4'd0;
         #10;
-        data1 <= 32'd1023;
-        data2 <= 32'b110110;
+        data1 <= -32'd1023;
+        data2 <= 32'b11000011;
         #10;
-        ctrl <= 4'd3;
+        ctrl <= 4'd11;
         #10;
-        ctrl <= 4'b0;
+        ctrl <= 4'd12;
         #10;
-        ctrl <= 4'd2;
+        ctrl <= 4'd13;
     end
 endmodule
