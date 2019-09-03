@@ -17,6 +17,7 @@ main:                                   # @main
         nop;
         beq     a4, a1, .LBB0_2
         slli    a4, a4, 8
+        nop 3
         add     a3, a3, a4
 .LBB0_4:                                #   Parent Loop BB0_1 Depth=1
         lw    a4, 4(zero);
@@ -26,6 +27,7 @@ main:                                   # @main
         nop;
         beq     a4, a1, .LBB0_4
         slli    a4, a4, 16
+        nop 3
         add     a3, a3, a4
 .LBB0_6:                                #   Parent Loop BB0_1 Depth=1
         lw    a4, 4(zero);
@@ -35,11 +37,14 @@ main:                                   # @main
         nop;
         beq     a4, a1, .LBB0_6
         slli    a4, a4, 24
+        nop 3
         add     a3, a3, a4
         sw      a4, 0(zero);
+        nop 2
         sw      a3, 0(a0)
         addi    a3, zero, -1
         addi    a0, a0, 4
+        nop 2
         bne     a3, a1, .LBB0_9
 .LBB0_8:                                #   Parent Loop BB0_1 Depth=1
         lw    a3, 4(zero);
@@ -51,8 +56,5 @@ main:                                   # @main
 .LBB0_9:                                #   in Loop: Header=BB0_1 Depth=1
         bne     a3, a2, .LBB0_1
         lui     a0, 1
+        nop 3
         jalr    a0
-        mv      a0, zero
-        lw      ra, 12(sp)
-        addi    sp, sp, 16
-        ret
