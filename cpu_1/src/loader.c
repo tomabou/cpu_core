@@ -9,34 +9,28 @@ int main()
     {
         int code = 0;
         int x = -1;
-        while (x == -1)
+        for (int i = 0; i < 4; i++)
         {
-            x = input();
+            x = -1;
+            while (x == -1)
+            {
+                x = input();
+            }
+            code += (x << (i * 8));
         }
-        show(x);
-        code += x;
-        x = -1;
-        while (x == -1)
-        {
-            x = input();
-        }
-        code += (x << 8);
-        x = -1;
-        while (x == -1)
-        {
-            x = input();
-        }
-        code += (x << 16);
-        x = -1;
-        while (x == -1)
-        {
-            x = input();
-        }
-        code += (x << 24);
         show(code);
         *pc = code;
         pc++;
+        int status = -1;
+        while (status == -1)
+        {
+            status = input();
+        }
+        if (status == 2)
+            break;
     }
+    void (*func)() = ((void (*)())4096);
+    func();
     return 0;
 }
 
@@ -58,7 +52,6 @@ void show(int n)
 {
     asm volatile(
         ".intel_syntax noprefix;\n\
-        sw %0, 0(zero);"
+        sw      %0, 0(zero);"
         : "=r"(n));
     return;
-}
