@@ -44,6 +44,8 @@ module nibu (
     reg [9:0] rdi_buf;
     wire [31:0] read_data1;
     wire [31:0] read_data2;
+    wire [31:0] read_data1_fetched;
+    wire [31:0] read_data2_fetched;
     reg [4:0] rsi1_buf;
     reg [4:0] rsi2_buf;
     wire [31:0] immediate;
@@ -80,6 +82,8 @@ module nibu (
     reg jalr_ctrl_buf = 1'b0;
     wire [1:0] ope1_ctrl;
     reg [1:0] ope1_ctrl_buf = 2'b0;
+    wire rg1_forward;
+    wire rg2_forward;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -104,9 +108,33 @@ module nibu (
         inst[24:20],
         rdi_buf[9:5],
         write_data,
-        read_data1,
-        read_data2,
+        read_data1_fetched,
+        read_data2_fetched,
         reg_write_ctrl_buf[1]&(~do_branch_buf[1]) & (~do_branch_buf[2]));
+
+    forward_ctrl forward_ctrl1(
+        rsi1_buf,
+        rsi2_buf,
+        rdi_buf[9:5],
+        reg_write_ctrl_buf[1]&(~do_branch_buf[1]) & (~do_branch_buf[2]),
+        rg1_forward,
+        rg2_forward);
+
+    mux_reg mux_readdata1(
+        read_data1_fetched,
+        write_data,
+        read_data1,
+        rg1_forward,
+        (rsi1_buf == 5'b0)
+    );
+    mux_reg mux_readdata2(
+        read_data2_fetched,
+        write_data,
+        read_data2,
+        rg2_forward,
+        (rsi2_buf == 5'b0)
+    );
+    
 
     immgen ig1(inst,immediate);
     control ctr1(
