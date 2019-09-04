@@ -8,6 +8,8 @@ module alu_control(funct,alu_opcode,alu_ctrl);
             case (funct[2:0])
                 0: alu_ctrl <= (alu_opcode[1] & funct[3]) ? 4'd3 : 4'd2;
                 1: alu_ctrl <= 4'd11; //shift left
+                2: alu_ctrl <= 4'd7; //slt
+                3: alu_ctrl <= 4'd9; //sltu
                 4: alu_ctrl <= 4'd4; //xor
                 5: alu_ctrl <= funct[3] ? 4'd13 : 4'd12;// shift right
                 6: alu_ctrl <= 4'd1; //or 
