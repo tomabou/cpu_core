@@ -18,3 +18,4 @@ memory/*
 !cpu_1/uart/
 cpu_1/src/*.bin
 *.pyc
+*.out
