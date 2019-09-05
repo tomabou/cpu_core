@@ -12,6 +12,8 @@ def op_imm(op, rd, rs1, imm):
     func3_set = {
         'addi': 0,
         'slli': 1,
+        'slti': 2,
+        'sltiu': 3,
         'xori': 4,
         'srli': 5,
         'srai': 5,
@@ -49,6 +51,8 @@ def op(op, rd, rs1, rs2):
         'add': 0,
         'sub': 0,
         'sll': 1,
+        'slt': 2,
+        'sltu': 3,
         'xor': 4,
         'srl': 5,
         'sra': 5,
@@ -135,7 +139,7 @@ def utype(op, rd, offset):
 
 
 def decode_op(labels, index, tks):
-    OP = ['add', 'slt', 'sltu', 'and', 'or', 'xor', 'sll', 'srl', 'sub', 'sra']
+    OP = ['add', 'sub', 'sll', 'slt', 'sltu', 'xor', 'srl', 'sra', 'or', 'and']
     if tks[0] in OP:
         return op(tks[0], tks[1], tks[2], tks[3])
     OP_IMM = ['addi', 'slti', 'sltiu', 'xori',

@@ -12,6 +12,7 @@ memory/*
 !memory/*.v
 !cpu_1/*.v
 !cpu_1/*.mif
+!cpu_1/*.sdc
 !cpu_1/modules/
 !cpu_1/tools/
 !cpu_1/src/
