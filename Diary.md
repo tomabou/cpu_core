@@ -408,3 +408,6 @@ load store cvt mvを動かすのを先にやる
 load store cvt mvのasmを書く
 into_intregはwbするところのmuxを弄らなきゃいけなくてバグりそうなので後回し
 loadとstoreのチェックから
+asm.pyにちょっと追加してアセンブルして動かしてみた
+reg_writeを書いてなかったので動かない
+reg_writeを書く
