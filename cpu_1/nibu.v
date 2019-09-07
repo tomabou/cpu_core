@@ -96,6 +96,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
+    FPU FPU1(clk,inst);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);

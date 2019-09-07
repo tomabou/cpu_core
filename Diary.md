@@ -386,3 +386,12 @@ load
 store 
 mv
 cnvの実装
+
+ストールは、do_branchと同じ感じにして、プログラムカウンタまわりだけ弄るというのが良い気がする
+
+altera fpをmodelsimで動かすときは、 
+'''
+vsim -gui -l msim_transcript -L altera_mf_ver -L altera_mf -L sgate_ver -L sgate -L lpm_ver -L lpm work.fp_addsub_tb
+'''
+みたいなライブラリを追加する必要がある
+シミュレート用の.voのポートの順番が間違っているので修正してコンパイルしたら動いた
