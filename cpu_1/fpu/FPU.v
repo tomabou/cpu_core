@@ -3,13 +3,15 @@ module FPU(
     inst,
     from_intreg,
     from_mem,
-    to_mem);
+    to_mem,
+    to_intreg);
 
     input clk;
     input [31:0] inst;
     input [31:0] from_intreg;
     input [31:0] from_mem;
     output [31:0] to_mem;
+    output [31:0] to_intreg;
 
     reg [4:0] rdi_buf[0:4];
     wire [31:0] write_data;
