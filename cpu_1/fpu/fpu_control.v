@@ -6,7 +6,8 @@ module fpu_control(
     is_sub,
     is_load,
     is_adsb,
-    is_mult);
+    is_mult,
+    is_cvrt);
 
     input [4:0] funct5;
     input [2:0] funct3;
@@ -16,6 +17,7 @@ module fpu_control(
     output is_load;
     output is_adsb;
     output is_mult;
+    output is_cvrt;
 
     parameter OPFP = 7'b1010011;
     parameter LOADFP = 7'b0000111;
@@ -25,6 +27,7 @@ module fpu_control(
     assign is_load = (opcode ==LOADFP);
     assign is_adsb = (opcode == OPFP) & (funct5[4:1] == 4'b0000);
     assign is_mult = (opcode == OPFP) & (funct5 == 5'b00010);
+    assign is_cvrt = (opcode == OPFP) & ((funct5 == 5'11000) | (funct5 == 5'11010));
 
 
 endmodule

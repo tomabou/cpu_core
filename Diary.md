@@ -404,3 +404,4 @@ fpmul は3clkck遅延と言っていて、本当に3clock後に出てくる
 
 困ったらipを使わなくてもよい
 とりあえずloadとストアが動くかを確認する
+load store cvt mvを動かすのを先にやる
