@@ -19,6 +19,7 @@ memory/*
 !cpu_1/uart/
 !cpu_1/fpu/
 cpu_1/fpu/add
+cpu_1/fpu/mul
 cpu_1/src/*.bin
 *.pyc
 *.out

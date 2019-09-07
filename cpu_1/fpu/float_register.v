@@ -4,9 +4,9 @@ module float_register (
     rs2i,
     rdi,
     write_data,
+    reg_write,
     read_data1,
-    read_data2,
-    reg_write);
+    read_data2);
 
     input clk;
     input [4:0] rs1i;

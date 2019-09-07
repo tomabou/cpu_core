@@ -395,3 +395,11 @@ vsim -gui -l msim_transcript -L altera_mf_ver -L altera_mf -L sgate_ver -L sgate
 '''
 みたいなライブラリを追加する必要がある
 シミュレート用の.voのポートの順番が間違っているので修正してコンパイルしたら動いた
+なんかfpのmodelsimでのシミュレートが不安定だ
+fp add とfp mulで遅延が何ステップなのかが違うように見える
+fpadd は2clkck遅延と言っているけど、1clock後に出てくる
+fpmul は3clkck遅延と言っていて、本当に3clock後に出てくる
+これは実機通りなのか、それともどちらかがシミュレートがおかしいのか
+とりあえずシミュレートに従って実装して、実機でずれたら修正するか
+
+困ったらipを使わなくてもよい
