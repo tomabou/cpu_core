@@ -111,7 +111,10 @@ def load(op, rd, rs1, offset):
     rs1 = int(rs1[1:])
     offset = int(offset)
     funct3 = 0b010
-    opcode = 0b0000011
+    if op == 'lw':
+        opcode = 0b0000011
+    if op == 'flw':
+        opcode = 0b0000111
     x = (offset << 20) + (rs1 << 15) + (funct3 << 12) + (rd << 7) + opcode
     return x
 
@@ -121,7 +124,10 @@ def store(op, src, base, offset):
     src = int(src[1:])
     offset = int(offset)
     funct3 = 0b010
-    opcode = 0b0100011
+    if op == 'sw':
+        opcode = 0b0100011
+    if op == 'fsw':
+        opcode = 0b0100111
     imm11_5 = (offset >> 5) & (2**7-1)
     imm4_0 = offset & (2**5-1)
     x = (imm11_5 << 25) + (src << 20)+(base << 15) + \
@@ -181,10 +187,10 @@ def decode_op(labels, index, tks):
         offset = labels[tks[3]] - 4*index
         return branch(tks[0], tks[1], tks[2], offset)
 
-    LOAD = ['lw']
+    LOAD = ['lw', 'flw']
     if tks[0] in LOAD:
         return load(tks[0], tks[1], tks[2], tks[3])
-    STORE = ['sw']
+    STORE = ['sw', 'fsw']
     if tks[0] in STORE:
         return store(tks[0], tks[1], tks[2], tks[3])
 
@@ -252,7 +258,19 @@ def rename_register(tk):
     ]
     if tk in li:
         return 'x'+str(li.index(tk))
+    fli = [
+        'ft0','ft1','ft2','ft3','ft4','ft5','ft6','ft7',
+        'fs0','fs1',
+        'fa0','fa1',
+        'fa2','fa3','fa4','fa5','fa6','fa7',
+        'fs2','fs3','fs4','fs5','fs6','fs7','fs8','fs9','fs10','fs11',
+        'ft8','ft9','ft10','ft11',
+    ]
+    if tk in fli:
+        return 'f'+str(fli.index(tk))
     return tk
+
+
 
 
 def pseudoinst(tks):
@@ -281,7 +299,7 @@ def decode_call(tks):
 
 
 def decode_ls(tks):
-    tmp = ['lw', 'sw']
+    tmp = ['lw', 'sw', 'flw', 'fsw']
     if not tks[0] in tmp:
         return tks
 

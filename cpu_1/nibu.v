@@ -105,7 +105,7 @@ module nibu (
     FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
-    mux mux_memwrite(readdata2,into_mem,is_fstore,memory_write);
+    mux mux_memwrite(read_data2,into_mem,memory_write,is_fstore);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);

@@ -63,8 +63,8 @@ module FPU(
     assign ope1 = readdata1;
     assign ope2 = readdata2;
 
-    float_to_int float_to_int1(ope1,is_cvt,to_intreg);
-    int_to_float int_to_float1(from_intreg,is_cvt,from_intreg_cvt);
+    float_to_int float_to_int1(ope1,is_cvrt,to_intreg);
+    int_to_float int_to_float1(from_intreg,is_cvrt,from_intreg_cvt);
     assign to_mem = readdata2;
 
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub,addsub_out);
