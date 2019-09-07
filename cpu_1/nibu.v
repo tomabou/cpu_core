@@ -56,6 +56,11 @@ module nibu (
     reg [31:0] alu_res_buf;
     wire [31:0] memory_read;
     wire [15:0] seg_io;
+    wire [31:0] from_intreg;
+    wire [31:0] from_mem;
+    wire [31:0] into_mem;
+    wire [31:0] into_intreg;
+    wire [31:0] memory_write;
 
 
 
@@ -84,6 +89,7 @@ module nibu (
     reg [1:0] ope1_ctrl_buf = 2'b0;
     wire rg1_forward;
     wire rg2_forward;
+    wire is_fstore;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -96,7 +102,10 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,inst);
+    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg);
+    assign from_intreg = read_data1;
+    assign from_mem = memory_read;
+    mux mux_memwrite(readdata2,into_mem,is_fstore,memory_write);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
@@ -149,14 +158,16 @@ module nibu (
         is_cond_b,
         mem_write_ctrl,
         jalr_ctrl,
-        ope1_ctrl);
+        ope1_ctrl,
+        is_fstore);
     mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
     mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
+
     memory mem1(clk,
         address,inst,
-        alu_res,read_data2,memory_read, 
+        alu_res,memory_write,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         mem_to_reg_ctrl_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         uart_empty,

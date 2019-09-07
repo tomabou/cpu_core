@@ -78,9 +78,9 @@ module FPU(
     assign to_result[2] = is_load_buf[1] ? from_mem : result[1];
     assign to_result[3] = is_adsb_buf[2] ? addsub_out : result[2];
     assign to_result[4] = result[3];
-    assign write_data   = is_mult_buf[4] ? mul_out : result[4]
+    assign write_data   = is_mult_buf[4] ? mul_out : result[4];
 
-    always @ (clk posedge) begin
+    always @ (posedge clk) begin
         rdi_buf[0] <= inst[11:7];
         rdi_buf[1] <= rdi_buf[0];
         rdi_buf[2] <= rdi_buf[1];

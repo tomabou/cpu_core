@@ -9,7 +9,8 @@ module control(
     cond_b,
     store,
     jalr,
-    ope1);
+    ope1,
+    is_fstore);
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;
@@ -21,17 +22,19 @@ module control(
     output store;
     output jalr;
     output [1:0] ope1;
+    output is_fstore;
 
     wire lui;
     wire auipc;
 
     assign cond_b = (opcode == 7'b1100011); 
-    assign store = (opcode == 7'b0100011);
+    assign store = ((opcode == 7'b0100011)|(opcode == 7'b0100111));
     assign mem_to_reg = (opcode == 7'b0000011);//load
     assign jalr = (opcode == 7'b1100111);
     assign lui = (opcode == 7'b0110111);
     assign auipc = (opcode == 7'b0010111);
     assign ope1 = {auipc,lui};
+    assign is_fstore = (opcode == 7'b0100111);
 
     always @(*) begin
         case(opcode[6:2])
