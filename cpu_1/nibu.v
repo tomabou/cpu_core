@@ -90,6 +90,7 @@ module nibu (
     wire rg1_forward;
     wire rg2_forward;
     wire is_fstore;
+    reg is_fstore_buf;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -105,7 +106,7 @@ module nibu (
     FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
-    mux mux_memwrite(read_data2,into_mem,memory_write,is_fstore);
+    mux mux_memwrite(read_data2,into_mem,memory_write,is_fstore_buf);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
@@ -202,6 +203,7 @@ module nibu (
         jalr_ctrl_buf <= jalr_ctrl;
         ope1_ctrl_buf <= ope1_ctrl;
         is_cond_b_buf <= is_cond_b;
+        is_fstore_buf <= is_fstore;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;

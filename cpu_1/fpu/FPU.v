@@ -93,10 +93,10 @@ module FPU(
         result[3] <= to_result[3];
         result[4] <= to_result[4];
 
-        reg_write_buf <= {reg_write_buf[3:1],reg_write,1'b0};
-        is_load_buf <= {is_load_buf[3:1],is_load,1'b0};
-        is_adsb_buf <= {is_adsb_buf[3:1],is_adsb,1'b0};
-        is_mult_buf <= {is_mult_buf[3:1],is_mult,1'b0};
+        reg_write_buf <= {reg_write_buf[3:0],reg_write};
+        is_load_buf <= {is_load_buf[3:0],is_load};
+        is_adsb_buf <= {is_adsb_buf[3:0],is_adsb};
+        is_mult_buf <= {is_mult_buf[3:0],is_mult};
 
     end 
 
