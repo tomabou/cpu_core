@@ -44,6 +44,7 @@ module FPU(
         inst[31:27],
         inst[14:12],
         inst[6:0],
+        reg_write,
         is_sub,
         is_load,
         is_adsb,

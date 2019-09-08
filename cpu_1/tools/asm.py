@@ -110,6 +110,7 @@ def load(op, rd, rs1, offset):
     rd = int(rd[1:])
     rs1 = int(rs1[1:])
     offset = int(offset)
+    offset = offset & (2**12 -1)
     funct3 = 0b010
     if op == 'lw':
         opcode = 0b0000011
