@@ -23,7 +23,7 @@ module ip_test (
 
     assign src = (count == 4'b1) ? 32'b010000001_10010011001100110011001 : 32'b0;
 
-    cvt_ftoi cvt_ftoi1(clk,1'b0,x,res);
+    cvt_ftoi cvt_ftoi1(clk,1'b0,src,res);
 
     seg7 seg7_1(count,segment7_1);
     seg7 seg7_2(src[3:0],segment7_2);

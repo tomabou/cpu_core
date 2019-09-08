@@ -421,3 +421,4 @@ mvとcvtのasmを書く
 mvは動いた！
 ipのlatencyが実機でどういう挙動を示すのかよくわからないので、
 floating point のip確認用のプロジェクトを作って確認する
+ftoiの確認が出来た
