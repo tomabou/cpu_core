@@ -61,6 +61,7 @@ module nibu (
     wire [31:0] into_mem;
     wire [31:0] into_intreg;
     wire [31:0] memory_write;
+    wire enable_ftoi;
 
 
 
@@ -103,7 +104,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg);
+    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstore_buf);
@@ -179,6 +180,15 @@ module nibu (
         seg_io);
 
     wire [31:0] mux2_to_wrbpc;
+    wire [31:0] to_alubuf;
+    mux_writedata mux_writedata1(
+        alu_res,
+        next_address_d2,
+        into_intreg,
+        wb_pc_ctrl_buf[0],
+        enable_ftoi,
+        to_alubuf);
+
     mux mux2(alu_res_buf,memory_read,mux2_to_wrbpc,mem_to_reg_ctrl_buf[1]);
     mux mux_wrbpc(mux2_to_wrbpc,next_address_d3,write_data,wb_pc_ctrl_buf[1]);
 
@@ -204,7 +214,7 @@ module nibu (
         ope1_ctrl_buf <= ope1_ctrl;
         is_cond_b_buf <= is_cond_b;
         is_fstore_buf <= is_fstore;
-        alu_res_buf <= alu_res;
+        alu_res_buf <= to_alubuf;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;
     end

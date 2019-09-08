@@ -4,7 +4,8 @@ module FPU(
     from_intreg,
     from_mem,
     to_mem,
-    to_intreg);
+    to_intreg,
+    enable_ftoi);
 
     input clk;
     input [31:0] inst;
@@ -12,6 +13,7 @@ module FPU(
     input [31:0] from_mem;
     output [31:0] to_mem;
     output [31:0] to_intreg;
+    output enable_ftoi;
 
     reg [4:0] rdi_buf[0:4];
     wire [31:0] write_data;
@@ -34,11 +36,14 @@ module FPU(
     wire is_adsb;
     wire is_mult;
     wire is_cvrt;
+    wire is_ftoi;
 
     reg [4:0] reg_write_buf = 5'b0;
     reg [4:0] is_load_buf = 5'b0;
     reg [4:0] is_adsb_buf = 5'b0;
     reg [4:0] is_mult_buf = 5'b0;
+    reg [4:0] is_cvrt_buf = 5'b0;
+    reg [4:0] is_ftoi_buf = 5'b0;
 
     fpu_control fpu_control1(
         inst[31:27],
@@ -49,7 +54,8 @@ module FPU(
         is_load,
         is_adsb,
         is_mult,
-        is_cvrt);
+        is_cvrt,
+        is_ftoi);
 
     float_register freg1(
         clk,
@@ -64,8 +70,9 @@ module FPU(
     assign ope1 = readdata1;
     assign ope2 = readdata2;
 
-    float_to_int float_to_int1(ope1,is_cvrt,to_intreg);
-    int_to_float int_to_float1(from_intreg,is_cvrt,from_intreg_cvt);
+    assign enable_ftoi = is_ftoi_buf[0];
+    float_to_int float_to_int1(ope1,is_cvrt_buf[0],to_intreg);
+    int_to_float int_to_float1(from_intreg,is_cvrt_buf[0],from_intreg_cvt);
     assign to_mem = readdata2;
 
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub,addsub_out);
@@ -97,6 +104,8 @@ module FPU(
         is_load_buf <= {is_load_buf[3:0],is_load};
         is_adsb_buf <= {is_adsb_buf[3:0],is_adsb};
         is_mult_buf <= {is_mult_buf[3:0],is_mult};
+        is_cvrt_buf <= {is_cvrt_buf[3:0],is_cvrt};
+        is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
 
     end 
 
