@@ -1,3 +1,5 @@
+    lui     s0, 7
+    addi    s0, s0, 4092
     addi    s1, zero, -1
 .LBB0_1:                              
     lw      t0, 4(zero)

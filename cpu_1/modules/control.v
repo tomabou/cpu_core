@@ -55,6 +55,8 @@ module control(
             5'b00100: imm_data <= 1'b1;//opimm
             5'b00000: imm_data <= 1'b1;//load
             5'b01000: imm_data <= 1'b1;//store
+            5'b00001: imm_data <= 1'b1;//fload
+            5'b01001: imm_data <= 1'b1;//fstore
             5'b11001: imm_data <= 1'b1;//jalr
             5'b01100: imm_data <= 1'b0;//op
             5'b01101: imm_data <= 1'b1; //lui
