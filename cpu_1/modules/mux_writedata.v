@@ -3,7 +3,7 @@ module mux_writedata (
     address,
     from_floatreg,
     is_address,
-    is_fromfloat
+    is_fromfloat,
     q);
 
     input [31:0] alu_res;

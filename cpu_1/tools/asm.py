@@ -41,6 +41,31 @@ def jalr(op, rd, rs1, imm):
         (2**12) + rd * (2**7) + opcode
     return x & (2**32 - 1)
 
+def opfp(op, rd, rs1, rs2 = 0):
+    rd = int(rd[1:])
+    rs1 = int(rs1[1:])
+    if type(rs2) != int:
+        rs2 = int(rs2[1:])
+    opcode = 0b1010011
+
+    func7_set = {
+        'fcvt.w.s':  0b1100000,
+        'fcvt.wu.s': 0b1100000,
+        'fcvt.s.w':  0b1101000,
+        'fcvt.s.wu': 0b1101000,
+        'fmv.w.x' :  0b1111000,
+        'fmv.x.w' :  0b1110000,
+    }
+
+    if op in ['fcvt.wu.s','fcvt.s.wu']:
+        rs2 = 1
+        
+    func3 = 0
+    func7 = func7_set[op]
+    x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
+        func3 * (2**12) + rd * (2**7) + opcode
+
+    return x
 
 def op(op, rd, rs1, rs2):
     rd = int(rd[1:])
@@ -194,6 +219,16 @@ def decode_op(labels, index, tks):
     STORE = ['sw', 'fsw']
     if tks[0] in STORE:
         return store(tks[0], tks[1], tks[2], tks[3])
+
+    OP_FP = [
+        'fmv.x.w',
+        'fmv.w.x',
+        'fcvt.w.s',
+        'fcvt.wu.s',
+        ]
+    if tks[0] in OP_FP:
+        return opfp(tks[0],tks[1],tks[2])
+
 
     return -1
 
