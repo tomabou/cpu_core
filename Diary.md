@@ -407,6 +407,8 @@ fpmul は3clkck遅延と言っていて、本当に3clock後に出てくる
 load store cvt mvを動かすのを先にやる
 load store cvt mvのasmを書く
 into_intregはwbするところのmuxを弄らなきゃいけなくてバグりそうなので後回し
+
+9/8
 loadとstoreのチェックから
 asm.pyにちょっと追加してアセンブルして動かしてみた
 reg_writeを書いてなかったので動かない

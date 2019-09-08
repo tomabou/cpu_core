@@ -205,7 +205,7 @@ module nibu (
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
-        reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
+        reg_write_ctrl_buf <= {(reg_write_ctrl_buf[0] | enable_ftoi),reg_write_ctrl};
         branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};

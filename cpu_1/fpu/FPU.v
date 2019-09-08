@@ -106,7 +106,6 @@ module FPU(
         is_mult_buf <= {is_mult_buf[3:0],is_mult};
         is_cvrt_buf <= {is_cvrt_buf[3:0],is_cvrt};
         is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
-
     end 
 
 endmodule
