@@ -4,12 +4,14 @@ pll_test/*
 uart/*
 cpu_1/*
 memory/*
+floating_ip/*
 *.exe
 !.gitignore
 !lchika/*.v
 !pll_test/*.v
 !uart/*.v
 !memory/*.v
+!floating_ip/*.v
 !cpu_1/*.v
 !cpu_1/*.mif
 !cpu_1/*.sdc
