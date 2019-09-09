@@ -1,10 +1,15 @@
 module int_to_float(
+    clk,
     x,
-    is_cvt,
     y);
+
+    input clk;
     input [31:0] x;
-    input is_cvt;
     output [31:0] y;
 
-    assign y = x;
+    wire [31:0] x_cvt;
+
+    assign y = x_cvt;
+    cvt_itof cvt_itof1(clk,1'b0,x,x_cvt);
+
 endmodule

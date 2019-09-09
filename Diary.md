@@ -424,3 +424,8 @@ floating point のip確認用のプロジェクトを作って確認する
 ftoiの確認が出来た
 addのmodelsim用の遅延がぶっ壊れているみたいだ
 portの順番も狂っているしダメだな
+
+9/9
+cvtが1clkかかるのでdata flowのちょっとした書き直し
+fibo uart float float2の動作を確認
+cvtの実装に入る

@@ -11,6 +11,7 @@ module control(
     jalr,
     ope1,
     is_fstore);
+
     input [6:0] opcode;
     output reg reg_write;
     output reg imm_data;

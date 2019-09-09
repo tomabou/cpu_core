@@ -8,7 +8,8 @@ module fpu_control(
     is_adsb,
     is_mult,
     is_cvrt,
-    is_ftoi);
+    is_ftoi,
+    is_cvif);
 
     input [4:0] funct5;
     input [2:0] funct3;
@@ -20,6 +21,7 @@ module fpu_control(
     output is_mult;
     output is_cvrt;
     output is_ftoi;
+    output is_cvif;
 
     parameter OPFP = 7'b1010011;
     parameter LOADFP = 7'b0000111;
@@ -31,6 +33,5 @@ module fpu_control(
     assign is_mult = (opcode == OPFP) & (funct5 == 5'b00010);
     assign is_cvrt = (opcode == OPFP) & ((funct5 == 5'b11000) | (funct5 == 5'b11010));
     assign is_ftoi = (opcode == OPFP) & ((funct5 == 5'b11100) | (funct5 == 5'b11010));
-
-
+    assign is_cvif = (opcode == OPFP) & (funct5 == 5'b11000);
 endmodule
