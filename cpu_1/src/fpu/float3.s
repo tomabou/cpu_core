@@ -9,7 +9,8 @@
     fcvt.w.s    ft0, t0, rtz
     nop     4
     fmv.x.w t2, ft0
-    sw      t2, 0(zero) 
+    srai    t3, t2, 16
+    sw      t3, 0(zero) 
     fmv.w.x ft1, t2
     nop     4
     fcvt.s.w    t1, ft1
