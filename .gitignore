@@ -22,6 +22,7 @@ floating_ip/*
 !cpu_1/fpu/
 cpu_1/fpu/add
 cpu_1/fpu/mul
+cpu_1/fpu/cvt_ftoi
 cpu_1/src/*.bin
 *.pyc
 *.out

@@ -70,8 +70,8 @@ module FPU(
     assign ope1 = readdata1;
     assign ope2 = readdata2;
 
-    assign enable_ftoi = is_ftoi_buf[0];
-    float_to_int float_to_int1(ope1,is_cvrt_buf[0],to_intreg);
+    assign enable_ftoi = is_ftoi_buf[1];
+    float_to_int float_to_int1(clk,ope1,is_cvrt_buf[1],to_intreg);
     int_to_float int_to_float1(from_intreg,is_cvrt_buf[0],from_intreg_cvt);
     assign to_mem = readdata2;
 
