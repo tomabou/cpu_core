@@ -44,7 +44,9 @@ def jalr(op, rd, rs1, imm):
 def opfp(op, rd, rs1, rs2 = 0):
     rd = int(rd[1:])
     rs1 = int(rs1[1:])
-    if type(rs2) != int:
+    if rs2 == 'rtz':
+        rs2 = 0
+    elif type(rs2) != int:
         rs2 = int(rs2[1:])
     opcode = 0b1010011
 
@@ -225,6 +227,8 @@ def decode_op(labels, index, tks):
         'fmv.w.x',
         'fcvt.w.s',
         'fcvt.wu.s',
+        'fcvt.s.w',
+        'fcvt.s.wu',
         ]
     if tks[0] in OP_FP:
         return opfp(tks[0],tks[1],tks[2])
