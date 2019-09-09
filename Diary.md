@@ -429,3 +429,8 @@ portの順番も狂っているしダメだな
 cvtが1clkかかるのでdata flowのちょっとした書き直し
 fibo uart float float2の動作を確認
 cvtの実装に入る
+cvtを追加した
+asmを書いてテストアセンブリを投げつけてみる
+cvt.i.x -> mv.x.i -> show -> mv.i.x -> cvt.x.i -> send
+みたいな関数が動くかを確かめるとよさそう
+その後addとmul
