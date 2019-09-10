@@ -232,12 +232,16 @@ def decode_op(labels, index, tks):
         'fcvt.wu.s',
         'fcvt.s.w',
         'fcvt.s.wu',
-        'fadd.s',
-        'fsub.s',
-        'fmul.s',
         ]
     if tks[0] in OP_FP:
         return opfp(tks[0],tks[1],tks[2])
+    OP_FP3 = [
+        'fadd.s',
+        'fsub.s',
+        'fmul.s',
+    ]
+    if tks[0] in OP_FP3:
+        return opfp(tks[0],tks[1],tks[2],tks[3])
     return -1
 
 

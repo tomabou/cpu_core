@@ -7,12 +7,12 @@
     addi    t0, t0, -1
 
     fcvt.w.s    ft0, t0, rtz
-    nop     4
+    nop     6
     fmv.x.w t2, ft0
     srai    t3, t2, 16
     sw      t3, 0(zero) 
     fmv.w.x ft1, t2
-    nop     4
+    nop     6
     fcvt.s.w    t1, ft1
 
     sw      t1, 4(zero)
