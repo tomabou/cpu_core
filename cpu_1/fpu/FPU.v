@@ -40,6 +40,7 @@ module FPU(
     wire is_cvif;
 
     reg [4:0] reg_write_buf = 5'b0;
+    reg [4:0] is_sub_buf = 5'b0;
     reg [4:0] is_load_buf = 5'b0;
     reg [4:0] is_adsb_buf = 5'b0;
     reg [4:0] is_mult_buf = 5'b0;
@@ -78,7 +79,7 @@ module FPU(
     int_to_float int_to_float1(clk,from_intreg,from_intreg_cvt);
     assign to_mem = readdata2;
 
-    fp_addsub fp_addsub1(clk,ope1,ope2,is_sub,addsub_out);
+    fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
     fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
 
     // 0 is same as register
@@ -104,6 +105,7 @@ module FPU(
         result[4] <= to_result[4];
 
         reg_write_buf <= {reg_write_buf[3:0],reg_write};
+        is_sub_buf <=  {is_sub_buf[3:0] , is_sub};
         is_load_buf <= {is_load_buf[3:0],is_load};
         is_adsb_buf <= {is_adsb_buf[3:0],is_adsb};
         is_mult_buf <= {is_mult_buf[3:0],is_mult};
