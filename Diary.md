@@ -435,3 +435,12 @@ cvt.i.x -> mv.x.i -> show -> mv.i.x -> cvt.x.i -> send
 みたいな関数が動くかを確かめるとよさそう
 その後addとmul
 cvtが動くことを確認！
+
+9/10
+addとmulの実装
+'''
+-O2 -march=rv32imf -mabi=ilp32f -mtune=generic
+'''
+でコンパイルするといいことが多い
+-O2すると浮動小数点演算が少ない時にsoft floatライブラリを呼び出すという事があるようである
+そうではなくて、cの浮動小数点定数がdoubleなのが問題であった

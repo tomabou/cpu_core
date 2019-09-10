@@ -57,6 +57,9 @@ def opfp(op, rd, rs1, rs2 = 0):
         'fcvt.s.wu': 0b1101000,
         'fmv.w.x' :  0b1111000,
         'fmv.x.w' :  0b1110000,
+        'fadd.s' :   0b0000000,
+        'fsub.s' :   0b0000100,
+        'fmul.s' :   0b0001000,
     }
 
     if op in ['fcvt.wu.s','fcvt.s.wu']:
@@ -229,11 +232,12 @@ def decode_op(labels, index, tks):
         'fcvt.wu.s',
         'fcvt.s.w',
         'fcvt.s.wu',
+        'fadd.s',
+        'fsub.s',
+        'fmul.s',
         ]
     if tks[0] in OP_FP:
         return opfp(tks[0],tks[1],tks[2])
-
-
     return -1
 
 

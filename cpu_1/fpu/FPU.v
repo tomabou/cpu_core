@@ -88,8 +88,8 @@ module FPU(
                         : is_cvif_buf[1] ? from_intreg_cvt
                         : result[1];
     assign to_result[3] = is_adsb_buf[2] ? addsub_out : result[2];
-    assign to_result[4] = result[3];
-    assign write_data   = is_mult_buf[4] ? mul_out : result[4];
+    assign to_result[4] = is_mult_buf[3] ? mul_out : result[3];
+    assign write_data   = result[4];
 
     always @ (posedge clk) begin
         rdi_buf[0] <= inst[11:7];
