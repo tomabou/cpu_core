@@ -64,9 +64,10 @@ module nibu (
     wire enable_ftoi;
 
 
+    wire is_regwrite;
 
-    wire reg_write_ctrl;
-    reg [1:0] reg_write_ctrl_buf = 2'b0;
+    reg [2:0] is_regwrite_buf = 3'b0;
+
     wire reg_write;
     wire imm_data_ctrl;
     reg imm_data_ctrl_buf = 1'b0;
@@ -116,7 +117,7 @@ module nibu (
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,jalr_ctrl_buf);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
 
-    assign reg_write = (enable_ftoi|reg_write_ctrl_buf[1])&(~do_branch_buf[1])&(~do_branch_buf[2]);
+    assign reg_write = (enable_ftoi|is_regwrite_buf[1])&(~do_branch_buf[1])&(~do_branch_buf[2]);
 
     registers regs1(
         clk,
@@ -155,7 +156,7 @@ module nibu (
     immgen ig1(inst,immediate);
     control ctr1(
         inst[6:0],
-        reg_write_ctrl,
+        is_regwrite,
         imm_data_ctrl,
         opcode_alu_ctrl,
         mem_to_reg_ctrl,
@@ -208,7 +209,6 @@ module nibu (
         imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
-        reg_write_ctrl_buf <= {reg_write_ctrl_buf[0],reg_write_ctrl};
         branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
@@ -220,5 +220,7 @@ module nibu (
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;
+
+        is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
     end
 endmodule
