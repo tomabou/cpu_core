@@ -65,12 +65,13 @@ module nibu (
 
 
     wire is_regwrite;
+    wire is_use_imme;
 
     reg [2:0] is_regwrite_buf = 3'b0;
+    reg [2:0] is_use_imme_buf = 3'b0;
+
 
     wire reg_write;
-    wire imm_data_ctrl;
-    reg imm_data_ctrl_buf = 1'b0;
     wire [1:0] opcode_alu_ctrl;
     wire [3:0] alu_ctrl;
     reg [3:0] alu_ctrl_buf = 4'b0;
@@ -157,7 +158,7 @@ module nibu (
     control ctr1(
         inst[6:0],
         is_regwrite,
-        imm_data_ctrl,
+        is_use_imme,
         opcode_alu_ctrl,
         mem_to_reg_ctrl,
         branch_ctrl,
@@ -168,7 +169,7 @@ module nibu (
         ope1_ctrl,
         is_fstore);
     mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
-    mux mux1(read_data2,immediate_buf,operand2,imm_data_ctrl_buf);
+    mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
 
@@ -206,7 +207,6 @@ module nibu (
         immediate_buf <= immediate;
         rsi1_buf <= inst[19:15];
         rsi2_buf <= inst[24:20];
-        imm_data_ctrl_buf <= imm_data_ctrl;
         alu_ctrl_buf <= alu_ctrl;
         mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         branch_ctrl_buf <= branch_ctrl;
@@ -222,5 +222,6 @@ module nibu (
         show_buf <= alu_res;
 
         is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
+        is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
     end
 endmodule
