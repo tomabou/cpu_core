@@ -70,6 +70,7 @@ module nibu (
     wire is_pc_toreg;
     wire is_branchop;
     wire is_cond_bra;
+    wire is_fstoreop;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
@@ -77,6 +78,7 @@ module nibu (
     reg [2:0] is_pc_toreg_buf = 3'b0;
     reg [2:0] is_branchop_buf = 3'b0;
     reg [2:0] is_cond_bra_buf = 3'b0;
+    reg [2:0] is_fstoreop_buf = 3'b0;
 
 
     wire reg_write;
@@ -93,12 +95,10 @@ module nibu (
     reg [1:0] ope1_ctrl_buf = 2'b0;
     wire rg1_forward;
     wire rg2_forward;
-    wire is_fstore;
-    reg is_fstore_buf;
 
     assign show = {show_buf[5:0],4'b0};
 
-    assign do_branch = is_branchop_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1])& ((~is_cond_bra_buf)|alu_res[0]);
+    assign do_branch = is_branchop_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1])& ((~is_cond_bra_buf[0])|alu_res[0]);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
@@ -110,7 +110,7 @@ module nibu (
     FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
-    mux mux_memwrite(read_data2,into_mem,memory_write,is_fstore_buf);
+    mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
 
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
@@ -167,7 +167,7 @@ module nibu (
         mem_write_ctrl,
         jalr_ctrl,
         ope1_ctrl,
-        is_fstore);
+        is_fstoreop);
     mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
@@ -212,7 +212,6 @@ module nibu (
         mem_write_ctrl_buf <= mem_write_ctrl;
         jalr_ctrl_buf <= jalr_ctrl;
         ope1_ctrl_buf <= ope1_ctrl;
-        is_fstore_buf <= is_fstore;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;
@@ -223,5 +222,6 @@ module nibu (
         is_pc_toreg_buf <= {is_pc_toreg_buf[1:0],is_pc_toreg};
         is_branchop_buf <= {is_branchop_buf[1:0],is_branchop};
         is_cond_bra_buf <= {is_cond_bra_buf[1:0],is_cond_bra};
+        is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
     end
 endmodule
