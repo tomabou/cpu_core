@@ -1,13 +1,14 @@
-module mod_readdata (readdata,addr,ctrl,moddata);
+module mod_readdata (readdata,addr,is_auipc,is_lui,moddata);
     input [31:0] readdata;
     input [31:0] addr;
-    input [1:0] ctrl;
+    input is_auipc;
+    input is_lui;
     output reg [31:0] moddata;
 
     always @ (*) begin
-        if (ctrl == 2'b10) 
+        if (is_auipc == 1'b1) 
             moddata<= addr; //auipc
-        else if (ctrl == 2'b01)
+        else if (is_lui == 1'b1)
             moddata <= 32'b0; //lui
         else
             moddata <= readdata;

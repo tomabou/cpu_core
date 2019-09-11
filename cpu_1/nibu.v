@@ -73,6 +73,8 @@ module nibu (
     wire is_fstoreop;
     wire is_memwrite;
     wire is_jalr;
+    wire is_auipc;
+    wire is_lui;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
@@ -83,6 +85,8 @@ module nibu (
     reg [2:0] is_fstoreop_buf = 3'b0;
     reg [2:0] is_memwrite_buf = 3'b0;
     reg [2:0] is_jalr_buf     = 3'b0;
+    reg [2:0] is_auipc_buf    = 3'b0;
+    reg [2:0] is_lui_buf      = 3'b0;
 
 
     wire reg_write;
@@ -91,8 +95,6 @@ module nibu (
     reg [3:0] alu_ctrl_buf = 4'b0;
     wire do_branch;
     reg [2:0] do_branch_buf = 3'b0;
-    wire [1:0] ope1_ctrl;
-    reg [1:0] ope1_ctrl_buf = 2'b0;
     wire rg1_forward;
     wire rg2_forward;
 
@@ -166,9 +168,10 @@ module nibu (
         is_cond_bra,
         is_memwrite,
         is_jalr,
-        ope1_ctrl,
+        is_auipc,
+        is_lui,
         is_fstoreop);
-    mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
+    mod_readdata mod_readdata1(read_data1,address_buf2,is_auipc_buf[0],is_lui_buf[0],operand1);
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
@@ -209,7 +212,6 @@ module nibu (
         rsi2_buf <= inst[24:20];
         alu_ctrl_buf <= alu_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
-        ope1_ctrl_buf <= ope1_ctrl;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;
@@ -223,5 +225,7 @@ module nibu (
         is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
         is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
         is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
+        is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
+        is_lui_buf      <= {is_lui_buf[1:0],is_lui};
     end
 endmodule
