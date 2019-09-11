@@ -12,7 +12,8 @@ module control(
     jalr,
     auipc,
     lui,
-    is_fstore);
+    is_fstore,
+    is_hazard_0);
 
     input [6:0] opcode;
     input [4:0] funct5;
@@ -28,17 +29,19 @@ module control(
     output auipc;
     output lui;
     output is_fstore;
+    output is_hazard_0;
 
     wire is_ftoi;
 
     assign cond_b = (opcode == 7'b1100011); 
     assign store = ((opcode == 7'b0100011)|(opcode == 7'b0100111));
-    assign mem_to_reg = (opcode == 7'b0000011) | is_ftoi;//load
+    assign mem_to_reg = (opcode == 7'b0000011);//load
     assign jalr = (opcode == 7'b1100111);
     assign lui = (opcode == 7'b0110111);
     assign auipc = (opcode == 7'b0010111);
     assign is_fstore = (opcode == 7'b0100111);
     assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010);
+    assign is_hazard_0 = is_ftoi | mem_to_reg;
 
     always @(*) begin
         case(opcode[6:2])
@@ -49,7 +52,7 @@ module control(
             5'b00000: reg_write <= 1'b1;//LOAD
             5'b01101: reg_write <= 1'b1; //lui
             5'b00101: reg_write <= 1'b1; //auipc
-            default: reg_write <= 1'b0;
+            default: reg_write <= is_ftoi ? 1'b1 : 1'b0;
         endcase
     end
 

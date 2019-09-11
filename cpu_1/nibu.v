@@ -38,7 +38,6 @@ module nibu (
     wire [31:0] chosen_next_address;
     reg [31:0] next_address_d1 = 32'b0;
     reg [31:0] next_address_d2 = 32'b0;
-    reg [31:0] next_address_d3 = 32'b0;
     wire [31:0] inst;
     wire [31:0] write_data;
     wire [31:0] read_data1;
@@ -63,7 +62,6 @@ module nibu (
     reg [31:0] memory_write_d1;
     reg [31:0] alu_res_d1;
     wire enable_ftoi_1;
-    reg  enable_ftoi_2;
 
     reg [4:0] rdi_buffer [0:2];
     reg [31:0] result [0:2];
@@ -78,6 +76,7 @@ module nibu (
     wire is_fstoreop;
     wire is_memwrite;
     wire is_legal_op;
+    wire is_hazard_0;
     wire is_jalr;
     wire is_auipc;
     wire is_lui;
@@ -91,6 +90,7 @@ module nibu (
     reg [2:0] is_fstoreop_buf = 3'b0;
     reg [2:0] is_memwrite_buf = 3'b0;
     reg [2:0] is_legal_op_buf = 3'b0;
+    reg [2:0] is_hazard_0_buf = 3'b0;
     reg [2:0] is_jalr_buf     = 3'b0;
     reg [2:0] is_auipc_buf    = 3'b0;
     reg [2:0] is_lui_buf      = 3'b0;
@@ -191,7 +191,8 @@ module nibu (
         is_jalr,
         is_auipc,
         is_lui,
-        is_fstoreop);
+        is_fstoreop,
+        is_hazard_0);
     mod_readdata mod_readdata1(read_data1,address_buf2,is_auipc_buf[0],is_lui_buf[0],operand1);
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
@@ -233,7 +234,6 @@ module nibu (
     always @ (posedge clk) begin
         next_address_d1 <= next_address;
         next_address_d2 <= next_address_d1;
-        next_address_d3 <= next_address_d2;
         address_buf <= address;
         address_buf2 <= address_buf;
         immediate_buf <= immediate;
@@ -245,7 +245,6 @@ module nibu (
         show_buf <= alu_res;
 
         memory_write_d1 <= memory_write;
-        enable_ftoi_2 <= enable_ftoi_1;
 
 
         rdi_buffer[0] <= inst[11:7];
@@ -265,6 +264,7 @@ module nibu (
         is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
         is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
         is_legal_op_buf <= {is_legal_op_buf[1:0],is_legal_op};
+        is_hazard_0_buf <= {is_hazard_0_buf[1:0],is_hazard_0};
         is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
         is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
         is_lui_buf      <= {is_lui_buf[1:0],is_lui};
