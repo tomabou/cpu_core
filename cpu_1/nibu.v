@@ -71,6 +71,8 @@ module nibu (
     wire is_branchop;
     wire is_cond_bra;
     wire is_fstoreop;
+    wire is_memwrite;
+    wire is_jalr;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
@@ -79,6 +81,8 @@ module nibu (
     reg [2:0] is_branchop_buf = 3'b0;
     reg [2:0] is_cond_bra_buf = 3'b0;
     reg [2:0] is_fstoreop_buf = 3'b0;
+    reg [2:0] is_memwrite_buf = 3'b0;
+    reg [2:0] is_jalr_buf     = 3'b0;
 
 
     wire reg_write;
@@ -87,10 +91,6 @@ module nibu (
     reg [3:0] alu_ctrl_buf = 4'b0;
     wire do_branch;
     reg [2:0] do_branch_buf = 3'b0;
-    wire mem_write_ctrl;
-    reg mem_write_ctrl_buf = 1'b0;
-    wire jalr_ctrl;
-    reg jalr_ctrl_buf = 1'b0;
     wire [1:0] ope1_ctrl;
     reg [1:0] ope1_ctrl_buf = 2'b0;
     wire rg1_forward;
@@ -115,7 +115,7 @@ module nibu (
     pc pc1(clk,chosen_next_address,address);
     add add1(address,32'b100,next_address);
     add add_jump(address_buf2,immediate_buf,next_address_immjump);//imm_buff is delay 2clk;
-    mux mux_jalr(next_address_immjump,alu_res,next_address_jump,jalr_ctrl_buf);
+    mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
 
     assign reg_write = (enable_ftoi|is_regwrite_buf[1])&(~do_branch_buf[1])&(~do_branch_buf[2]);
@@ -164,8 +164,8 @@ module nibu (
         is_branchop,
         is_pc_toreg,
         is_cond_bra,
-        mem_write_ctrl,
-        jalr_ctrl,
+        is_memwrite,
+        is_jalr,
         ope1_ctrl,
         is_fstoreop);
     mod_readdata mod_readdata1(read_data1,address_buf2,ope1_ctrl_buf,operand1);
@@ -176,7 +176,7 @@ module nibu (
     memory mem1(clk,
         address,inst,
         alu_res,memory_write,memory_read, 
-        mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
+        is_memwrite_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),
         is_memtoreg_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),//readctrl
         uart_empty,
         uart_in,
@@ -209,8 +209,6 @@ module nibu (
         rsi2_buf <= inst[24:20];
         alu_ctrl_buf <= alu_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
-        mem_write_ctrl_buf <= mem_write_ctrl;
-        jalr_ctrl_buf <= jalr_ctrl;
         ope1_ctrl_buf <= ope1_ctrl;
         alu_res_buf <= alu_res;
         rdi_buf <= {rdi_buf[4:0],inst[11:7]};
@@ -223,5 +221,7 @@ module nibu (
         is_branchop_buf <= {is_branchop_buf[1:0],is_branchop};
         is_cond_bra_buf <= {is_cond_bra_buf[1:0],is_cond_bra};
         is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
+        is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
+        is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
     end
 endmodule
