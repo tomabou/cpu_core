@@ -167,7 +167,7 @@ module nibu (
     );
     mux_reg mux_readdata2(
         read_data2_fetched,
-        to_result[2]
+        to_result[2],
         write_data,
         read_data2,
         rg2_forward_1,
@@ -214,7 +214,7 @@ module nibu (
                         : result[1];
 
     assign write_data   = is_memtoreg_buf[2] ? memory_read
-                        : result[2]
+                        : result[2];
 
     /*
     mux_writedata mux_writedata1(

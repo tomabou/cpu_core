@@ -10,8 +10,8 @@ module forward_ctrl (
     rsb_use1,
     rsb_use2);
 
-    input [4:0] rsa1;
-    input [4:0] rsa2;
+    input [4:0] rsia;
+    input [4:0] rsib;
     input [4:0] rdi_buf_1;
     input legal_1;
     input [4:0] rdi_buf_2;
@@ -22,10 +22,10 @@ module forward_ctrl (
     output rsb_use2;
 
     assign rsa_use1 = (rsia == rdi_buf_1) & legal_1;
-    assign rsa_use1 = (rsia == rdi_buf_2) & legal_2 & (~rsa_use1);
+    assign rsa_use2 = (rsia == rdi_buf_2) & legal_2 & (~rsa_use1);
 
     assign rsb_use1 = (rsib == rdi_buf_1) & legal_1;
-    assign rsb_use1 = (rsib == rdi_buf_2) & legal_2 & (~rsb_use1);
+    assign rsb_use2 = (rsib == rdi_buf_2) & legal_2 & (~rsb_use1);
 
 
 endmodule
