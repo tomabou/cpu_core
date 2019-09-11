@@ -72,6 +72,7 @@ module nibu (
     wire is_cond_bra;
     wire is_fstoreop;
     wire is_memwrite;
+    wire is_legal_op;
     wire is_jalr;
     wire is_auipc;
     wire is_lui;
@@ -84,6 +85,7 @@ module nibu (
     reg [2:0] is_cond_bra_buf = 3'b0;
     reg [2:0] is_fstoreop_buf = 3'b0;
     reg [2:0] is_memwrite_buf = 3'b0;
+    reg [2:0] is_legal_op_buf = 3'b0;
     reg [2:0] is_jalr_buf     = 3'b0;
     reg [2:0] is_auipc_buf    = 3'b0;
     reg [2:0] is_lui_buf      = 3'b0;
@@ -100,7 +102,8 @@ module nibu (
 
     assign show = {show_buf[5:0],4'b0};
 
-    assign do_branch = is_branchop_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1])& ((~is_cond_bra_buf[0])|alu_res[0]);
+    assign do_branch = is_branchop_buf[0] & is_legal_op_buf[0] & ((~is_cond_bra_buf[0])|alu_res[0]);
+    assign is_legal_op = (~do_branch) & (~do_branch_buf[0]);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
@@ -120,7 +123,7 @@ module nibu (
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
 
-    assign reg_write = (enable_ftoi|is_regwrite_buf[1])&(~do_branch_buf[1])&(~do_branch_buf[2]);
+    assign reg_write = (enable_ftoi|is_regwrite_buf[1])&is_legal_op_buf[1];
 
     registers regs1(
         clk,
@@ -179,8 +182,8 @@ module nibu (
     memory mem1(clk,
         address,inst,
         alu_res,memory_write,memory_read, 
-        is_memwrite_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),
-        is_memtoreg_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),//readctrl
+        is_memwrite_buf[0] & is_legal_op_buf[0],
+        is_memtoreg_buf[0] & is_legal_op_buf[0],//readctrl
         uart_empty,
         uart_in,
         uart_out,
@@ -227,6 +230,7 @@ module nibu (
         is_cond_bra_buf <= {is_cond_bra_buf[1:0],is_cond_bra};
         is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
         is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
+        is_legal_op_buf <= {is_legal_op_buf[1:0],is_legal_op};
         is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
         is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
         is_lui_buf      <= {is_lui_buf[1:0],is_lui};
