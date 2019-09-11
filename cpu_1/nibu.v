@@ -96,14 +96,17 @@ module nibu (
     reg [2:0] is_lui_buf      = 3'b0;
 
 
-    wire reg_write;
+    wire reg_write_1;
+    wire reg_write_2;
     wire [1:0] opcode_alu_ctrl;
     wire [3:0] alu_ctrl;
     reg [3:0] alu_ctrl_buf = 4'b0;
     wire do_branch;
     reg [2:0] do_branch_buf = 3'b0;
-    wire rg1_forward;
-    wire rg2_forward;
+    wire rg1_forward_1;
+    wire rg2_forward_1;
+    wire rg1_forward_2;
+    wire rg2_forward_2;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -128,7 +131,8 @@ module nibu (
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
 
-    assign reg_write = (enable_ftoi_2|is_regwrite_buf[2])&is_legal_op_buf[2];
+    assign reg_write_2 = (enable_ftoi_2|is_regwrite_buf[2])&is_legal_op_buf[2];
+    assign reg_write_1 = (enable_ftoi_1|is_regwrite_buf[1])&is_legal_op_buf[1];
 
     registers regs1(
         clk,
@@ -138,28 +142,36 @@ module nibu (
         write_data,
         read_data1_fetched,
         read_data2_fetched,
-        reg_write);
+        reg_write_2);
 
     forward_ctrl forward_ctrl1(
         rsi1_buf,
         rsi2_buf,
         rdi_buffer[1],
-        reg_write,
-        rg1_forward,
-        rg2_forward);
+        reg_write_1,
+        rdi_buffer[2],
+        reg_write_2,
+        rg1_forward_1,
+        rg1_forward_2,
+        rg2_forward_1,
+        rg2_forward_2);
 
     mux_reg mux_readdata1(
         read_data1_fetched,
+        to_result[2],
         write_data,
         read_data1,
-        rg1_forward,
+        rg1_forward_1,
+        rg1_forward_2,
         (rsi1_buf == 5'b0)
     );
     mux_reg mux_readdata2(
         read_data2_fetched,
+        to_result[2]
         write_data,
         read_data2,
-        rg2_forward,
+        rg2_forward_1,
+        rg2_forward_2,
         (rsi2_buf == 5'b0)
     );
     
