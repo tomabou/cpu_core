@@ -30,6 +30,7 @@ module nibu (
     reg [31:0] show_buf;
 
     wire [31:0] address;
+    wire [31:0] pc_out;
     reg [31:0] address_buf = 32'b0;
     reg [31:0] address_buf2 = 32'b0;
     wire [31:0] next_address;
@@ -115,7 +116,7 @@ module nibu (
     assign show = {show_buf[5:0],4'b0};
 
     assign do_branch = is_branchop_buf[0] & is_legal_op_buf[0] & ((~is_cond_bra_buf[0])|alu_res[0]);
-    assign is_legal_op = (~do_branch) & (~do_branch_buf[0]);
+    assign is_legal_op = (~do_branch) & (~do_branch_buf[0]) & (~hazard);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
@@ -129,11 +130,13 @@ module nibu (
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
 
-    pc pc1(clk,chosen_next_address,address);
+    pc pc1(clk,chosen_next_address,pc_out);
     add add1(address,32'b100,next_address);
     add add_jump(address_buf2,immediate_buf,next_address_immjump);//imm_buff is delay 2clk;
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
+    assign address = (hazard & (~do_branch_buf[0])) ? address_buf : pc_out;
+
 
     assign reg_write_2 = is_regwrite_buf[2] & is_legal_op_buf[2];
     assign reg_write_1 = is_regwrite_buf[1] & is_legal_op_buf[1];
