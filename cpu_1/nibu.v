@@ -60,9 +60,14 @@ module nibu (
     wire [31:0] into_mem;
     wire [31:0] into_intreg;
     wire [31:0] memory_write;
-    wire enable_ftoi;
+    reg [31:0] memory_write_d1;
+    reg [31:0] alu_res_d1;
+    wire enable_ftoi_1;
+    reg  enable_ftoi_2;
 
     reg [4:0] rdi_buffer [0:2];
+    reg [31:0] result [0:2];
+    wire [31:0] to_result [0:2];
 
     wire is_regwrite;
     wire is_use_imme;
@@ -112,7 +117,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi);
+    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
@@ -123,13 +128,13 @@ module nibu (
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
     mux mux_pc(next_address,next_address_jump,chosen_next_address,do_branch);
 
-    assign reg_write = (enable_ftoi|is_regwrite_buf[1])&is_legal_op_buf[1];
+    assign reg_write = (enable_ftoi_2|is_regwrite_buf[2])&is_legal_op_buf[2];
 
     registers regs1(
         clk,
         inst[19:15],
         inst[24:20],
-        rdi_buffer[1],
+        rdi_buffer[2],
         write_data,
         read_data1_fetched,
         read_data2_fetched,
@@ -181,9 +186,9 @@ module nibu (
 
     memory mem1(clk,
         address,inst,
-        alu_res,memory_write,memory_read, 
-        is_memwrite_buf[0] & is_legal_op_buf[0],
-        is_memtoreg_buf[0] & is_legal_op_buf[0],//readctrl
+        alu_res_d1,memory_write_d1,memory_read, 
+        is_memwrite_buf[1] & is_legal_op_buf[1],
+        is_memtoreg_buf[1] & is_legal_op_buf[1],//readctrl
         uart_empty,
         uart_in,
         uart_out,
@@ -191,9 +196,15 @@ module nibu (
         uart_rdreq,
         seg_io);
 
-    wire [31:0] mux2_to_wrbpc;
-    wire [31:0] to_alubuf;
+    assign to_result[1] = alu_res;
+    assign to_result[2] = is_pc_toreg_buf[1] ? next_address_d3
+                        : enable_ftoi_1      ? into_intreg
+                        : result[1];
 
+    assign write_data   = is_memtoreg_buf[2] ? memory_read
+                        : result[2]
+
+    /*
     mux_writedata mux_writedata1(
         alu_res_buf,
         next_address_d3,
@@ -203,6 +214,8 @@ module nibu (
         enable_ftoi,
         is_memtoreg_buf[1],
         write_data);
+    */
+
 
     always @ (posedge clk) begin
         next_address_d1 <= next_address;
@@ -215,12 +228,20 @@ module nibu (
         rsi2_buf <= inst[24:20];
         alu_ctrl_buf <= alu_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
-        alu_res_buf <= alu_res;
+        alu_res_d1 <= alu_res;
         show_buf <= alu_res;
+
+        memory_write_d1 <= memory_write;
+        enable_ftoi_2 <= enable_ftoi_1;
+
 
         rdi_buffer[0] <= inst[11:7];
         rdi_buffer[1] <= rdi_buffer[0];
         rdi_buffer[2] <= rdi_buffer[1];
+
+        result[0] <= to_result[0];
+        result[1] <= to_result[1];
+        result[2] <= to_result[2];
 
         is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
         is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};

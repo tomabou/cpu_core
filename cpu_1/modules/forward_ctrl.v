@@ -1,19 +1,31 @@
 module forward_ctrl (
-    rsi1,
-    rsi2,
-    mem_wb_di,
-    write_ctrl,
-    rs1_ctrl,
-    rs2_ctrl);
+    rsia,
+    rsib,
+    rdi_buf_1,
+    legal_1,
+    rdi_buf_2,
+    legal_2,
+    rsa_use1,
+    rsa_use2,
+    rsb_use1,
+    rsb_use2);
 
-    input [4:0] rsi1;
-    input [4:0] rsi2;
-    input [4:0] mem_wb_di;
-    input write_ctrl;
-    output rs1_ctrl;
-    output rs2_ctrl;
+    input [4:0] rsa1;
+    input [4:0] rsa2;
+    input [4:0] rdi_buf_1;
+    input legal_1;
+    input [4:0] rdi_buf_2;
+    input legal_2;
+    output rsa_use1;
+    output rsa_use2;
+    output rsb_use1;
+    output rsb_use2;
 
-    assign rs1_ctrl = (rsi1 == mem_wb_di) & write_ctrl;
-    assign rs2_ctrl = (rsi2 == mem_wb_di) & write_ctrl;
+    assign rsa_use1 = (rsia == rdi_buf_1) & legal_1;
+    assign rsa_use1 = (rsia == rdi_buf_2) & legal_2 & (~rsa_use1);
+
+    assign rsb_use1 = (rsib == rdi_buf_1) & legal_1;
+    assign rsb_use1 = (rsib == rdi_buf_2) & legal_2 & (~rsb_use1);
+
 
 endmodule
