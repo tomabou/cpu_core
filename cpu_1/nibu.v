@@ -108,6 +108,10 @@ module nibu (
     wire rg1_forward_2;
     wire rg2_forward_2;
 
+    wire hazard;
+    wire use_rs1;
+    wire use_rs2;
+
     assign show = {show_buf[5:0],4'b0};
 
     assign do_branch = is_branchop_buf[0] & is_legal_op_buf[0] & ((~is_cond_bra_buf[0])|alu_res[0]);
@@ -133,6 +137,18 @@ module nibu (
 
     assign reg_write_2 = is_regwrite_buf[2] & is_legal_op_buf[2];
     assign reg_write_1 = is_regwrite_buf[1] & is_legal_op_buf[1];
+
+    hazard_detect hazard_detect1(
+        inst[19:15],
+        inst[24:20],
+        use_rs1,
+        use_rs2,
+        is_regwrite_buf[0],
+        is_legal_op_buf[0],
+        is_hazard_0_buf[0],
+        rdi_buffer[0],
+        hazard
+    );
 
     registers regs1(
         clk,
