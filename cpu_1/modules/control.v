@@ -1,5 +1,6 @@
 module control(
     opcode,
+    funct5,
     reg_write,
     imm_data,
     opcode_alu,
@@ -14,6 +15,7 @@ module control(
     is_fstore);
 
     input [6:0] opcode;
+    input [4:0] funct5;
     output reg reg_write;
     output reg imm_data;
     output reg [1:0] opcode_alu;
@@ -27,14 +29,16 @@ module control(
     output lui;
     output is_fstore;
 
+    wire is_ftoi;
 
     assign cond_b = (opcode == 7'b1100011); 
     assign store = ((opcode == 7'b0100011)|(opcode == 7'b0100111));
-    assign mem_to_reg = (opcode == 7'b0000011);//load
+    assign mem_to_reg = (opcode == 7'b0000011) | is_ftoi;//load
     assign jalr = (opcode == 7'b1100111);
     assign lui = (opcode == 7'b0110111);
     assign auipc = (opcode == 7'b0010111);
     assign is_fstore = (opcode == 7'b0100111);
+    assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010);
 
     always @(*) begin
         case(opcode[6:2])
