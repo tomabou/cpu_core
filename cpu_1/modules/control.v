@@ -80,9 +80,9 @@ module control(
 
     always @(*) begin
         case(opcode[6:2])
-            5'b11011: {branch,wb_pc} <= 2'b11;
-            5'b11001: {branch,wb_pc} <= 2'b11;
-            5'b11000: {branch,wb_pc} <= 2'b10;
+            5'b11011: {branch,wb_pc} <= 2'b11; //jal
+            5'b11001: {branch,wb_pc} <= 2'b11; //jalr
+            5'b11000: {branch,wb_pc} <= 2'b10; //conditinoal branch
             default: {branch,wb_pc} <= 2'b00;
         endcase
     end

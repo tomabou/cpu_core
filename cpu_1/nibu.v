@@ -68,19 +68,19 @@ module nibu (
     wire is_use_imme;
     wire is_memtoreg;
     wire is_pc_toreg;
+    wire is_branchop;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
     reg [2:0] is_memtoreg_buf = 3'b0;
     reg [2:0] is_pc_toreg_buf = 3'b0;
+    reg [2:0] is_branchop_buf = 3'b0;
 
 
     wire reg_write;
     wire [1:0] opcode_alu_ctrl;
     wire [3:0] alu_ctrl;
     reg [3:0] alu_ctrl_buf = 4'b0;
-    wire branch_ctrl;
-    reg branch_ctrl_buf =1'b0;
     wire do_branch;
     reg [2:0] do_branch_buf = 3'b0;
     wire is_cond_b;
@@ -98,7 +98,7 @@ module nibu (
 
     assign show = {show_buf[5:0],4'b0};
 
-    assign do_branch = branch_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1])& ((~is_cond_b_buf)|alu_res[0]);
+    assign do_branch = is_branchop_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1])& ((~is_cond_b_buf)|alu_res[0]);
 
     seg7 seg7_1(address[5:2],segment7_1);
     seg7 seg7_2(address[9:6],segment7_2);
@@ -161,7 +161,7 @@ module nibu (
         is_use_imme,
         opcode_alu_ctrl,
         is_memtoreg,
-        branch_ctrl,
+        is_branchop,
         is_pc_toreg,
         is_cond_b,
         mem_write_ctrl,
@@ -208,7 +208,6 @@ module nibu (
         rsi1_buf <= inst[19:15];
         rsi2_buf <= inst[24:20];
         alu_ctrl_buf <= alu_ctrl;
-        branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         mem_write_ctrl_buf <= mem_write_ctrl;
         jalr_ctrl_buf <= jalr_ctrl;
@@ -223,5 +222,6 @@ module nibu (
         is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
         is_memtoreg_buf <= {is_memtoreg_buf[1:0],is_memtoreg};
         is_pc_toreg_buf <= {is_pc_toreg_buf[1:0],is_pc_toreg};
+        is_branchop_buf <= {is_branchop_buf[1:0],is_branchop};
     end
 endmodule
