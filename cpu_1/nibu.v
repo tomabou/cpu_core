@@ -41,7 +41,6 @@ module nibu (
     reg [31:0] next_address_d3 = 32'b0;
     wire [31:0] inst;
     wire [31:0] write_data;
-    reg [9:0] rdi_buf;
     wire [31:0] read_data1;
     wire [31:0] read_data2;
     wire [31:0] read_data1_fetched;
@@ -63,6 +62,7 @@ module nibu (
     wire [31:0] memory_write;
     wire enable_ftoi;
 
+    reg [4:0] rdi_buffer [0:2];
 
     wire is_regwrite;
     wire is_use_imme;
@@ -126,7 +126,7 @@ module nibu (
         clk,
         inst[19:15],
         inst[24:20],
-        rdi_buf[9:5],
+        rdi_buffer[1],
         write_data,
         read_data1_fetched,
         read_data2_fetched,
@@ -135,7 +135,7 @@ module nibu (
     forward_ctrl forward_ctrl1(
         rsi1_buf,
         rsi2_buf,
-        rdi_buf[9:5],
+        rdi_buffer[1],
         reg_write,
         rg1_forward,
         rg2_forward);
@@ -213,8 +213,11 @@ module nibu (
         alu_ctrl_buf <= alu_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         alu_res_buf <= alu_res;
-        rdi_buf <= {rdi_buf[4:0],inst[11:7]};
         show_buf <= alu_res;
+
+        rdi_buffer[0] <= inst[11:7];
+        rdi_buffer[1] <= rdi_buffer[0];
+        rdi_buffer[2] <= rdi_buffer[1];
 
         is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
         is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
