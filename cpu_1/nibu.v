@@ -208,7 +208,10 @@ module nibu (
         is_auipc,
         is_lui,
         is_fstoreop,
-        is_hazard_0);
+        is_hazard_0,
+        use_rs1,
+        use_rs2);
+
     mod_readdata mod_readdata1(read_data1,address_buf2,is_auipc_buf[0],is_lui_buf[0],operand1);
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);

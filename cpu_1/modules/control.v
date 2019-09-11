@@ -13,7 +13,9 @@ module control(
     auipc,
     lui,
     is_fstore,
-    is_hazard_0);
+    is_hazard_0,
+    use_rs1,
+    use_rs2);
 
     input [6:0] opcode;
     input [4:0] funct5;
@@ -30,8 +32,11 @@ module control(
     output lui;
     output is_fstore;
     output is_hazard_0;
+    output reg use_rs1;
+    output reg use_rs2;
 
     wire is_ftoi;
+    wire is_itof;
 
     assign cond_b = (opcode == 7'b1100011); 
     assign store = ((opcode == 7'b0100011)|(opcode == 7'b0100111));
@@ -43,6 +48,9 @@ module control(
     assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010);
     assign is_hazard_0 = is_ftoi | mem_to_reg;
 
+    assign is_itof = (opcode == 7'b1010011) & ((funct5 == 5'b11000) | funct5 == 5'b11110);
+
+
     always @(*) begin
         case(opcode[6:2])
             5'b00100: reg_write <= 1'b1;//op_imm
@@ -52,9 +60,34 @@ module control(
             5'b00000: reg_write <= 1'b1;//LOAD
             5'b01101: reg_write <= 1'b1; //lui
             5'b00101: reg_write <= 1'b1; //auipc
-            default: reg_write <= is_ftoi ? 1'b1 : 1'b0;
+            default: reg_write <= (is_ftoi ? 1'b1 : 1'b0);
         endcase
     end
+
+    always @ (*) begin
+        case(opcode[6:2])
+            5'b11001: use_rs1 <= 1'b1; //jalr
+            5'b11000: use_rs1 <= 1'b1; //branch
+            5'b00000: use_rs1 <= 1'b1; //load
+            5'b01000: use_rs1 <= 1'b1; //store
+            5'b00100: use_rs1 <= 1'b1; //opimm
+            5'b01100: use_rs1 <= 1'b1; //op
+            5'b00001: use_rs1 <= 1'b1; //fload
+            5'b01001: use_rs1 <= 1'b1; //fstore
+            default:  use_rs1 <= is_itof;
+        endcase
+    end
+
+    always @ (*) begin
+        case(opcode[6:2])
+            5'b11000: use_rs2 <= 1'b1; //branch
+            5'b01000: use_rs2 <= 1'b1; //store
+            5'b01100: use_rs2 <= 1'b1; //op
+            5'b01001: use_rs2 <= 1'b1; //fstore
+            default:  use_rs2 <= 1'b0;
+        endcase
+    end
+
 
     //jal use immediate directly.
     always @(*) begin
@@ -92,6 +125,7 @@ module control(
             default: {branch,wb_pc} <= 2'b00;
         endcase
     end
+
 
 
 endmodule
