@@ -67,10 +67,12 @@ module nibu (
     wire is_regwrite;
     wire is_use_imme;
     wire is_memtoreg;
+    wire is_pc_toreg;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
     reg [2:0] is_memtoreg_buf = 3'b0;
+    reg [2:0] is_pc_toreg_buf = 3'b0;
 
 
     wire reg_write;
@@ -81,8 +83,6 @@ module nibu (
     reg branch_ctrl_buf =1'b0;
     wire do_branch;
     reg [2:0] do_branch_buf = 3'b0;
-    wire wb_pc_ctrl;
-    reg [1:0] wb_pc_ctrl_buf = 2'b0;
     wire is_cond_b;
     reg is_cond_b_buf = 1'b0;
     wire mem_write_ctrl;
@@ -162,7 +162,7 @@ module nibu (
         opcode_alu_ctrl,
         is_memtoreg,
         branch_ctrl,
-        wb_pc_ctrl,
+        is_pc_toreg,
         is_cond_b,
         mem_write_ctrl,
         jalr_ctrl,
@@ -193,7 +193,7 @@ module nibu (
         next_address_d3,
         into_intreg,
         memory_read,
-        wb_pc_ctrl_buf[1],
+        is_pc_toreg_buf[1],
         enable_ftoi,
         is_memtoreg_buf[1],
         write_data);
@@ -210,7 +210,6 @@ module nibu (
         alu_ctrl_buf <= alu_ctrl;
         branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
-        wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
         mem_write_ctrl_buf <= mem_write_ctrl;
         jalr_ctrl_buf <= jalr_ctrl;
         ope1_ctrl_buf <= ope1_ctrl;
@@ -223,5 +222,6 @@ module nibu (
         is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
         is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
         is_memtoreg_buf <= {is_memtoreg_buf[1:0],is_memtoreg};
+        is_pc_toreg_buf <= {is_pc_toreg_buf[1:0],is_pc_toreg};
     end
 endmodule
