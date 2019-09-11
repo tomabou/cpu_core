@@ -66,17 +66,17 @@ module nibu (
 
     wire is_regwrite;
     wire is_use_imme;
+    wire is_memtoreg;
 
     reg [2:0] is_regwrite_buf = 3'b0;
     reg [2:0] is_use_imme_buf = 3'b0;
+    reg [2:0] is_memtoreg_buf = 3'b0;
 
 
     wire reg_write;
     wire [1:0] opcode_alu_ctrl;
     wire [3:0] alu_ctrl;
     reg [3:0] alu_ctrl_buf = 4'b0;
-    wire mem_to_reg_ctrl;
-    reg [1:0] mem_to_reg_ctrl_buf = 2'b0 ;
     wire branch_ctrl;
     reg branch_ctrl_buf =1'b0;
     wire do_branch;
@@ -160,7 +160,7 @@ module nibu (
         is_regwrite,
         is_use_imme,
         opcode_alu_ctrl,
-        mem_to_reg_ctrl,
+        is_memtoreg,
         branch_ctrl,
         wb_pc_ctrl,
         is_cond_b,
@@ -177,7 +177,7 @@ module nibu (
         address,inst,
         alu_res,memory_write,memory_read, 
         mem_write_ctrl_buf & (~do_branch_buf[0]) & (~do_branch_buf[1]),
-        mem_to_reg_ctrl_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),//readctrl
+        is_memtoreg_buf[0] & (~do_branch_buf[0]) & (~do_branch_buf[1]),//readctrl
         uart_empty,
         uart_in,
         uart_out,
@@ -195,7 +195,7 @@ module nibu (
         memory_read,
         wb_pc_ctrl_buf[1],
         enable_ftoi,
-        mem_to_reg_ctrl_buf[1],
+        is_memtoreg_buf[1],
         write_data);
 
     always @ (posedge clk) begin
@@ -208,7 +208,6 @@ module nibu (
         rsi1_buf <= inst[19:15];
         rsi2_buf <= inst[24:20];
         alu_ctrl_buf <= alu_ctrl;
-        mem_to_reg_ctrl_buf<= {mem_to_reg_ctrl_buf[0],mem_to_reg_ctrl};
         branch_ctrl_buf <= branch_ctrl;
         do_branch_buf <= {do_branch_buf[1:0],do_branch};
         wb_pc_ctrl_buf <= {wb_pc_ctrl_buf[0],wb_pc_ctrl};
@@ -223,5 +222,6 @@ module nibu (
 
         is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
         is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
+        is_memtoreg_buf <= {is_memtoreg_buf[1:0],is_memtoreg};
     end
 endmodule
