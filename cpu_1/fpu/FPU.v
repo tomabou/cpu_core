@@ -18,6 +18,8 @@ module FPU(
     output enable_ftoi;
 
     reg [4:0] rdi_buf[0:4];
+    reg [4:0] rs1_buf;
+    reg [4:0] rs2_buf;
     wire [31:0] write_data;
     wire [31:0] readdata1;
     wire [31:0] readdata2;
@@ -50,6 +52,9 @@ module FPU(
     wire is_cvif;
     wire use_rs1;
     wire use_rs2;
+    wire is_hazard_0;
+    wire is_hazard_1;
+    wire is_hazard_2;
 
     reg [4:0] reg_write_buf = 5'b0;
     reg [4:0] is_sub_buf = 5'b0;
@@ -60,6 +65,9 @@ module FPU(
     reg [4:0] is_ftoi_buf = 5'b0;
     reg [4:0] is_cvif_buf = 5'b0;
     reg [4:0] is_legl_buf = 5'b0;
+    reg [4:0] is_hazard_0_buf = 5'b0;
+    reg [4:0] is_hazard_1_buf = 5'b0;
+    reg [4:0] is_hazard_2_buf = 5'b0;
 
     fpu_control fpu_control1(
         inst[31:27],
@@ -73,8 +81,31 @@ module FPU(
         is_cvrt,
         is_ftoi,
         is_cvif,
+        is_hazard_0,
+        is_hazard_1,
+        is_hazard_2,
         use_rs1,
         use_rs2);
+
+    hazard_detect hazard_detect1(
+        inst[19:15],
+        inst[24:20],
+        use_rs1,
+        use_rs2,
+        reg_write_buf[0],
+        reg_write_buf[1],
+        reg_write_buf[2],
+        is_legal_op_buf[0],
+        is_legal_op_buf[1],
+        is_legal_op_buf[2],
+        is_hazard_0_buf[0],
+        is_hazard_1_buf[1],
+        is_hazard_2_buf[2],
+        rdi_buf[0],
+        rdi_buf[1],
+        rdi_buf[2],
+        hazard
+    );
 
     float_register freg1(
         clk,
@@ -82,11 +113,57 @@ module FPU(
         inst[24:20],
         rdi_buf[4],
         write_data,
-        reg_write_buf[4],
+        reg_write_buf[4] & is_legal_op_buf[4],
         readdata1,
         readdata2);
 
-    assign ope1 = readdata1;
+    mux_forward mux_forward1(
+        readdata1,
+        to_result[2],
+        to_result[3],
+        to_result[4],
+        write_data,
+        ope1,
+        rg1_forward_1,
+        rg1_forward_2,
+        rg1_forward_3,
+        rg1_forward_4
+    );
+
+    mux_forward mux_forward2(
+        readdata2,
+        to_result[2],
+        to_result[3],
+        to_result[4],
+        write_data,
+        ope2,
+        rg2_forward_1,
+        rg2_forward_2,
+        rg2_forward_3,
+        rg2_forward_4
+    );
+
+    fpu_forward_ctrl fpu_forward_ctrl1(
+        rs1_buf,
+        rs2_buf,
+        rdi_buf[1],
+        rdi_buf[2], 
+        rdi_buf[3], 
+        rdi_buf[4],
+        is_legal_op_buf[1],
+        is_legal_op_buf[2],
+        is_legal_op_buf[3],
+        is_legal_op_buf[4],
+        rg1_forward_1,
+        rg1_forward_2,
+        rg1_forward_3,
+        rg1_forward_4,
+        rg2_forward_1,
+        rg2_forward_2,
+        rg2_forward_3,
+        rg2_forward_4
+    );
+
     assign ope2 = readdata2;
 
     assign enable_ftoi = is_ftoi_buf[1];
@@ -100,10 +177,11 @@ module FPU(
     // 0 is same as register
     // 0~1  itfcvt, control
     assign to_result[1] = from_intreg;
-    assign to_result[2] = is_load_buf[1] ? from_mem 
-                        : is_cvif_buf[1] ? from_intreg_cvt
+    assign to_result[2] = is_cvif_buf[1] ? from_intreg_cvt
                         : result[1];
-    assign to_result[3] = is_adsb_buf[2] ? addsub_out : result[2];
+    assign to_result[3] = is_adsb_buf[2] ? addsub_out
+                        : is_load_buf[2] ? from_mem
+                        : result[2];
     assign to_result[4] = is_mult_buf[3] ? mul_out : result[3];
     assign write_data   = result[4];
 
@@ -113,6 +191,9 @@ module FPU(
         rdi_buf[2] <= rdi_buf[1];
         rdi_buf[3] <= rdi_buf[2];
         rdi_buf[4] <= rdi_buf[3];
+
+        rs1_buf <= inst[19:15];
+        rs2_buf <= inst[24:20];
 
         result[1] <= to_result[1];
         result[2] <= to_result[2];
@@ -128,6 +209,9 @@ module FPU(
         is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
         is_cvif_buf <= {is_cvif_buf[3:0],is_cvif};
         is_legl_buf <= {is_legl_buf[3:0],is_legl};
+        is_hazard_0_buf <= {is_hazard_0_buf[3:0],is_hazard_0};
+        is_hazard_1_buf <= {is_hazard_1_buf[3:0],is_hazard_1};
+        is_hazard_2_buf <= {is_hazard_2_buf[3:0],is_hazard_2};
     end 
 
 endmodule

@@ -10,6 +10,9 @@ module fpu_control(
     is_cvrt,
     is_ftoi,
     is_cvif,
+    is_hazard_0,
+    is_hazard_1,
+    is_hazard_2,
     use_rs1,
     use_rs2);
 
@@ -24,6 +27,9 @@ module fpu_control(
     output is_cvrt;
     output is_ftoi;
     output is_cvif;
+    output is_hazard_0;
+    output is_hazard_1;
+    output is_hazard_2;
     output use_rs1;
     output use_rs2;
 
@@ -49,4 +55,11 @@ module fpu_control(
     assign is_sqrt = is_opfp & (funct5 == 5'b01011);
     assign use_rs2 = is_opfp & (~is_ftoi) & (~is_itof); 
 
+    
+    assign is_hazard_2 = 1'b0;
+    assign is_hazard_1 = is_hazard_2
+                       | is_mult;
+    assign is_hazard_0 = is_hazard_1
+                       | is_adsb
+                       | is_load;
 endmodule

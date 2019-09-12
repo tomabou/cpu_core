@@ -494,3 +494,5 @@ forward ctrlとforwardmuxを書いた
 hazard ctrlを書く(nibuを見ながら)
 hazardをfpuからnibuにつなげる
 forwardを組み込む
+
+is_hazard0,1,2を書く

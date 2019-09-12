@@ -2,12 +2,12 @@ module fpu_forward_ctrl(
     rsia,
     rsib,
     rdi_buf_1,
-    legal_1,
     rdi_buf_2,
-    legal_2,
     rdi_buf_3,
-    legal_3,
     rdi_buf_4,
+    legal_1,
+    legal_2,
+    legal_3,
     legal_4,
     rsa_use1,
     rsa_use2,
@@ -21,12 +21,12 @@ module fpu_forward_ctrl(
     input [4:0] rsia;
     input [4:0] rsib;
     input [4:0] rdi_buf_1;
-    input       legal_1;
     input [4:0] rdi_buf_2;
-    input       legal_2;
     input [4:0] rdi_buf_3;
-    input       legal_3;
     input [4:0] rdi_buf_4;
+    input       legal_1;
+    input       legal_2;
+    input       legal_3;
     input       legal_4;
     output rsa_use1;
     output rsa_use2;
