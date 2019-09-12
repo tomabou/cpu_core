@@ -8,7 +8,6 @@
 
     sw      t0, -12(s0)
     flw     ft0, -12(s0)
-    nop     4
     fsw     ft0, -16(s0)
     lw      t1, -16(s0)
 

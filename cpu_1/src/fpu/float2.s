@@ -7,7 +7,6 @@
     addi    t0, t0, -1
 
     fmv.w.x ft0, t0
-    nop     4
     fmv.x.w t1, ft0
 
     sw      t1, 0(zero)
