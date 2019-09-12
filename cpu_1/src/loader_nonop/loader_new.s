@@ -27,7 +27,9 @@
         lw    a3, 4(zero);
         beq     a3, a1, .LBB0_8
         bne     a3, a2, .LBB0_1
-        lui     sp, 7
-        addi    sp, sp, 4092
+        lui     sp, 8
+        addi    sp, sp, -4
+        lui     s0, 8
+        addi    s0, s0, -4
         lui     a0, 1
         jalr    a0
