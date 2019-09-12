@@ -125,7 +125,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1);
+    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);

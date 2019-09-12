@@ -1,5 +1,6 @@
 module FPU(
     clk,
+    is_legl;
     inst,
     from_intreg,
     from_mem,
@@ -8,6 +9,7 @@ module FPU(
     enable_ftoi);
 
     input clk;
+    input is_legl;
     input [31:0] inst;
     input [31:0] from_intreg;
     input [31:0] from_mem;
@@ -29,6 +31,14 @@ module FPU(
     wire [31:0] addsub_out;
     wire [31:0] mul_out;
     
+    wire rg1_forward_1;
+    wire rg1_forward_2;
+    wire rg1_forward_3;
+    wire rg1_forward_4;
+    wire rg2_forward_1;
+    wire rg2_forward_2;
+    wire rg2_forward_3;
+    wire rg2_forward_4;
 
     wire reg_write;
     wire is_sub;
@@ -47,6 +57,7 @@ module FPU(
     reg [4:0] is_cvrt_buf = 5'b0;
     reg [4:0] is_ftoi_buf = 5'b0;
     reg [4:0] is_cvif_buf = 5'b0;
+    reg [4:0] is_legl_buf = 5'b0;
 
     fpu_control fpu_control1(
         inst[31:27],
@@ -112,6 +123,7 @@ module FPU(
         is_cvrt_buf <= {is_cvrt_buf[3:0],is_cvrt};
         is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
         is_cvif_buf <= {is_cvif_buf[3:0],is_cvif};
+        is_legl_buf <= {is_legl_buf[3:0],is_legl};
     end 
 
 endmodule
