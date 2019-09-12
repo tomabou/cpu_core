@@ -1,6 +1,6 @@
 module FPU(
     clk,
-    is_legl;
+    is_legl,
     inst,
     from_intreg,
     from_mem,
@@ -87,7 +87,7 @@ module FPU(
         use_rs1,
         use_rs2);
 
-    hazard_detect hazard_detect1(
+    fpu_hazard_detect fpu_hazard_detect1(
         inst[19:15],
         inst[24:20],
         use_rs1,
@@ -95,9 +95,9 @@ module FPU(
         reg_write_buf[0],
         reg_write_buf[1],
         reg_write_buf[2],
-        is_legal_op_buf[0],
-        is_legal_op_buf[1],
-        is_legal_op_buf[2],
+        is_legl_buf[0],
+        is_legl_buf[1],
+        is_legl_buf[2],
         is_hazard_0_buf[0],
         is_hazard_1_buf[1],
         is_hazard_2_buf[2],
@@ -113,7 +113,7 @@ module FPU(
         inst[24:20],
         rdi_buf[4],
         write_data,
-        reg_write_buf[4] & is_legal_op_buf[4],
+        reg_write_buf[4] & is_legl_buf[4],
         readdata1,
         readdata2);
 
@@ -150,10 +150,10 @@ module FPU(
         rdi_buf[2], 
         rdi_buf[3], 
         rdi_buf[4],
-        is_legal_op_buf[1],
-        is_legal_op_buf[2],
-        is_legal_op_buf[3],
-        is_legal_op_buf[4],
+        is_legl_buf[1],
+        is_legl_buf[2],
+        is_legl_buf[3],
+        is_legl_buf[4],
         rg1_forward_1,
         rg1_forward_2,
         rg1_forward_3,
@@ -164,12 +164,10 @@ module FPU(
         rg2_forward_4
     );
 
-    assign ope2 = readdata2;
-
     assign enable_ftoi = is_ftoi_buf[1];
     float_to_int float_to_int1(clk,ope1,is_cvrt_buf[1],to_intreg);
     int_to_float int_to_float1(clk,from_intreg,from_intreg_cvt);
-    assign to_mem = readdata2;
+    assign to_mem = ope2;
 
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
     fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
