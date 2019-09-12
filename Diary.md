@@ -490,3 +490,7 @@ FPUのフォアワーディング、バブルを書く
 
 9/12 
 rtlシミュレーションで確認
+forward ctrlとforwardmuxを書いた
+hazard ctrlを書く(nibuを見ながら)
+hazardをfpuからnibuにつなげる
+forwardを組み込む
