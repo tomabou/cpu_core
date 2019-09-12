@@ -48,6 +48,8 @@ module FPU(
     wire is_cvrt;
     wire is_ftoi;
     wire is_cvif;
+    wire use_rs1;
+    wire use_rs2;
 
     reg [4:0] reg_write_buf = 5'b0;
     reg [4:0] is_sub_buf = 5'b0;
@@ -70,7 +72,9 @@ module FPU(
         is_mult,
         is_cvrt,
         is_ftoi,
-        is_cvif);
+        is_cvif,
+        use_rs1,
+        use_rs2);
 
     float_register freg1(
         clk,
