@@ -35,6 +35,8 @@ module fpu_hazard_detect(
     input rdi_2;
     output hazard;
 
+    assign hazard = hazard0 | hazard1 | hazard2;
+
     wire hazard0;
     wire hazard1;
     wire hazard2;

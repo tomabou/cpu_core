@@ -109,9 +109,13 @@ module nibu (
     wire rg1_forward_2;
     wire rg2_forward_2;
 
+    wire fpu_hazard;
+    wire alu_hazard;
     wire hazard;
     wire use_rs1;
     wire use_rs2;
+
+    assign hazard = fpu_hazard | alu_hazard;
 
     assign show = {show_buf[5:0],4'b0};
 
@@ -125,7 +129,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1);
+    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1,fpu_hazard);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
@@ -150,7 +154,7 @@ module nibu (
         is_legal_op_buf[0],
         is_hazard_0_buf[0],
         rdi_buffer[0],
-        hazard
+        alu_hazard
     );
 
     registers regs1(
