@@ -342,6 +342,8 @@ def pseudoinst(tks):
         return ['jalr', 'x0', 'x1', 0]
     if (tks[0] == 'jalr' and len(tks) == 2):
         return ['jalr', 'x1', tks[1], 0]
+    if (tks[0] == 'li'):
+        return ['addi', tks[1],'zero',tks[2]]
     return tks
 
 
