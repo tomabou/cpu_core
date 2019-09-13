@@ -8,9 +8,10 @@ int fibo(int n) {
 }
 
 int main() {
-    while (1) {
-        int x = nibu_input();
-        nibu_show(x);
-    }
+    print_string("this is fibo");
+    // while (1) {
+    // int x = nibu_input();
+    // nibu_show(x);
+    //}
     return 0;
 }

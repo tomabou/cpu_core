@@ -59,4 +59,13 @@ void nibu_show(int n) {
 }
 
 #endif
+
+void print_string(char* c) {
+    while (*c != '\0') {
+        nibu_output(*c);
+        c++;
+    }
+    return;
+}
+
 #endif
