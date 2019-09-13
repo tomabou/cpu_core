@@ -350,9 +350,6 @@ def decode_call(tks):
         # return [['jal', 'x1', 'x0', tks[1]]]
         return [
             ['auipc', 'x6', tks[1]],
-            ['nop'],
-            ['nop'],
-            ['nop'],
             ['jalr_call', 'x1', 'x6', tks[1]]
         ]
     return [tks]
@@ -400,6 +397,20 @@ def is_effect_line(string):
             return True
     return False
 
+def is_not_information(tks):
+    tmp = [
+	    ".file",
+	    ".option",
+	    ".text",
+	    ".align",
+	    ".globl",
+	    ".type",
+        ".size",
+        ".section",
+        ".ident",
+    ]
+    return not (tks[0] in tmp)
+
 
 def create(content):
     content = content.splitlines()
@@ -408,6 +419,7 @@ def create(content):
     content = map(tokens, content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
+    content = filter(is_not_information, content)
     content = map(pseudoinst, content)
     content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))

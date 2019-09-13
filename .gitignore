@@ -30,3 +30,4 @@ cpu_1/src/*.bin
 *.pyc
 *.out
 *.bin
+.vscode/*
