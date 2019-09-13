@@ -34,6 +34,8 @@ module FPU(
 
     wire [31:0] addsub_out;
     wire [31:0] mul_out;
+
+    reg [31:0] from_mem_buf_3;
     
     wire rg1_forward_1;
     wire rg1_forward_2;
@@ -177,12 +179,13 @@ module FPU(
     // 0 is same as register
     // 0~1  itfcvt, control
     assign to_result[1] = from_intreg;
-    assign to_result[2] = is_cvif_buf[1] ? from_intreg_cvt
-                        : result[1];
+    assign to_result[2] = result[1];
     assign to_result[3] = is_adsb_buf[2] ? addsub_out
-                        : is_load_buf[2] ? from_mem
+                        : is_cvif_buf[2] ? from_intreg_cvt
                         : result[2];
-    assign to_result[4] = is_mult_buf[3] ? mul_out : result[3];
+    assign to_result[4] = is_mult_buf[3] ? mul_out 
+                        : is_load_buf[3] ? from_mem_buf_3
+                        : result[3];
     assign write_data   = result[4];
 
     always @ (posedge clk) begin
@@ -194,6 +197,8 @@ module FPU(
 
         rs1_buf <= inst[19:15];
         rs2_buf <= inst[24:20];
+
+        from_mem_buf_3 <= from_mem;
 
         result[1] <= to_result[1];
         result[2] <= to_result[2];

@@ -58,8 +58,9 @@ module fpu_control(
     
     assign is_hazard_2 = 1'b0;
     assign is_hazard_1 = is_hazard_2
-                       | is_mult;
+                       | is_mult
+                       | is_load;
     assign is_hazard_0 = is_hazard_1
                        | is_adsb
-                       | is_load;
+                       | is_cvif;
 endmodule

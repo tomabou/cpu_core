@@ -24,6 +24,8 @@ cpu_1/fpu/add
 cpu_1/fpu/mul
 cpu_1/fpu/cvt_ftoi
 cpu_1/fpu/cvt_itof
+cpu_1/fpu/compare
+cpu_1/fpu/equal
 cpu_1/src/*.bin
 *.pyc
 *.out
