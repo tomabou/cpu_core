@@ -62,7 +62,6 @@ module nibu (
     wire [31:0] memory_write;
     reg [31:0] memory_write_d1;
     reg [31:0] alu_res_d1;
-    wire enable_ftoi_1;
 
     reg [4:0] rdi_buffer [0:2];
     reg [31:0] result [0:2];
@@ -78,6 +77,7 @@ module nibu (
     wire is_memwrite;
     wire is_legal_op;
     wire is_hazard_0;
+    wire is_from_fpu;
     wire is_jalr;
     wire is_auipc;
     wire is_lui;
@@ -92,6 +92,7 @@ module nibu (
     reg [2:0] is_memwrite_buf = 3'b0;
     reg [2:0] is_legal_op_buf = 3'b0;
     reg [2:0] is_hazard_0_buf = 3'b0;
+    reg [2:0] is_from_fpu_buf = 3'b0;
     reg [2:0] is_jalr_buf     = 3'b0;
     reg [2:0] is_auipc_buf    = 3'b0;
     reg [2:0] is_lui_buf      = 3'b0;
@@ -129,7 +130,7 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,enable_ftoi_1,fpu_hazard);
+    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,fpu_hazard);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
@@ -211,6 +212,7 @@ module nibu (
         is_pc_toreg,
         is_cond_bra,
         is_memwrite,
+        is_from_fpu,
         is_jalr,
         is_auipc,
         is_lui,
@@ -238,7 +240,7 @@ module nibu (
 
     assign to_result[1] = is_pc_toreg_buf[0] ? next_address_d2
                         : alu_res;
-    assign to_result[2] = enable_ftoi_1      ? into_intreg
+    assign to_result[2] = is_from_fpu_buf[1] ? into_intreg
                         : result[1];
 
     assign write_data   = is_memtoreg_buf[2] ? memory_read
@@ -291,6 +293,7 @@ module nibu (
         is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
         is_legal_op_buf <= {is_legal_op_buf[1:0],is_legal_op};
         is_hazard_0_buf <= {is_hazard_0_buf[1:0],is_hazard_0};
+        is_from_fpu_buf <= {is_from_fpu_buf[1:0],is_from_fpu};
         is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
         is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
         is_lui_buf      <= {is_lui_buf[1:0],is_lui};

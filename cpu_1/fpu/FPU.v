@@ -6,7 +6,6 @@ module FPU(
     from_mem,
     to_mem,
     to_intreg,
-    enable_ftoi,
     hazard);
 
     input clk;
@@ -16,7 +15,6 @@ module FPU(
     input [31:0] from_mem;
     output [31:0] to_mem;
     output [31:0] to_intreg;
-    output enable_ftoi;
     output hazard;
 
     reg [4:0] rdi_buf[0:4];
@@ -177,7 +175,6 @@ module FPU(
         rg2_forward_4
     );
 
-    assign enable_ftoi = is_ftoi_buf[1];
     float_to_int float_to_int1(
         clk,
         ope1,

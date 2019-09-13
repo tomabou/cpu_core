@@ -9,6 +9,7 @@ module control(
     wb_pc,
     cond_b,
     store,
+    is_from_fpu,
     jalr,
     auipc,
     lui,
@@ -27,6 +28,7 @@ module control(
     output reg wb_pc;
     output cond_b;
     output store;
+    output is_from_fpu;
     output jalr;
     output auipc;
     output lui;
@@ -38,6 +40,8 @@ module control(
     wire is_ftoi;
     wire is_itof;
 
+    assign is_from_fpu = is_ftoi;
+
     assign cond_b = (opcode == 7'b1100011); 
     assign store = ((opcode == 7'b0100011)|(opcode == 7'b0100111));
     assign mem_to_reg = (opcode == 7'b0000011);//load
@@ -45,7 +49,7 @@ module control(
     assign lui = (opcode == 7'b0110111);
     assign auipc = (opcode == 7'b0010111);
     assign is_fstore = (opcode == 7'b0100111);
-    assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010);
+    assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010) | (funct5 == 5'b10100);
     assign is_hazard_0 = is_ftoi | mem_to_reg;
 
     assign is_itof = (opcode == 7'b1010011) & ((funct5 == 5'b11000) | funct5 == 5'b11110);
