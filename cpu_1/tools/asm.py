@@ -60,12 +60,21 @@ def opfp(op, rd, rs1, rs2 = 0):
         'fadd.s' :   0b0000000,
         'fsub.s' :   0b0000100,
         'fmul.s' :   0b0001000,
+        'feq.s'  :   0b1010000,
+        'flt.s'  :   0b1010000,
+        'fle.s'  :   0b1010000,
     }
 
     if op in ['fcvt.wu.s','fcvt.s.wu']:
         rs2 = 1
         
-    func3 = 0
+    if op in ['feq.s']:
+        func3 = 2
+    elif op in ['flt.s']:
+        func3 = 1
+    else:
+        func3 = 0
+
     func7 = func7_set[op]
     x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
         func3 * (2**12) + rd * (2**7) + opcode
@@ -239,6 +248,9 @@ def decode_op(labels, index, tks):
         'fadd.s',
         'fsub.s',
         'fmul.s',
+        'feq.s',
+        'flt.s',
+        'fle.s',
     ]
     if tks[0] in OP_FP3:
         return opfp(tks[0],tks[1],tks[2],tks[3])
