@@ -187,8 +187,8 @@ def sep_small_big(n):
     small = (2**12-1) & n
     if (small >> 11 == 1):
         small = small + ((2**20-1) << 12)
-    offset = ((2**32 - 1) & (offset - small)) >> 12
-    return (small,offset)
+    big = (2**32 - 1) & (n - small)
+    return (small,big)
 
 def decode_op(labels, index, tks):
     OP = ['add', 'sub', 'sll', 'slt', 'sltu', 'xor', 'srl', 'sra', 'or', 'and']
