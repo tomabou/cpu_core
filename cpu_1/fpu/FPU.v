@@ -54,6 +54,9 @@ module FPU(
     wire is_cvrt;
     wire is_ftoi;
     wire is_cvif;
+    wire is_fcmp;
+    wire is_eqal;
+    wire is_leth;
     wire use_rs1;
     wire use_rs2;
     wire is_hazard_0;
@@ -69,6 +72,9 @@ module FPU(
     reg [4:0] is_ftoi_buf = 5'b0;
     reg [4:0] is_cvif_buf = 5'b0;
     reg [4:0] is_legl_buf = 5'b0;
+    reg [4:0] is_fcmp_buf = 5'b0;
+    reg [4:0] is_eqal_buf = 5'b0;
+    reg [4:0] is_leth_buf = 5'b0;
     reg [4:0] is_hazard_0_buf = 5'b0;
     reg [4:0] is_hazard_1_buf = 5'b0;
     reg [4:0] is_hazard_2_buf = 5'b0;
@@ -85,6 +91,9 @@ module FPU(
         is_cvrt,
         is_ftoi,
         is_cvif,
+        is_fcmp,
+        is_eqal,
+        is_leth,
         is_hazard_0,
         is_hazard_1,
         is_hazard_2,
@@ -169,7 +178,16 @@ module FPU(
     );
 
     assign enable_ftoi = is_ftoi_buf[1];
-    float_to_int float_to_int1(clk,ope1,is_cvrt_buf[1],to_intreg);
+    float_to_int float_to_int1(
+        clk,
+        ope1,
+        ope2,
+        is_cvrt_buf[1],
+        is_fcmp_buf[1],
+        is_eqal_buf[1],
+        is_leth_buf[1],
+        to_intreg);
+
     int_to_float int_to_float1(clk,from_intreg,from_intreg_cvt);
     assign to_mem = ope2;
 
@@ -214,6 +232,9 @@ module FPU(
         is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
         is_cvif_buf <= {is_cvif_buf[3:0],is_cvif};
         is_legl_buf <= {is_legl_buf[3:0],is_legl};
+        is_fcmp_buf <= {is_fcmp_buf[3:0],is_fcmp};
+        is_eqal_buf <= {is_eqal_buf[3:0],is_eqal};
+        is_leth_buf <= {is_leth_buf[3:0],is_leth};
         is_hazard_0_buf <= {is_hazard_0_buf[3:0],is_hazard_0};
         is_hazard_1_buf <= {is_hazard_1_buf[3:0],is_hazard_1};
         is_hazard_2_buf <= {is_hazard_2_buf[3:0],is_hazard_2};
