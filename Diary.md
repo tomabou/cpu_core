@@ -523,4 +523,8 @@ hi%とli
 メモリユニットその時だけ2clockで動くようにして、前方にsh,sbがあるときはhazardにするというのが良さそう
 とりあえずlh lhu lb lbuだけ実装してprint stringが自然に動くようにする
 liはimmediateが大きすぎたらluiを入れなきゃいけないけど後回し
-
+hiとloをluiとaddiしている部分
+どうやらアセンブラかリンカがgpとの相対アドレスとかでアクセスするコードに書き換えるらしい
+選択肢は、auipcをつかってpc relativeにするかgpを使うかzeroを使うか
+auipcが丸そう
+auipcで実装することにする

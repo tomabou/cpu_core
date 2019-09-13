@@ -66,65 +66,38 @@ print_string:
 .L8:
 	ret
 	.size	print_string, .-print_string
-	.align	2
-	.globl	fibo
-	.type	fibo, @function
-fibo:
-	li	a5,1
-	ble	a0,a5,.L23
-	addi	sp,sp,-16
-	addi	a5,a0,-2
-	sw	s2,0(sp)
-	andi	a5,a5,-2
-	addi	s2,a0,-3
-	sw	s0,8(sp)
-	sw	s1,4(sp)
-	sw	ra,12(sp)
-	addi	s0,a0,-1
-	sub	s2,s2,a5
-	li	s1,0
-.L17:
-	mv	a0,s0
-	call	fibo
-	addi	s0,s0,-2
-	add	s1,s1,a0
-	bne	s0,s2,.L17
-	lw	ra,12(sp)
-	lw	s0,8(sp)
-	lw	s2,0(sp)
-	addi	a0,s1,1
-	lw	s1,4(sp)
-	addi	sp,sp,16
-	jr	ra
-.L23:
-	li	a0,1
-	ret
-	.size	fibo, .-fibo
 	.section	.rodata.str1.4,"aMS",@progbits,1
 	.align	2
 .LC0:
 	.string	"this is fibo"
-	.section	.text.startup,"ax",@progbits
+	.text
 	.align	2
-	.globl	main
-	.type	main, @function
-main:
+	.globl	say_hello
+	.type	say_hello, @function
+say_hello:
 	lui	a5,%hi(.LC0)
 	li	a4,104
 	addi	a5,a5,%lo(.LC0)
 	li	a3,116
-	j	.L26
-.L27:
+	j	.L17
+.L18:
 	mv	a3,a4
 	lbu	a4,1(a5)
-.L26:
+.L17:
 #APP
 # 21 "cfile/fibo/../header/nibuio.h" 1
 	sw      a3, 4(zero);
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L27
+	bne	a4,zero,.L18
+	ret
+	.size	say_hello, .-say_hello
+	.section	.text.startup,"ax",@progbits
+	.align	2
+	.globl	main
+	.type	main, @function
+main:
 	li	a0,0
 	ret
 	.size	main, .-main
