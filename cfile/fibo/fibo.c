@@ -8,7 +8,9 @@ int fibo(int n) {
 }
 
 int main() {
-    int x = nibu_input();
-    nibu_output(fibo(x));
+    while (1) {
+        int x = nibu_input();
+        nibu_show(x);
+    }
     return 0;
 }

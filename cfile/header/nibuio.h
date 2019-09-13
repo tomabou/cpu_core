@@ -1,6 +1,8 @@
 #ifndef NIBUIO_H
 #define NIBUIO_H
 
+#ifndef DEBUG_MODE
+
 int nibu_input_func(void) {
     int ret;
     asm volatile("lw    %0, 4(zero);" : "=r"(ret));
@@ -25,4 +27,36 @@ void nibu_show(int n) {
     return;
 }
 
+#else
+#include <stdio.h>
+#include <stdlib.h>
+int nibu_input() {
+    int res = system("/bin/stty raw");
+    if (res != 0) {
+        exit(1);
+    }
+    int c = getchar();
+    res = system("/bin/stty cooked");
+    if (res != 0) {
+        exit(1);
+    }
+    if (c == 3) {
+        exit(1);  // finish with ctrl-C
+    }
+    return c;
+}
+
+void nibu_output(int n) {
+    char x = n & (0x000000FF);
+    putchar(x);
+    return;
+}
+
+void nibu_show(int n) {
+    unsigned int show = n & (0x0000FFFF);
+    printf("\x1b[7m%x\x1b[0m", show);
+    return;
+}
+
+#endif
 #endif
