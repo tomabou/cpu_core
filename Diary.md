@@ -528,3 +528,8 @@ hiとloをluiとaddiしている部分
 選択肢は、auipcをつかってpc relativeにするかgpを使うかzeroを使うか
 auipcが丸そう
 auipcで実装することにする
+グローバル変数やらスタティック変数は全部lui + (addi/lw,sw) でアセンブリを吐くようである
+gpを使うと多分1命令減るが…
+luiとaddiが離れているときの対処を考えるとstaticを纏めてgpを使用したほうが楽であると判断した
+j mainする前にgpをセットすることにする
+
