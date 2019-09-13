@@ -411,12 +411,15 @@ def is_not_information(tks):
     ]
     return not (tks[0] in tmp)
 
+def add_jump(content):
+    return [['call','main']] + list(content)
 
 def create(content):
     content = content.splitlines()
     content = filter(is_effect_line, content)
     content = map(commentout, content)
     content = map(tokens, content)
+    content = add_jump(content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
     content = filter(is_not_information, content)
