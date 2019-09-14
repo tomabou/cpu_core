@@ -73,7 +73,7 @@ module memory(
             3'b001: mod_readdata <= h_data;
             3'b010: mod_readdata <= ram_readdata;
             3'b100: mod_readdata <= bu_data;
-            3'b101: mod_readdata <= hu_data;
+            default: mod_readdata <= hu_data;
         endcase
     end
 
