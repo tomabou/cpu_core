@@ -220,7 +220,7 @@ def decode_op(labels, index, tks):
         return jalr(tks[0], tks[1], tks[2], offset)
     if tks[0] == 'jalr_call':
         assert(type(tks[3]) != int)
-        offset = labels[tks[3]] - 4*(index-4)
+        offset = labels[tks[3]] - 4*(index-1)
         offset = (2**12-1) & offset
         return jalr(tks[0], tks[1], tks[2], offset)
 
