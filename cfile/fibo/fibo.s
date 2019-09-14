@@ -69,7 +69,7 @@ print_string:
 	.section	.rodata.str1.4,"aMS",@progbits,1
 	.align	2
 .LC0:
-	.string	"this is fibo"
+	.string	"this is fibo!"
 	.text
 	.align	2
 	.globl	say_hello

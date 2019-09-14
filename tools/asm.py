@@ -379,12 +379,16 @@ def decode_call(tks):
     return [tks]
 
 def decode_string(tks):
-    if (tks[0] == 'call'):
-        # return [['jal', 'x1', 'x0', tks[1]]]
-        return [
-            ['auipc', 'x6', tks[1]],
-            ['jalr_call', 'x1', 'x6', tks[1]]
-        ]
+    if (tks[0] == '.string'):
+        res = []
+        s = tks[1]
+        l = len(s)
+        if l%4 > 0:
+            for i in range(4 - l%4):
+                s = s + '#'
+        for i in range(len(s)//4):
+            res.append(['.str',s[i*4:i*4+4]])
+        return res
     return [tks]
 
 
@@ -490,6 +494,7 @@ def create(content,program_location):
     content = add_jump(content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
+    content = list(itertools.chain.from_iterable(map(decode_string, content)))
     content = filter(is_not_information, content)
     content = map(pseudoinst, content)
     content = map(decode_ls, content)

@@ -8,7 +8,7 @@
 //}
 
 void say_hello() {
-    print_string("this is fibo");
+    print_string("this is fibo!");
     return;
 }
 
