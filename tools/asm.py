@@ -422,7 +422,32 @@ def is_not_information(tks):
 def add_jump(content):
     return [['call','main']] + list(content)
 
-def create(content):
+def decode_lo_hi(content,label,program_location):
+    new_content=[]
+    for tks in content:
+        new_tks = []
+        for tkn in tks:
+            if type(tkn) != str:
+                new_tks.append(tkn)
+                continue
+            if tkn[0:4] == '%hi(':
+                flag = tkn[4:-1]
+                offset = label[flag] + program_location
+                lo,hi = sep_small_big(offset)
+                hi = hi >> 12
+                new_tks.append(hi)
+            elif tkn[0:4] == '%lo(':
+                flag = tkn[4:-1]
+                offset = label[flag] + program_location
+                lo,hi = sep_small_big(offset)
+                new_tks.append(lo)
+            else:
+                new_tks.append(tkn)
+        
+        new_content.append(new_tks)
+    return new_content
+
+def create(content,program_location):
     content = content.splitlines()
     content = filter(is_effect_line, content)
     content = map(commentout, content)
@@ -435,6 +460,7 @@ def create(content):
     content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     content, labels = label_func(content)
+    content = decode_lo_hi(content,labels,program_location)
     for tks in list(content):
         print(tks)
     print(labels)
@@ -474,11 +500,20 @@ def create_bin(content: List[int], filename):
     with open(filename, 'wb') as file:
         file.write(array)
 
+def location(mode):
+    if mode=='bare':
+        return 0
+    if mode=='loader':
+        return 4096
+    else:
+        print("set mode")
+        exit(1)
 
-def main(filename):
+def main(filename,mode):
     data = open(filename, 'r')
     content = data.read()
-    res = create(content)
+    program_location = location(mode)
+    res = create(content,program_location)
     create_mif(res, filename[:-1]+'mif')
     create_bin(res, filename[:-1]+'bin')
     data.close()
@@ -486,8 +521,8 @@ def main(filename):
 
 if __name__ == '__main__':
     args = sys.argv
-    if len(args) != 2:
+    if len(args) != 3:
         print("input file name")
 
     else:
-        main(args[1])
+        main(args[1],args[2])

@@ -532,4 +532,10 @@ auipcで実装することにする
 gpを使うと多分1命令減るが…
 luiとaddiが離れているときの対処を考えるとstaticを纏めてgpを使用したほうが楽であると判断した
 j mainする前にgpをセットすることにする
+大量のグローバル変数を取られたときは後で考える
 
+9/14
+```
+https://content.riscv.org/wp-content/uploads/2019/03/11.15-Shiva-Chen-Compiler-Support-For-Linker-Relaxation-in-RISC-V-2019-03-13.pdf
+```
+面倒なのでメモリがプログラムが4096番地からおいてあることを仮定して進んでいくことにする
