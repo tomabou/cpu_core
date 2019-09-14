@@ -539,3 +539,4 @@ j mainする前にgpをセットすることにする
 https://content.riscv.org/wp-content/uploads/2019/03/11.15-Shiva-Chen-Compiler-Support-For-Linker-Relaxation-in-RISC-V-2019-03-13.pdf
 ```
 面倒なのでメモリがプログラムが4096番地からおいてあることを仮定して進んでいくことにする
+lbを実装する
