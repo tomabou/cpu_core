@@ -51,11 +51,12 @@ module uart(
         wrfull);
 
     always @ (posedge slow_clk) begin
-        if (is_send == 1'b0 & from_cpu_empty == 1'b0)
+        if (~is_send & ~from_cpu_empty &(~rd_fromcpu) & ~send_enable)
             rd_fromcpu <= 1'b1;
         else
             rd_fromcpu <= 1'b0;
-        if (rd_fromcpu == 1'b1)
+
+        if (rd_fromcpu)
             send_enable <= 1'b1;
         else
             send_enable <= 1'b0;
