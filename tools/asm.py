@@ -378,6 +378,15 @@ def decode_call(tks):
         ]
     return [tks]
 
+def decode_string(tks):
+    if (tks[0] == 'call'):
+        # return [['jal', 'x1', 'x0', tks[1]]]
+        return [
+            ['auipc', 'x6', tks[1]],
+            ['jalr_call', 'x1', 'x6', tks[1]]
+        ]
+    return [tks]
+
 
 def decode_ls(tks):
     tmp = ['lw', 'sw', 'flw', 'fsw','lb','lh','lbu','lhu']
@@ -396,8 +405,18 @@ def repeate_nop(tks):
 
 
 def tokens(string: str):
+    x = string    
     string = string.replace(',', ' ')
     token = string.split()
+    if token[0] == '.string':
+        res = ""
+        count = 0
+        for c in x:
+            if c == '"':
+                count += 1
+            if count == 1:
+                res = res + c
+        return ['.string',res[1:]]
     return token
 
 
