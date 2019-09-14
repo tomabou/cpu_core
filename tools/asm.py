@@ -150,8 +150,19 @@ def load(op, rd, rs1, offset):
     rs1 = int(rs1[1:])
     offset = int(offset)
     offset = offset & (2**12 -1)
-    funct3 = 0b010
-    if op == 'lw':
+
+    funct3_dic = {
+        'lb'  : 0b000,
+        'lh'  : 0b001,
+        'lw'  : 0b010,
+        'lbu' : 0b100,
+        'lhu' : 0b101,
+        'flw' : 0b010,
+    }
+    funct3 = funct3_dic[op]
+
+    tmp = ['lb','lh','lw','lbu','lhu']
+    if op in tmp:
         opcode = 0b0000011
     if op == 'flw':
         opcode = 0b0000111
@@ -233,7 +244,7 @@ def decode_op(labels, index, tks):
         offset = labels[tks[3]] - 4*index
         return branch(tks[0], tks[1], tks[2], offset)
 
-    LOAD = ['lw', 'flw']
+    LOAD = ['lw', 'flw','lb','lh','lw','lbu','lhu']
     if tks[0] in LOAD:
         return load(tks[0], tks[1], tks[2], tks[3])
     STORE = ['sw', 'fsw']
@@ -369,7 +380,7 @@ def decode_call(tks):
 
 
 def decode_ls(tks):
-    tmp = ['lw', 'sw', 'flw', 'fsw']
+    tmp = ['lw', 'sw', 'flw', 'fsw','lb','lh','lbu','lhu']
     if not tks[0] in tmp:
         return tks
 
