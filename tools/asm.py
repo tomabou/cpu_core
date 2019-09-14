@@ -395,8 +395,10 @@ def s2intlist(s):
         if s[i] == '\\':
             if s[i+1] == '0':
                 res.append(0)
+                i+=1
             elif s[i+1] == 'n':
                 res.append(10)
+                i+=1
             else:
                 print("error")
                 exit(1)
