@@ -8,11 +8,12 @@
 //}
 
 void say_hello() {
-    print_string("this is fibo!");
+    print_string("this is fibo!\n");
     return;
 }
 
 int main() {
+    say_hello();
     // while (1) {
     // int x = nibu_input();
     // nibu_show(x);
