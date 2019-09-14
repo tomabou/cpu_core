@@ -540,3 +540,7 @@ https://content.riscv.org/wp-content/uploads/2019/03/11.15-Shiva-Chen-Compiler-S
 ```
 面倒なのでメモリがプログラムが4096番地からおいてあることを仮定して進んでいくことにする
 lbを実装する
+lb lh を実装した
+uart sendにバグがあったので直した
+アセンブラをもろもろいじって、hello worldをuart上に出力するプログラムをコンパイルして動かすことに成功した
+teratermではなくてlinuxのラップトップからuart出来るようにする
