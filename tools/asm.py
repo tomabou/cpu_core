@@ -349,7 +349,12 @@ def pseudoinst(tks):
     if (tks[0] == 'jalr' and len(tks) == 2):
         return ['jalr', 'x1', tks[1], 0]
     if (tks[0] == 'li'):
+        im = int(tks[2])
+        assert(-2048<im & im < 2047)
         return ['addi', tks[1],'zero',tks[2]]
+    if (tks[0] == 'mv'):
+        return ['addi', tks[1],tks[2], 0]
+
     return tks
 
 
