@@ -64,6 +64,7 @@ module nibu (
     reg [31:0] alu_res_d1;
 
     reg [4:0] rdi_buffer [0:2];
+    reg [2:0] funct3_buf [0:2];
     reg [31:0] result [0:2];
     wire [31:0] to_result [0:2];
 
@@ -227,6 +228,7 @@ module nibu (
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
 
     memory mem1(clk,
+        funct3_buf[1],
         address,inst,
         alu_res_d1,memory_write_d1,memory_read, 
         is_memwrite_buf[1] & is_legal_op_buf[1],
@@ -278,6 +280,10 @@ module nibu (
         rdi_buffer[0] <= inst[11:7];
         rdi_buffer[1] <= rdi_buffer[0];
         rdi_buffer[2] <= rdi_buffer[1];
+
+        funct3_buf[0] <= inst[14:12];
+        funct3_buf[1] <= funct3_buf[0];
+        funct3_buf[2] <= funct3_buf[1];
 
         result[0] <= to_result[0];
         result[1] <= to_result[1];
