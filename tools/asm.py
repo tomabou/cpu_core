@@ -280,7 +280,7 @@ def string_constant(s):
     assert (len(s)==4)
     ans = 0
     for i in range(4):
-        ans += ord(s[i]) << (i*8)
+        ans += s[i] << (i*8)
     return ans
 
 
@@ -388,16 +388,40 @@ def decode_call(tks):
         ]
     return [tks]
 
+def s2intlist(s):
+    res = []
+    i = 0
+    while True:
+        if s[i] == '\\':
+            if s[i+1] == '0':
+                res.append(0)
+            elif s[i+1] == 'n':
+                res.append(10)
+            else:
+                print("error")
+                exit(1)
+        else:
+            res.append(ord(s[i]))
+        
+        i += 1
+        if i >= len(s):
+            break
+    res.append(0)
+    return res
+            
+
+
 def decode_string(tks):
     if (tks[0] == '.string'):
         res = []
         s = tks[1]
-        l = len(s)
+        i_list = s2intlist(s)
+        l = len(i_list)
         if l%4 > 0:
             for i in range(4 - l%4):
-                s = s + '#'
-        for i in range(len(s)//4):
-            res.append(['.str',s[i*4:i*4+4]])
+                i_list.append(64)
+        for i in range(len(i_list)//4):
+            res.append(['.str',i_list[i*4:i*4+4]])
         return res
     return [tks]
 
