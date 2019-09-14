@@ -271,7 +271,17 @@ def decode_op(labels, index, tks):
     ]
     if tks[0] in OP_FP3:
         return opfp(tks[0],tks[1],tks[2],tks[3])
+
+    if tks[0] == '.str':
+        return string_constant(tks[1])
     return -1
+
+def string_constant(s):
+    assert (len(s)==4)
+    ans = 0
+    for i in range(4):
+        ans += ord(s[i]) << (i*8)
+    return ans
 
 
 def decode_op_func(content, labels):
