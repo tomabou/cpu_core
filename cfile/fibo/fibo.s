@@ -69,7 +69,7 @@ print_string:
 	.section	.rodata.str1.4,"aMS",@progbits,1
 	.align	2
 .LC0:
-	.string	"this is fibo!"
+	.string	"this is fibo!\n"
 	.text
 	.align	2
 	.globl	say_hello
@@ -98,6 +98,22 @@ say_hello:
 	.globl	main
 	.type	main, @function
 main:
+	lui	a5,%hi(.LC0)
+	li	a4,104
+	addi	a5,a5,%lo(.LC0)
+	li	a3,116
+	j	.L21
+.L22:
+	mv	a3,a4
+	lbu	a4,1(a5)
+.L21:
+#APP
+# 21 "cfile/fibo/../header/nibuio.h" 1
+	sw      a3, 4(zero);
+# 0 "" 2
+#NO_APP
+	addi	a5,a5,1
+	bne	a4,zero,.L22
 	li	a0,0
 	ret
 	.size	main, .-main
