@@ -274,6 +274,8 @@ def decode_op(labels, index, tks):
 
     if tks[0] == '.str':
         return string_constant(tks[1])
+
+    print(tks)
     return -1
 
 def string_constant(s):
@@ -363,18 +365,13 @@ def rename_register(tk):
 def pseudoinst(tks):
     if (tks[0] == 'nop'):
         return ['addi', 'x0', 'x0', 0]
-    if (tks[0] == 'j'):
-        return ['jal', 'x0', tks[1]]
-    if (tks[0] == 'ret'):
-        return ['jalr', 'x0', 'x1', 0]
-    if (tks[0] == 'jalr' and len(tks) == 2):
-        return ['jalr', 'x1', tks[1], 0]
     if (tks[0] == 'li'):
         im = int(tks[2])
         assert(-2048<im & im < 2047)
         return ['addi', tks[1],'zero',tks[2]]
     if (tks[0] == 'mv'):
         return ['addi', tks[1],tks[2], 0]
+
 
     if (tks[0] == 'beqz'):
         return ['beq',tks[1],'zero',tks[2]]
@@ -398,6 +395,17 @@ def pseudoinst(tks):
     if (tks[0] == 'bleu'):
         return ['bgeu',tks[2],tks[1],tks[3]]
     
+    if (tks[0] == 'j'):
+        return ['jal', 'x0', tks[1]]
+    if (tks[0] == 'jal' and len(tks) == 2):
+        return ['jal', 'x1', tks[1]]
+    if (tks[0] == 'jr'):
+        return ['jalr', 'x0', tks[1], 0]
+    if (tks[0] == 'jalr' and len(tks) == 2):
+        return ['jalr', 'x1', tks[1], 0]
+    if (tks[0] == 'ret'):
+        return ['jalr', 'x0', 'x1', 0]
+
     return tks
 
 
