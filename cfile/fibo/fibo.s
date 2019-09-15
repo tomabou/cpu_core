@@ -103,13 +103,13 @@ fibo:
 	.section	.rodata.str1.4,"aMS",@progbits,1
 	.align	2
 .LC0:
-	.string	"input number!\n"
+	.string	"input number!\r\n"
 	.align	2
 .LC1:
 	.string	"anser is "
 	.align	2
 .LC2:
-	.string	" \n"
+	.string	" \r\n"
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
@@ -190,7 +190,7 @@ main:
 	sw      s7, 4(zero);
 # 0 "" 2
 #NO_APP
-	li	a4,10
+	li	a4,13
 	mv	a5,s5
 	li	a3,32
 	j	.L33

@@ -6,7 +6,7 @@
 	.type	nibu_input_func, @function
 nibu_input_func:
 #APP
-# 8 "cfile/test/../header/nibuio.h" 1
+# 8 "./cfile/test/../header/nibuio.h" 1
 	lw    a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -19,7 +19,7 @@ nibu_input:
 	li	a5,-1
 .L4:
 #APP
-# 8 "cfile/test/../header/nibuio.h" 1
+# 8 "./cfile/test/../header/nibuio.h" 1
 	lw    a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -31,7 +31,7 @@ nibu_input:
 	.type	nibu_output, @function
 nibu_output:
 #APP
-# 21 "cfile/test/../header/nibuio.h" 1
+# 21 "./cfile/test/../header/nibuio.h" 1
 	sw      a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -42,7 +42,7 @@ nibu_output:
 	.type	nibu_show, @function
 nibu_show:
 #APP
-# 26 "cfile/test/../header/nibuio.h" 1
+# 26 "./cfile/test/../header/nibuio.h" 1
 	sw      a0, 0(zero);
 # 0 "" 2
 #NO_APP
@@ -56,7 +56,7 @@ print_string:
 	beq	a5,zero,.L8
 .L10:
 #APP
-# 21 "cfile/test/../header/nibuio.h" 1
+# 21 "./cfile/test/../header/nibuio.h" 1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -74,13 +74,13 @@ main:
 	li	a4,-1
 .L16:
 #APP
-# 8 "cfile/test/../header/nibuio.h" 1
+# 8 "./cfile/test/../header/nibuio.h" 1
 	lw    a5, 4(zero);
 # 0 "" 2
 #NO_APP
 	beq	a5,a4,.L16
 #APP
-# 21 "cfile/test/../header/nibuio.h" 1
+# 21 "./cfile/test/../header/nibuio.h" 1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP

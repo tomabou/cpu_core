@@ -429,6 +429,9 @@ def s2intlist(s):
             elif s[i+1] == 'n':
                 res.append(10)
                 i+=1
+            elif s[i+1] == 'r':
+                res.append(13)
+                i+=1
             else:
                 print("error")
                 exit(1)

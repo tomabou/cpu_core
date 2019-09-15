@@ -11,12 +11,12 @@ int main() {
     while (1) {
         int x = nibu_input();
         if ((x < (int)'0') | (x > (int)'9')) {
-            print_string("input number!\n");
+            print_string("input number!\r\n");
         } else {
             int y = fibo((x - (int)'0'));
             print_string("anser is ");
             nibu_output((int)'0' + y);
-            print_string(" \n");
+            print_string(" \r\n");
         }
     }
     return 0;
