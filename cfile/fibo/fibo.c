@@ -1,22 +1,23 @@
 #include "../header/nibuio.h"
 
-// int fibo(int n) {
-//    if (n <= 1) {
-//        return 1;
-//    }
-//    return fibo(n - 1) + fibo(n - 2);
-//}
-
-void say_hello() {
-    print_string("this is fibo!\n");
-    return;
+int fibo(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return fibo(n - 1) + fibo(n - 2);
 }
 
 int main() {
-    say_hello();
-    // while (1) {
-    // int x = nibu_input();
-    // nibu_show(x);
-    //}
+    while (1) {
+        int x = nibu_input();
+        if ((x < (int)'0') | (x > (int)'9')) {
+            print_string("input number!\n");
+        } else {
+            int y = fibo((x - (int)'0'));
+            print_string("anser is ");
+            nibu_output((int)'0' + y);
+            print_string(" \n");
+        }
+    }
     return 0;
 }

@@ -593,6 +593,9 @@ def main(filename,mode):
     create_mif(res, filename[:-1]+'mif')
     create_bin(res, filename[:-1]+'bin')
     data.close()
+    if -1 in res:
+        print("***************invalid op**************")
+        exit(1)
 
 
 if __name__ == '__main__':
