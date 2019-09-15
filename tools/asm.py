@@ -376,6 +376,28 @@ def pseudoinst(tks):
     if (tks[0] == 'mv'):
         return ['addi', tks[1],tks[2], 0]
 
+    if (tks[0] == 'beqz'):
+        return ['beq',tks[1],'zero',tks[2]]
+    if (tks[0] == 'bnez'):
+        return ['bne',tks[1],'zero',tks[2]]
+    if (tks[0] == 'blez'):
+        return ['bge','zero',tks[1],tks[2]]
+    if (tks[0] == 'bgez'):
+        return ['bge',tks[1],'zero',tks[2]]
+    if (tks[0] == 'bltz'):
+        return ['blt',tks[1],'zero',tks[2]]
+    if (tks[0] == 'bgtz'):
+        return ['blt','zero',tks[1],tks[2]]
+
+    if (tks[0] == 'bgt'):
+        return ['blt',tks[2],tks[1],tks[3]]
+    if (tks[0] == 'ble'):
+        return ['bge',tks[2],tks[1],tks[3]]
+    if (tks[0] == 'bgtu'):
+        return ['bltu',tks[2],tks[1],tks[3]]
+    if (tks[0] == 'bleu'):
+        return ['bgeu',tks[2],tks[1],tks[3]]
+    
     return tks
 
 
