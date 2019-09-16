@@ -570,9 +570,14 @@ def create(content,program_location):
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
     content, labels = label_func(content)
     content = decode_lo_hi(content,labels,program_location)
-    for tks in list(content):
-        print(tks)
-    print(labels)
+    for i, tks in enumerate(list(content)):
+        print(str(i).rjust(4),end = ' ')
+        for tkn in tks:
+            print(str(tkn).ljust(10), end='')
+        print('')
+    for key,index in labels.items():
+        print(key.rjust(20) , end=' ')
+        print(str(index //4).rjust(4))
     content = decode_op_func(content, labels)
     return content
 
