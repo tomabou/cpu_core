@@ -193,6 +193,24 @@ init_ppm:
 	addi	sp,sp,16
 	jr	ra
 	.size	init_ppm, .-init_ppm
+	.align	2
+	.globl	mandel
+	.type	mandel, @function
+mandel:
+	ble	a0,zero,.L34
+	fmv.s.x	fa5,zero
+	lui	a5,%hi(.LC2)
+	fadd.s	fa1,fa1,fa5
+	fadd.s	fa0,fa0,fa5
+	flw	fa5,%lo(.LC2)(a5)
+	fmul.s	fa1,fa1,fa1
+	fmadd.s	fa0,fa0,fa0,fa1
+	fgt.s	a5,fa0,fa5
+	addi	a5,a5,-1
+	and	a0,a0,a5
+.L34:
+	ret
+	.size	mandel, .-mandel
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
@@ -208,5 +226,9 @@ main:
 	addi	sp,sp,16
 	jr	ra
 	.size	main, .-main
+	.section	.srodata.cst4,"aM",@progbits,4
+	.align	2
+.LC2:
+	.word	1082130432
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits

@@ -477,8 +477,14 @@ def decode_ls(tks):
     if not tks[0] in tmp:
         return tks
 
-    offset, base = tks[2].replace(')', '').split('(')
-    return [tks[0], tks[1], base, offset]
+    print(tks)
+    if not tks[2][0] == '%':
+        offset, base = tks[2].replace(')', '').split('(')
+        return [tks[0], tks[1], base, offset]
+    else: 
+        a,b = tks[2].replace(")(",") (").split(' ')
+        b = b[1:-1]
+        return [tks[0], tks[1], b, a]
 
 
 def repeate_nop(tks):
