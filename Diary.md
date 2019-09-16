@@ -553,3 +553,7 @@ catで表示してコマンドラインで流し込めば良いということ�
 
 todo
 pseudo codeのdecodeを追加する
+
+マンデルブロを動かしてみる
+pseudoを追加
+divをどうするか

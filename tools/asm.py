@@ -371,6 +371,18 @@ def pseudoinst(tks):
         return ['addi', tks[1],'zero',tks[2]]
     if (tks[0] == 'mv'):
         return ['addi', tks[1],tks[2], 0]
+    if (tks[0] == 'not'):
+        return ['xori', tks[1],tks[2],-1]
+    if (tks[0] == 'neg'):
+        return ['sub',tks[1],'zero',tks[2]]
+    if (tks[0] == 'seqz'):
+        return ['sltiu',tks[1],tks[2],1]
+    if (tks[0] == 'snez'):
+        return ['sltu', tks[1],'zero',tks[2]]
+    if (tks[0] == 'sltz'):
+        return ['slt', tks[1],tks[2],'zero']
+    if (tks[0] == 'sgtz'):
+        return ['slt', tks[1],'zero',tks[2]]
 
 
     if (tks[0] == 'beqz'):
