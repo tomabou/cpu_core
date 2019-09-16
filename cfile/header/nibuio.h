@@ -68,4 +68,27 @@ void print_string(char* c) {
     return;
 }
 
+void __print_int(int x) {
+    if (x == 0) {
+        return;
+    }
+    int r = (x % 10);
+    x /= 10;
+    __print_int(x);
+    nibu_output(r + '0');
+    return;
+}
+
+void print_int(int x) {
+    if (x < 0) {
+        nibu_output('-');
+        x = -x;
+    }
+    if (x == 0) {
+        nibu_output('0');
+    }
+    __print_int(x);
+    return;
+}
+
 #endif
