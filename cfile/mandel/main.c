@@ -17,14 +17,18 @@ int mandel(float r, float l, int max_iter) {
     for (int i = 0; i < max_iter; i++) {
         nx = r + x * x - y * y;
         ny = l + 2 * x * y;
-        if (nx * nx + ny * ny > 4) {
+        if (4 < nx * nx + ny * ny) {
             return i;
         }
+        x = nx;
+        y = ny;
     }
     return max_iter;
 }
 
 int main() {
     init_ppm(256, 256);
+    int x = mandel(0.253, 0, 211);
+    print_int(x);
     return 0;
 }

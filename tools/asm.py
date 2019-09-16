@@ -57,6 +57,8 @@ def opfp(op, rd, rs1, rs2 = 0):
         'fcvt.s.wu': 0b1101000,
         'fmv.w.x' :  0b1111000,
         'fmv.x.w' :  0b1110000,
+        'fmv.s.x' :  0b1111000,
+        'fmv.x.s' :  0b1110000,
         'fadd.s' :   0b0000000,
         'fsub.s' :   0b0000100,
         'fmul.s' :   0b0001000,
@@ -254,6 +256,8 @@ def decode_op(labels, index, tks):
     OP_FP = [
         'fmv.x.w',
         'fmv.w.x',
+        'fmv.x.s',
+        'fmv.s.x',
         'fcvt.w.s',
         'fcvt.wu.s',
         'fcvt.s.w',
@@ -274,6 +278,9 @@ def decode_op(labels, index, tks):
 
     if tks[0] == '.str':
         return string_constant(tks[1])
+
+    if tks[0] == '.word':
+        return int(tks[1])
 
     print(tks)
     return -1
@@ -377,6 +384,9 @@ def pseudoinst(tks):
     if (tks[0] == 'sgtz'):
         return ['slt', tks[1],'zero',tks[2]]
 
+
+    if (tks[0] == 'fgt.s'):
+        return ['flt.s',tks[1],tks[3],tks[2]]
 
     if (tks[0] == 'beqz'):
         return ['beq',tks[1],'zero',tks[2]]
