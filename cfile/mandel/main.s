@@ -78,15 +78,25 @@ __print_int:
 	.align	2
 	.type	__print_int.part.0, @function
 __print_int.part.0:
+	li	a5,1717985280
 	addi	sp,sp,-16
+	addi	a5,a5,1639
 	sw	s1,4(sp)
-	li	s1,10
+	mulhu	s1,a0,a5
 	sw	s0,8(sp)
 	mv	s0,a0
-	div	a0,a0,s1
+	srai	a0,a0,31
+	and	a5,a0,a5
 	sw	ra,12(sp)
+	sub	s1,s1,a5
+	srai	s1,s1,2
+	sub	s1,s1,a0
+	mv	a0,s1
 	call	__print_int
-	rem	s0,s0,s1
+	slli	a0,s1,2
+	add	a0,a0,s1
+	slli	a0,a0,1
+	sub	s0,s0,a0
 	addi	s0,s0,48
 #APP
 # 21 "cfile/mandel/../header/nibuio.h" 1

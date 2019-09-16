@@ -359,16 +359,9 @@ def rename_register(tk):
         return 'f'+str(fli.index(tk))
     return tk
 
-
-
-
 def pseudoinst(tks):
     if (tks[0] == 'nop'):
         return ['addi', 'x0', 'x0', 0]
-    if (tks[0] == 'li'):
-        im = int(tks[2])
-        assert(-2048<im & im < 2047)
-        return ['addi', tks[1],'zero',tks[2]]
     if (tks[0] == 'mv'):
         return ['addi', tks[1],tks[2], 0]
     if (tks[0] == 'not'):
@@ -548,6 +541,20 @@ def is_not_information(tks):
 def add_jump(content):
     return [['call','main']] + list(content)
 
+
+def decode_load_imm(tks):
+    if (tks[0] == 'li'):
+        im = int(tks[2])
+        small ,big = sep_small_big(im)
+        if  big == 0:
+            return [['addi', tks[1],'zero',tks[2]]]
+        elif small == 0:
+            return [['lui', tks[1], big>>12]]
+        else:
+            return [['lui', tks[1], big>>12],['addi',tks[1],tks[1],small]]
+    return [tks]
+
+
 def decode_lo_hi(content,label,program_location):
     new_content=[]
     for tks in content:
@@ -581,6 +588,7 @@ def create(content,program_location):
     content = add_jump(content)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
+    content = list(itertools.chain.from_iterable(map(decode_load_imm, content)))
     content = list(itertools.chain.from_iterable(map(decode_string, content)))
     content = filter(is_not_information, content)
     content = map(pseudoinst, content)
