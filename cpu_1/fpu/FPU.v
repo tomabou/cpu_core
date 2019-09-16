@@ -32,6 +32,7 @@ module FPU(
 
     wire [31:0] addsub_out;
     wire [31:0] mul_out;
+    wire [31:0] fsgn_out;
 
     reg [31:0] from_mem_buf_3;
     
@@ -55,6 +56,9 @@ module FPU(
     wire is_fcmp;
     wire is_eqal;
     wire is_leth;
+    wire is_fsgn;
+    wire is_sgnn;
+    wire is_sgnx;
     wire use_rs1;
     wire use_rs2;
     wire is_hazard_0;
@@ -73,6 +77,9 @@ module FPU(
     reg [4:0] is_fcmp_buf = 5'b0;
     reg [4:0] is_eqal_buf = 5'b0;
     reg [4:0] is_leth_buf = 5'b0;
+    reg [4:0] is_fsgn_buf = 5'b0;
+    reg [4:0] is_sgnn_buf = 5'b0;
+    reg [4:0] is_sgnx_buf = 5'b0;
     reg [4:0] is_hazard_0_buf = 5'b0;
     reg [4:0] is_hazard_1_buf = 5'b0;
     reg [4:0] is_hazard_2_buf = 5'b0;
@@ -190,10 +197,13 @@ module FPU(
 
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
     fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
+    sign_injection sign_injection1(
+        ope1,op2,is_sgnn_buf[0],is_sgnx_buf[0],fsgn_out);
 
     // 0 is same as register
     // 0~1  itfcvt, control
-    assign to_result[1] = from_intreg;
+    assign to_result[1] = is_fsgn_buf[0] ? fsgn_out 
+                        : from_intreg;
     assign to_result[2] = result[1];
     assign to_result[3] = is_adsb_buf[2] ? addsub_out
                         : is_cvif_buf[2] ? from_intreg_cvt
@@ -232,6 +242,9 @@ module FPU(
         is_fcmp_buf <= {is_fcmp_buf[3:0],is_fcmp};
         is_eqal_buf <= {is_eqal_buf[3:0],is_eqal};
         is_leth_buf <= {is_leth_buf[3:0],is_leth};
+        is_fsgn_buf <= {is_fsgn_buf[3:0],is_fsgn};
+        is_sgnn_buf <= {is_sgnn_buf[3:0],is_sgnn};
+        is_sgnx_buf <= {is_sgnx_buf[3:0],is_sgnx};
         is_hazard_0_buf <= {is_hazard_0_buf[3:0],is_hazard_0};
         is_hazard_1_buf <= {is_hazard_1_buf[3:0],is_hazard_1};
         is_hazard_2_buf <= {is_hazard_2_buf[3:0],is_hazard_2};
