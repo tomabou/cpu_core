@@ -428,6 +428,12 @@ def decode_call(tks):
             ['auipc', 'x6', tks[1]],
             ['jalr_call', 'x1', 'x6', tks[1]]
         ]
+    if (tks[0] == 'tail'):
+        # return [['jal', 'x1', 'x0', tks[1]]]
+        return [
+            ['auipc', 'x6', tks[1]],
+            ['jalr_call', 'x0', 'x6', tks[1]]
+        ]
     return [tks]
 
 def s2intlist(s):
