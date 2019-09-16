@@ -201,7 +201,7 @@ module FPU(
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
     fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
     sign_injection sign_injection1(
-        ope1,op2,is_sgnn_buf[0],is_sgnx_buf[0],fsgn_out);
+        ope1,ope2,is_sgnn_buf[0],is_sgnx_buf[0],fsgn_out);
 
     // 0 is same as register
     // 0~1  itfcvt, control

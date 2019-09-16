@@ -1,6 +1,6 @@
 module control(
     opcode,
-    funct5,
+    funct7,
     reg_write,
     imm_data,
     opcode_alu,
@@ -10,6 +10,7 @@ module control(
     cond_b,
     store,
     is_from_fpu,
+    is_multiply,
     jalr,
     auipc,
     lui,
@@ -19,7 +20,7 @@ module control(
     use_rs2);
 
     input [6:0] opcode;
-    input [4:0] funct5;
+    input [6:0] funct7;
     output reg reg_write;
     output reg imm_data;
     output reg [1:0] opcode_alu;
@@ -29,6 +30,7 @@ module control(
     output cond_b;
     output store;
     output is_from_fpu;
+    output is_multiply;
     output jalr;
     output auipc;
     output lui;
@@ -49,10 +51,11 @@ module control(
     assign lui = (opcode == 7'b0110111);
     assign auipc = (opcode == 7'b0010111);
     assign is_fstore = (opcode == 7'b0100111);
-    assign is_ftoi = (opcode == 7'b1010011) & ((funct5 == 5'b11100) | funct5 == 5'b11010) | (funct5 == 5'b10100);
+    assign is_ftoi = (opcode == 7'b1010011) & ((funct7[6:2] == 5'b11100) | funct7[6:2] == 5'b11010) | (funct7[6:2] == 5'b10100);
     assign is_hazard_0 = is_ftoi | mem_to_reg;
 
-    assign is_itof = (opcode == 7'b1010011) & ((funct5 == 5'b11000) | funct5 == 5'b11110);
+    assign is_itof = (opcode == 7'b1010011) & ((funct7[6:2] == 5'b11000) | funct7[6:2] == 5'b11110);
+    assign is_multiply = (opcode == 7'b0110011) & (funct7 == 7'b0000001);
 
 
     always @(*) begin
