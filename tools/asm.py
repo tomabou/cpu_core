@@ -105,16 +105,14 @@ def op(op, rd, rs1, rs2):
         'mulhu': 3,
     }
     func3 = func3_set[op]
+    muls = ['mul','mulh','mulhsu','mulhu']
     if op == 'sub' or op == 'sra':
         func7 = 0b0100000
-    
-    muls = ['mul','mulh','mulhsu','mulhu']
-    if op in muls:
+    elif op in muls:
         func7 = 0b0000001
-    
-
     else:
         func7 = 0
+    
     x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
         func3 * (2**12) + rd * (2**7) + op_imm_code
 

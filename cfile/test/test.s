@@ -193,7 +193,7 @@ main:
 	beq	a2,a5,.L36
 	sub	a4,a4,a1
 	sub	a3,a3,a2
-	sltu	a4,a4,a3
+	slt	a4,a4,a3
 	addi	a4,a4,5
 #APP
 # 26 "cfile/test/../header/nibuio.h" 1

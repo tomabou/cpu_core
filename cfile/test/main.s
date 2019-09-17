@@ -172,6 +172,9 @@ main:
 	beq	a5,a4,.L33
 #APP
 # 21 "cfile/test/../header/nibuio.h" 1
+	li		t1, 1
+	li		t2, 501
+	sub		a5, a5, t1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
