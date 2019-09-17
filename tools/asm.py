@@ -98,11 +98,21 @@ def op(op, rd, rs1, rs2):
         'srl': 5,
         'sra': 5,
         'or': 6,
-        'and': 7
+        'and': 7,
+        'mul': 0,
+        'mulh': 1,
+        'mulhsu': 2,
+        'mulhu': 3,
     }
     func3 = func3_set[op]
     if op == 'sub' or op == 'sra':
         func7 = 0b0100000
+    
+    muls = ['mul','mulh','mulhsu','mulhu']
+    if op in muls:
+        func7 = 0b0000001
+    
+
     else:
         func7 = 0
     x = func7 * (2**25) + rs2*(2**20) + rs1 * (2**15) + \
@@ -205,7 +215,8 @@ def sep_small_big(n):
 
 def decode_op(labels, index, tks):
     OP = ['add', 'sub', 'sll', 'slt', 'sltu', 'xor', 'srl', 'sra', 'or', 'and']
-    if tks[0] in OP:
+    MULS = ['mul','mulh','mulhsu','mulhu']
+    if tks[0] in OP or tks[0] in MULS:
         return op(tks[0], tks[1], tks[2], tks[3])
     OP_IMM = ['addi', 'slti', 'sltiu', 'xori',
               'ori', 'andi', 'slli', 'srli', 'srai']
