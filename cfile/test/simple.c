@@ -8,6 +8,6 @@ int fibo(int n) {
 }
 
 int main() {
-    nibu_show(fibo(5));
+    nibu_show(fibo(7));
     return 0;
 };
