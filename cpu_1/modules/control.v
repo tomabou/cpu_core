@@ -52,7 +52,7 @@ module control(
     assign auipc = (opcode == 7'b0010111);
     assign is_fstore = (opcode == 7'b0100111);
     assign is_ftoi = (opcode == 7'b1010011) & ((funct7[6:2] == 5'b11100) | funct7[6:2] == 5'b11010) | (funct7[6:2] == 5'b10100);
-    assign is_hazard_0 = is_ftoi | mem_to_reg;
+    assign is_hazard_0 = is_ftoi | mem_to_reg | is_multiply;
 
     assign is_itof = (opcode == 7'b1010011) & ((funct7[6:2] == 5'b11000) | funct7[6:2] == 5'b11110);
     assign is_multiply = (opcode == 7'b0110011) & (funct7 == 7'b0000001);

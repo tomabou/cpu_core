@@ -230,7 +230,7 @@ module nibu (
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
-    mul_unit mul_unit1(operand1,operand2,funct3_buf[0],mul_out);
+    mul_unit mul_unit1(clk,operand1,operand2,funct3_buf[0],mul_out);
 
     memory mem1(clk,
         funct3_buf[1],
@@ -246,12 +246,12 @@ module nibu (
         seg_io);
 
     assign to_result[1] = is_pc_toreg_buf[0] ? next_address_d2
-                        : is_multiply_buf[0] ? mul_out
                         : alu_res;
     assign to_result[2] = is_from_fpu_buf[1] ? into_intreg
                         : result[1];
 
     assign write_data   = is_memtoreg_buf[2] ? memory_read
+                        : is_multiply_buf[2] ? mul_out
                         : result[2];
 
     /*
