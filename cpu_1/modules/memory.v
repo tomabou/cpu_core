@@ -38,33 +38,33 @@ module memory(
     //little endian
     always @ (*) begin
         case (low_addr_pre[1:0])
-            2'd0    : b_data <= {24'b0,ram_readdata[7:0]};
-            2'd1    : b_data <= {24'b0,ram_readdata[15:8]};
-            2'd2    : b_data <= {24'b0,ram_readdata[23:16]};
-            default : b_data <= {24'b0,ram_readdata[31:24]};
+            2'd0    : bu_data <= {24'b0,ram_readdata[7:0]};
+            2'd1    : bu_data <= {24'b0,ram_readdata[15:8]};
+            2'd2    : bu_data <= {24'b0,ram_readdata[23:16]};
+            default : bu_data <= {24'b0,ram_readdata[31:24]};
         endcase
     end
     
     always @ (*) begin
         case (low_addr_pre[1:0])
-            2'd0    : bu_data <= {{24{ram_readdata[7]}},ram_readdata[7:0]};
-            2'd1    : bu_data <= {{24{ram_readdata[15]}},ram_readdata[15:8]};
-            2'd2    : bu_data <= {{24{ram_readdata[23]}},ram_readdata[23:16]};
-            default : bu_data <= {{24{ram_readdata[31]}},ram_readdata[31:24]};
+            2'd0    : b_data <= {{24{ram_readdata[7]}},ram_readdata[7:0]};
+            2'd1    : b_data <= {{24{ram_readdata[15]}},ram_readdata[15:8]};
+            2'd2    : b_data <= {{24{ram_readdata[23]}},ram_readdata[23:16]};
+            default : b_data <= {{24{ram_readdata[31]}},ram_readdata[31:24]};
         endcase
     end
 
     always @ (*) begin
         case (low_addr_pre[0])
-            1'd0    : h_data <= {16'b0,ram_readdata[15:0]};
-            default : h_data <= {16'b0,ram_readdata[31:16]};
+            1'd0    : hu_data <= {16'b0,ram_readdata[15:0]};
+            default : hu_data <= {16'b0,ram_readdata[31:16]};
         endcase
     end
 
     always @ (*) begin
         case (low_addr_pre[0])
-            1'd0    : hu_data <= {{16{ram_readdata[15]}},ram_readdata[15:0]};
-            default : hu_data <= {{16{ram_readdata[31]}},ram_readdata[31:16]};
+            1'd0    : h_data <= {{16{ram_readdata[15]}},ram_readdata[15:0]};
+            default : h_data <= {{16{ram_readdata[31]}},ram_readdata[31:16]};
         endcase
     end
     

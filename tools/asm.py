@@ -565,8 +565,15 @@ def is_not_information(tks):
     ]
     return not (tks[0] in tmp)
 
-def add_jump(content):
-    return [['call','main']] + list(content)
+def add_jump(content,mode):
+    if mode == 'bare':
+        return [
+            ['lui','sp', '8'],
+            ['addi', 'sp', 'sp', '-4'],
+            ['call','main'],
+        ] + list(content)
+    else:
+        return [['call','main']] + list(content)
 
 
 def decode_load_imm(tks):
@@ -607,12 +614,12 @@ def decode_lo_hi(content,label,program_location):
         new_content.append(new_tks)
     return new_content
 
-def create(content,program_location):
+def create(content,program_location,mode):
     content = content.splitlines()
     content = filter(is_effect_line, content)
     content = map(commentout, content)
     content = map(tokens, content)
-    content = add_jump(content)
+    content = add_jump(content,mode)
     content = list(itertools.chain.from_iterable(map(repeate_nop, content)))
     content = list(itertools.chain.from_iterable(map(decode_call, content)))
     content = list(itertools.chain.from_iterable(map(decode_load_imm, content)))
@@ -680,7 +687,7 @@ def main(filename,mode):
     data = open(filename, 'r')
     content = data.read()
     program_location = location(mode)
-    res = create(content,program_location)
+    res = create(content,program_location,mode)
     create_mif(res, filename[:-1]+'mif')
     create_bin(res, filename[:-1]+'bin')
     data.close()
