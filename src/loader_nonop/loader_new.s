@@ -1,4 +1,4 @@
-.main:
+main:
         lui     a0, 1
         addi    a1, zero, -1
         addi    a2, zero, 2
