@@ -162,41 +162,45 @@ print_int:
 	.globl	main
 	.type	main, @function
 main:
-	li	a4,-1
+	li	a5,-1
 .L33:
-#APP
-# 8 "cfile/test/../header/nibuio.h" 1
-	lw    a5, 4(zero);
-# 0 "" 2
-#NO_APP
-	beq	a5,a4,.L33
-	li	a3,-1
-.L34:
 #APP
 # 8 "cfile/test/../header/nibuio.h" 1
 	lw    a4, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a4,a3,.L34
-	sub	a5,a5,a4
-	blt	a5,zero,.L39
-	li	a5,7
+	beq	a4,a5,.L33
+.L34:
 #APP
-# 26 "cfile/test/../header/nibuio.h" 1
-	sw      a5, 0(zero);
+# 8 "cfile/test/../header/nibuio.h" 1
+	lw    a1, 4(zero);
 # 0 "" 2
 #NO_APP
+	beq	a1,a5,.L34
+.L35:
+#APP
+# 8 "cfile/test/../header/nibuio.h" 1
+	lw    a3, 4(zero);
+# 0 "" 2
+#NO_APP
+	beq	a3,a5,.L35
 .L36:
-	li	a0,0
-	ret
-.L39:
-	li	a5,5
 #APP
-# 26 "cfile/test/../header/nibuio.h" 1
-	sw      a5, 0(zero);
+# 8 "cfile/test/../header/nibuio.h" 1
+	lw    a2, 4(zero);
 # 0 "" 2
 #NO_APP
-	j	.L36
+	beq	a2,a5,.L36
+	sub	a4,a4,a1
+	sub	a3,a3,a2
+	sltu	a4,a4,a3
+	addi	a4,a4,5
+#APP
+# 26 "cfile/test/../header/nibuio.h" 1
+	sw      a4, 0(zero);
+# 0 "" 2
+#NO_APP
+	j	.L33
 	.size	main, .-main
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits

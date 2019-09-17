@@ -420,6 +420,9 @@ def pseudoinst(tks):
         return ['bltu',tks[2],tks[1],tks[3]]
     if (tks[0] == 'bleu'):
         return ['bgeu',tks[2],tks[1],tks[3]]
+
+    if (tks[0] == 'sgt'):
+        return ['slt',tks[1],tks[3],tks[2]]
     
     if (tks[0] == 'j'):
         return ['jal', 'x0', tks[1]]
