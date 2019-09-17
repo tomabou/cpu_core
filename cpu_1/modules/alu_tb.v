@@ -8,15 +8,32 @@ module alu_tb();
     alu u1(data1, data2, out,ctrl);
 
     initial begin
-        ctrl <= 4'd0;
+        ctrl <= 4'd7;
         #10;
-        data1 <= -32'd1023;
-        data2 <= 32'b11000011;
+        data1 <= -32'd1;
+        data2 <= 32'd1;
         #10;
-        ctrl <= 4'd11;
+        data1 <= 32'd1;
+        data2 <= 32'd2;
         #10;
-        ctrl <= 4'd12;
+        data1 <= 32'd2;
+        data2 <= 32'd1;
         #10;
-        ctrl <= 4'd13;
+        data1 <= 32'd1;
+        data2 <= -32'd1;
+        #10
+        ctrl <= 4'd9;
+        #10;
+        data1 <= -32'd1;
+        data2 <= 32'd1;
+        #10;
+        data1 <= 32'd1;
+        data2 <= 32'd2;
+        #10;
+        data1 <= 32'd2;
+        data2 <= 32'd1;
+        #10;
+        data1 <= 32'd1;
+        data2 <= -32'd1;
     end
 endmodule

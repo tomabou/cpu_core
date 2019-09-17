@@ -4,6 +4,26 @@ module alu(data1,data2,out,ctrl);
     output reg [31:0] out;
     input [3:0] ctrl;
 
+    reg slt;
+    reg sge;
+
+    always @(*) begin
+        case ({data1[31],data2[31]})
+            2'b10 : slt <= 1'b1;
+            2'b01 : slt <= 1'b0;
+            default : slt <= data1 < data2;
+        endcase
+    end
+
+    always @(*) begin
+        case ({data1[31],data2[31]})
+            2'b10 : sge <= 1'b0;
+            2'b01 : sge <= 1'b1;
+            default : sge <= data1 >= data2;
+        endcase
+    end
+    
+
     always @(*) begin
         case(ctrl)
             0: out <= data1 & data2;
@@ -13,8 +33,8 @@ module alu(data1,data2,out,ctrl);
             4: out <= data1 ^ data2;
             5: out <= data1 == data2;
             6: out <= data1 != data2;
-            7: out <= $signed(data1) < $signed(data2);
-            8: out <= $signed(data1) >= $signed(data2);
+            7: out <= slt;
+            8: out <= sge;
             9: out <= data1 < data2;
             10: out <= data1 >= data2;
             11: out <= data1 << data2[4:0];
