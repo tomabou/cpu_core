@@ -157,69 +157,22 @@ print_int:
 	addi	sp,sp,16
 	jr	ra
 	.size	print_int, .-print_int
-	.align	2
-	.globl	fibo
-	.type	fibo, @function
-fibo:
-	li	a5,1
-	ble	a0,a5,.L40
-	addi	sp,sp,-16
-	addi	a5,a0,-2
-	sw	s2,0(sp)
-	andi	a5,a5,-2
-	addi	s2,a0,-3
-	sw	s0,8(sp)
-	sw	s1,4(sp)
-	sw	ra,12(sp)
-	addi	s0,a0,-1
-	sub	s2,s2,a5
-	li	s1,0
-.L34:
-	mv	a0,s0
-	call	fibo
-	addi	s0,s0,-2
-	add	s1,s1,a0
-	bne	s0,s2,.L34
-	lw	ra,12(sp)
-	lw	s0,8(sp)
-	lw	s2,0(sp)
-	addi	a0,s1,1
-	lw	s1,4(sp)
-	addi	sp,sp,16
-	jr	ra
-.L40:
-	li	a0,1
-	ret
-	.size	fibo, .-fibo
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
 	.type	main, @function
 main:
-	addi	sp,sp,-16
-	li	a0,6
-	sw	ra,12(sp)
-	sw	s0,8(sp)
-	call	fibo
-	mv	s0,a0
-	li	a0,4
-	call	fibo
-	mv	a5,a0
-	li	a0,2
-	add	s0,s0,a5
-	call	fibo
-	add	s0,s0,a0
-	addi	s0,s0,1
+	li	a5,3
+	li 	a6,5
+	mul a7,a5,a6
+	add a7,a7,a5
 #APP
 # 26 "cfile/test/../header/nibuio.h" 1
-	sw      s0, 0(zero);
+	sw      a7, 0(zero);
 # 0 "" 2
 #NO_APP
-	lw	ra,12(sp)
-	lw	s0,8(sp)
 	li	a0,0
-	addi	sp,sp,16
-	jr	ra
+	ret
 	.size	main, .-main
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits

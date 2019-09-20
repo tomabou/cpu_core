@@ -1,13 +1,6 @@
 #include "../header/nibuio.h"
 
-int fibo(int n) {
-    if (n <= 1) {
-        return 1;
-    }
-    return fibo(n - 1) + fibo(n - 2);
-}
-
 int main() {
-    nibu_show(fibo(7));
+    nibu_show(3);
     return 0;
 };
