@@ -40,7 +40,7 @@ module multipl_ip (
 	input	  clock;
 	input	[39:0]  dataa;
 	input	[39:0]  datab;
-	output	[63:0]  result;
+	output	[79:0]  result;
 
 endmodule
 
@@ -59,7 +59,7 @@ endmodule
 // Retrieval info: PRIVATE: ValidConstant NUMERIC "0"
 // Retrieval info: PRIVATE: WidthA NUMERIC "40"
 // Retrieval info: PRIVATE: WidthB NUMERIC "40"
-// Retrieval info: PRIVATE: WidthP NUMERIC "64"
+// Retrieval info: PRIVATE: WidthP NUMERIC "80"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "0"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
@@ -71,15 +71,15 @@ endmodule
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_MULT"
 // Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "40"
 // Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "40"
-// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "64"
+// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "80"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 40 0 INPUT NODEFVAL "dataa[39..0]"
 // Retrieval info: USED_PORT: datab 0 0 40 0 INPUT NODEFVAL "datab[39..0]"
-// Retrieval info: USED_PORT: result 0 0 64 0 OUTPUT NODEFVAL "result[63..0]"
+// Retrieval info: USED_PORT: result 0 0 80 0 OUTPUT NODEFVAL "result[79..0]"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 40 0 dataa 0 0 40 0
 // Retrieval info: CONNECT: @datab 0 0 40 0 datab 0 0 40 0
-// Retrieval info: CONNECT: result 0 0 64 0 @result 0 0 64 0
+// Retrieval info: CONNECT: result 0 0 80 0 @result 0 0 80 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL multipl_ip.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL multipl_ip.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL multipl_ip.cmp FALSE

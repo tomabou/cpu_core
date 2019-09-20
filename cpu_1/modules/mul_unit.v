@@ -11,7 +11,7 @@ module mul_unit (clk,a,b,funct3,res);
     wire is_hu;
     wire [39:0] ope1;
     wire [39:0] ope2;
-    wire [63:0] q;
+    wire [79:0] q;
 
     reg is_upperbit_buf1;
     reg is_upperbit_buf2;
@@ -23,7 +23,7 @@ module mul_unit (clk,a,b,funct3,res);
     assign is_upperbit = is_h | is_hu | is_hsu;
 
     assign ope1 = {{8{is_h | is_hsu}},a};
-    assign ope2 = {{8{is_h}},a};
+    assign ope2 = {{8{is_h}},b};
 
     assign res = is_upperbit_buf2 ? q[63:32] 
                : q[31:0];
