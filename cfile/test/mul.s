@@ -166,21 +166,20 @@ main:
 .L33:
 #APP
 # 8 "cfile/test/../header/nibuio.h" 1
-	lw    a4, 4(zero);
-# 0 "" 2
-#NO_APP
-	beq	a4,a3,.L33
-.L34:
-#APP
-# 8 "cfile/test/../header/nibuio.h" 1
 	lw    a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a5,a3,.L34
+	beq	a5,a3,.L33
+.L34:
+#APP
+# 8 "cfile/test/../header/nibuio.h" 1
+	lw    a4, 4(zero);
+# 0 "" 2
+#NO_APP
+	beq	a4,a3,.L34
 	addi	a4,a4,-48
 	addi	a5,a5,-48
 	mul	a5,a5,a4
-	add	a5,a5,a4
 #APP
 # 26 "cfile/test/../header/nibuio.h" 1
 	sw      a5, 0(zero);
