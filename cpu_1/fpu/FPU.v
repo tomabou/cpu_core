@@ -91,6 +91,8 @@ module FPU(
     reg [6:0] is_hazard_0_buf = 7'b0;
     reg [6:0] is_hazard_1_buf = 7'b0;
     reg [6:0] is_hazard_2_buf = 7'b0;
+    reg [6:0] is_hazard_3_buf = 7'b0;
+    reg [6:0] is_hazard_4_buf = 7'b0;
 
     fpu_control fpu_control1(
         inst[31:27],
@@ -127,15 +129,23 @@ module FPU(
         reg_write_buf[0],
         reg_write_buf[1],
         reg_write_buf[2],
+        reg_write_buf[3],
+        reg_write_buf[4],
         is_legl_buf[0],
         is_legl_buf[1],
         is_legl_buf[2],
+        is_legl_buf[3],
+        is_legl_buf[4],
         is_hazard_0_buf[0],
         is_hazard_1_buf[1],
         is_hazard_2_buf[2],
+        is_hazard_3_buf[3],
+        is_hazard_4_buf[4],
         rdi_buf[0],
         rdi_buf[1],
         rdi_buf[2],
+        rdi_buf[3],
+        rdi_buf[4],
         hazard
     );
 
@@ -143,9 +153,9 @@ module FPU(
         clk,
         inst[19:15],
         inst[24:20],
-        rdi_buf[4],
+        rdi_buf[6],
         write_data,
-        reg_write_buf[4] & is_legl_buf[4],
+        reg_write_buf[6] & is_legl_buf[6],
         readdata1,
         readdata2);
 
@@ -154,12 +164,16 @@ module FPU(
         to_result[2],
         to_result[3],
         to_result[4],
+        to_result[5],
+        to_result[6],
         write_data,
         ope1,
         rg1_forward_1,
         rg1_forward_2,
         rg1_forward_3,
-        rg1_forward_4
+        rg1_forward_4,
+        rg1_forward_5,
+        rg1_forward_6
     );
 
     mux_forward mux_forward2(
@@ -167,12 +181,16 @@ module FPU(
         to_result[2],
         to_result[3],
         to_result[4],
+        to_result[5],
+        to_result[6],
         write_data,
         ope2,
         rg2_forward_1,
         rg2_forward_2,
         rg2_forward_3,
-        rg2_forward_4
+        rg2_forward_4,
+        rg2_forward_5,
+        rg2_forward_6
     );
 
     fpu_forward_ctrl fpu_forward_ctrl1(
@@ -182,19 +200,26 @@ module FPU(
         rdi_buf[2], 
         rdi_buf[3], 
         rdi_buf[4],
+        rdi_buf[5],
+        rdi_buf[6],
         is_legl_buf[1] & reg_write_buf[1],
         is_legl_buf[2] & reg_write_buf[2],
         is_legl_buf[3] & reg_write_buf[3],
         is_legl_buf[4] & reg_write_buf[4],
+        is_legl_buf[5] & reg_write_buf[5],
+        is_legl_buf[6] & reg_write_buf[6],
         rg1_forward_1,
         rg1_forward_2,
         rg1_forward_3,
         rg1_forward_4,
+        rg1_forward_5,
+        rg1_forward_6,
         rg2_forward_1,
         rg2_forward_2,
         rg2_forward_3,
-        rg2_forward_4
-    );
+        rg2_forward_4,
+        rg2_forward_5,
+        rg2_forward_6);
 
     float_to_int float_to_int1(
         clk,
@@ -225,7 +250,9 @@ module FPU(
     assign to_result[4] = is_mult_buf[3] ? mul_out 
                         : is_load_buf[3] ? from_mem_buf_3
                         : result[3];
-    assign write_data   = result[4];
+    assign to_result[5] = result[4];
+    assign to_result[6] = result[5];
+    assign write_data   = result[6];
 
     always @ (posedge clk) begin
         rdi_buf[0] <= inst[11:7];
@@ -233,6 +260,8 @@ module FPU(
         rdi_buf[2] <= rdi_buf[1];
         rdi_buf[3] <= rdi_buf[2];
         rdi_buf[4] <= rdi_buf[3];
+        rdi_buf[5] <= rdi_buf[4];
+        rdi_buf[6] <= rdi_buf[5];
 
         rs1_buf <= inst[19:15];
         rs2_buf <= inst[24:20];
@@ -243,26 +272,30 @@ module FPU(
         result[2] <= to_result[2];
         result[3] <= to_result[3];
         result[4] <= to_result[4];
+        result[5] <= to_result[5];
+        result[6] <= to_result[6];
 
-        reg_write_buf <= {reg_write_buf[3:0],reg_write};
-        is_sub_buf <=  {is_sub_buf[3:0] , is_sub};
-        is_load_buf <= {is_load_buf[3:0],is_load};
-        is_adsb_buf <= {is_adsb_buf[3:0],is_adsb};
-        is_mult_buf <= {is_mult_buf[3:0],is_mult};
-        is_cvrt_buf <= {is_cvrt_buf[3:0],is_cvrt};
-        is_ftoi_buf <= {is_ftoi_buf[3:0],is_ftoi};
-        is_cvif_buf <= {is_cvif_buf[3:0],is_cvif};
-        is_legl_buf <= {is_legl_buf[3:0],is_legl};
-        is_fcmp_buf <= {is_fcmp_buf[3:0],is_fcmp};
-        is_eqal_buf <= {is_eqal_buf[3:0],is_eqal};
-        is_leth_buf <= {is_leth_buf[3:0],is_leth};
-        is_fsgn_buf <= {is_fsgn_buf[3:0],is_fsgn};
-        is_sgnn_buf <= {is_sgnn_buf[3:0],is_sgnn};
-        is_sgnx_buf <= {is_sgnx_buf[3:0],is_sgnx};
-        is_fmad_buf <= {is_fmad_buf[3:0],is_fmad};
-        is_hazard_0_buf <= {is_hazard_0_buf[3:0],is_hazard_0};
-        is_hazard_1_buf <= {is_hazard_1_buf[3:0],is_hazard_1};
-        is_hazard_2_buf <= {is_hazard_2_buf[3:0],is_hazard_2};
+        reg_write_buf <= {reg_write_buf[5:0],reg_write};
+        is_sub_buf <=  {is_sub_buf[5:0] , is_sub};
+        is_load_buf <= {is_load_buf[5:0],is_load};
+        is_adsb_buf <= {is_adsb_buf[5:0],is_adsb};
+        is_mult_buf <= {is_mult_buf[5:0],is_mult};
+        is_cvrt_buf <= {is_cvrt_buf[5:0],is_cvrt};
+        is_ftoi_buf <= {is_ftoi_buf[5:0],is_ftoi};
+        is_cvif_buf <= {is_cvif_buf[5:0],is_cvif};
+        is_legl_buf <= {is_legl_buf[5:0],is_legl};
+        is_fcmp_buf <= {is_fcmp_buf[5:0],is_fcmp};
+        is_eqal_buf <= {is_eqal_buf[5:0],is_eqal};
+        is_leth_buf <= {is_leth_buf[5:0],is_leth};
+        is_fsgn_buf <= {is_fsgn_buf[5:0],is_fsgn};
+        is_sgnn_buf <= {is_sgnn_buf[5:0],is_sgnn};
+        is_sgnx_buf <= {is_sgnx_buf[5:0],is_sgnx};
+        is_fmad_buf <= {is_fmad_buf[5:0],is_fmad};
+        is_hazard_0_buf <= {is_hazard_0_buf[5:0],is_hazard_0};
+        is_hazard_1_buf <= {is_hazard_1_buf[5:0],is_hazard_1};
+        is_hazard_2_buf <= {is_hazard_2_buf[5:0],is_hazard_2};
+        is_hazard_3_buf <= {is_hazard_3_buf[5:0],is_hazard_3};
+        is_hazard_4_buf <= {is_hazard_4_buf[5:0],is_hazard_4};
     end 
 
 endmodule
