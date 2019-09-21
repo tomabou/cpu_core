@@ -19,8 +19,8 @@ module hazard_detect (
     input [4:0] rdi_0;
     output hazard;
 
-    assign hazard = (((rs1i == rdi_0) | use_rs1) 
-                    |((rs2i == rdi_0) | use_rs2))
+    assign hazard = (((rs1i == rdi_0) & use_rs1) 
+                    |((rs2i == rdi_0) & use_rs2))
                   & is_regwrite_0
                   & is_legal_0
                   & is_hazard_0;

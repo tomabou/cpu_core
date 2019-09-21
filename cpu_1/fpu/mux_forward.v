@@ -12,7 +12,7 @@ module mux_forward(
     use3,
     use4,
     use5,
-    use6,
+    use6
 );
     input [31:0] a;
     input [31:0] forward1;

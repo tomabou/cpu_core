@@ -94,9 +94,9 @@ module fpu_control(
     assign is_sgnn = is_fsgn & (funct3 == 3'b001);
     assign is_sgnx = is_fsgn & (funct3 == 3'b010);
     assign is_fmad = is_FMADD|is_FMSUB|is_FNMADD|is_FNMSUB;
-    assign use_rs1 = is_opfp & (~is_itof);
+    assign use_rs1 = (is_opfp & (~is_itof)) | is_fmad;
     assign is_sqrt = is_opfp & (funct5 == 5'b01011);
-    assign use_rs2 = is_opfp & (~is_ftoi) & (~is_itof); 
+    assign use_rs2 = (is_opfp & (~is_ftoi) & (~is_itof) ) |is_fmad ; 
     assign use_rs3 = is_fmad;
 
     assign is_hazard_4 = 1'b0;
