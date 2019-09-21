@@ -15,7 +15,7 @@ int main() {
         } else {
             int y = fibo((x - (int)'0'));
             print_string("anser is ");
-            nibu_output((int)'0' + y);
+            print_int(y);
             print_string(" \r\n");
         }
     }
