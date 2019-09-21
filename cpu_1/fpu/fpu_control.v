@@ -16,9 +16,12 @@ module fpu_control(
     is_fsgn,
     is_sgnn,
     is_sgnx,
+    is_fmad,
     is_hazard_0,
     is_hazard_1,
     is_hazard_2,
+    is_hazard_3,
+    is_hazard_4,
     use_rs1,
     use_rs2);
 
@@ -39,9 +42,12 @@ module fpu_control(
     output is_fsgn;
     output is_sgnn;
     output is_sgnx;
+    output is_fmad;
     output is_hazard_0;
     output is_hazard_1;
     output is_hazard_2;
+    output is_hazard_3;
+    output is_hazard_4;
     output use_rs1;
     output use_rs2;
 
@@ -52,7 +58,16 @@ module fpu_control(
     wire is_sqrt;
     wire is_opfp;
 
+    wire is_FMADD;
+    wire is_FMSUB;
+    wire is_FNMSUB;
+    wire is_FNMADD;
+
     assign is_opfp = (opcode == OPFP);
+    assign is_FMADD = (opcode == 7'b1000011);
+    assign is_FMSUB = (opcode == 7'b1000111);
+    assign is_FNMSUB = (opcode ==7'b1001011);
+    assign is_FNMADD = (opcode ==7'b1001111);
 
     assign reg_write = (opcode == LOADFP) | ((opcode == OPFP) & (is_ftoi != 1'b1));
     assign is_sub = (opcode == OPFP) & (funct5 == 5'b00001);
@@ -69,12 +84,15 @@ module fpu_control(
     assign is_eqal = is_fcmp & (funct3 == 3'b010);
     assign is_sgnn = is_fsgn & (funct3 == 3'b001);
     assign is_sgnx = is_fsgn & (funct3 == 3'b010);
+    assign is_fmad = is_FMADD|is_FMSUB|is_FNMADD|is_FNMSUB;
     assign use_rs1 = is_opfp & (~is_itof);
     assign is_sqrt = is_opfp & (funct5 == 5'b01011);
     assign use_rs2 = is_opfp & (~is_ftoi) & (~is_itof); 
 
-    
-    assign is_hazard_2 = 1'b0;
+    assign is_hazard_4 = 1'b0;
+    assign is_hazard_3 = is_hazard_4
+                       | is_fmad;
+    assign is_hazard_2 = is_hazard_3;
     assign is_hazard_1 = is_hazard_2
                        | is_mult
                        | is_load;

@@ -17,7 +17,7 @@ module FPU(
     output [31:0] to_intreg;
     output hazard;
 
-    reg [4:0] rdi_buf[0:4];
+    reg [4:0] rdi_buf[0:6];
     reg [4:0] rs1_buf;
     reg [4:0] rs2_buf;
     wire [31:0] write_data;
@@ -27,8 +27,8 @@ module FPU(
     wire [31:0] ope2;
     wire [31:0] from_intreg_cvt;
 
-    reg [31:0] result [0:4];
-    wire [31:0] to_result [0:4];
+    reg [31:0] result [0:6];
+    wire [31:0] to_result [0:6];
 
     wire [31:0] addsub_out;
     wire [31:0] mul_out;
@@ -40,10 +40,14 @@ module FPU(
     wire rg1_forward_2;
     wire rg1_forward_3;
     wire rg1_forward_4;
+    wire rg1_forward_5;
+    wire rg1_forward_6;
     wire rg2_forward_1;
     wire rg2_forward_2;
     wire rg2_forward_3;
     wire rg2_forward_4;
+    wire rg2_forward_5;
+    wire rg2_forward_6;
 
     wire reg_write;
     wire is_sub;
@@ -59,30 +63,34 @@ module FPU(
     wire is_fsgn;
     wire is_sgnn;
     wire is_sgnx;
+    wire is_fmad;
     wire use_rs1;
     wire use_rs2;
     wire is_hazard_0;
     wire is_hazard_1;
     wire is_hazard_2;
+    wire is_hazard_3;
+    wire is_hazard_4;
 
-    reg [4:0] reg_write_buf = 5'b0;
-    reg [4:0] is_sub_buf = 5'b0;
-    reg [4:0] is_load_buf = 5'b0;
-    reg [4:0] is_adsb_buf = 5'b0;
-    reg [4:0] is_mult_buf = 5'b0;
-    reg [4:0] is_cvrt_buf = 5'b0;
-    reg [4:0] is_ftoi_buf = 5'b0;
-    reg [4:0] is_cvif_buf = 5'b0;
-    reg [4:0] is_legl_buf = 5'b0;
-    reg [4:0] is_fcmp_buf = 5'b0;
-    reg [4:0] is_eqal_buf = 5'b0;
-    reg [4:0] is_leth_buf = 5'b0;
-    reg [4:0] is_fsgn_buf = 5'b0;
-    reg [4:0] is_sgnn_buf = 5'b0;
-    reg [4:0] is_sgnx_buf = 5'b0;
-    reg [4:0] is_hazard_0_buf = 5'b0;
-    reg [4:0] is_hazard_1_buf = 5'b0;
-    reg [4:0] is_hazard_2_buf = 5'b0;
+    reg [6:0] reg_write_buf = 7'b0;
+    reg [6:0] is_sub_buf = 7'b0;
+    reg [6:0] is_load_buf = 7'b0;
+    reg [6:0] is_adsb_buf = 7'b0;
+    reg [6:0] is_mult_buf = 7'b0;
+    reg [6:0] is_cvrt_buf = 7'b0;
+    reg [6:0] is_ftoi_buf = 7'b0;
+    reg [6:0] is_cvif_buf = 7'b0;
+    reg [6:0] is_legl_buf = 7'b0;
+    reg [6:0] is_fcmp_buf = 7'b0;
+    reg [6:0] is_eqal_buf = 7'b0;
+    reg [6:0] is_leth_buf = 7'b0;
+    reg [6:0] is_fsgn_buf = 7'b0;
+    reg [6:0] is_sgnn_buf = 7'b0;
+    reg [6:0] is_sgnx_buf = 7'b0;
+    reg [6:0] is_fmad_buf = 7'b0;
+    reg [6:0] is_hazard_0_buf = 7'b0;
+    reg [6:0] is_hazard_1_buf = 7'b0;
+    reg [6:0] is_hazard_2_buf = 7'b0;
 
     fpu_control fpu_control1(
         inst[31:27],
@@ -102,9 +110,12 @@ module FPU(
         is_fsgn,
         is_sgnn,
         is_sgnx,
+        is_fmad,
         is_hazard_0,
         is_hazard_1,
         is_hazard_2,
+        is_hazard_3,
+        is_hazard_4,
         use_rs1,
         use_rs2);
 
@@ -248,6 +259,7 @@ module FPU(
         is_fsgn_buf <= {is_fsgn_buf[3:0],is_fsgn};
         is_sgnn_buf <= {is_sgnn_buf[3:0],is_sgnn};
         is_sgnx_buf <= {is_sgnx_buf[3:0],is_sgnx};
+        is_fmad_buf <= {is_fmad_buf[3:0],is_fmad};
         is_hazard_0_buf <= {is_hazard_0_buf[3:0],is_hazard_0};
         is_hazard_1_buf <= {is_hazard_1_buf[3:0],is_hazard_1};
         is_hazard_2_buf <= {is_hazard_2_buf[3:0],is_hazard_2};
