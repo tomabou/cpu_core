@@ -7,8 +7,8 @@ union a {
 
 int main() {
     while (1) {
-        float x = nibu_input() - '0';
-        float y = nibu_input() - '0';
+        int x = nibu_input() - '0';
+        int y = nibu_input() - '0';
         print_int(x / y);
         print_string("\r\n");
     }

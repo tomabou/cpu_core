@@ -161,7 +161,7 @@ print_int:
 	.align	2
 .LC0:
 	.string	"\r\n"
-	.globl	__divsf3
+	.globl	__divsi3
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
@@ -177,23 +177,20 @@ main:
 .L33:
 #APP
 # 8 "cfile/test/../header/nibuio.h" 1
-	lw    a5, 4(zero);
+	lw    a0, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a5,s0,.L33
-	addi	a5,a5,-48
-	fcvt.s.w	fa0,a5
+	beq	a0,s0,.L33
+	addi	a0,a0,-48
 .L34:
 #APP
 # 8 "cfile/test/../header/nibuio.h" 1
-	lw    a5, 4(zero);
+	lw    a1, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a5,s0,.L34
-	addi	a5,a5,-48
-	fcvt.s.w	fa1,a5
-	call	__divsf3
-	fcvt.w.s a0,fa0,rtz
+	beq	a1,s0,.L34
+	addi	a1,a1,-48
+	call	__divsi3
 	call	print_int
 	li	a4,10
 	mv	a5,s1

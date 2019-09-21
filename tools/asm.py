@@ -391,7 +391,7 @@ def rename_register(tk):
 def pseudoinst(tks):
     if (tks[0] == 'nop'):
         return ['addi', 'x0', 'x0', 0]
-    if (tks[0] == 'mv'):
+    if (tks[0] == 'mv' or tks[0] == 'move'):
         return ['addi', tks[1],tks[2], 0]
     if (tks[0] == 'not'):
         return ['xori', tks[1],tks[2],-1]
@@ -547,20 +547,34 @@ def tokens(string: str):
 
 def commentout(string: str):
     x = ''
-    for c in string:
+
+    prec = '0'
+    for i, c in enumerate(string):
         if c == '#' or c == ';':
             return x
+        elif c=='*':
+            if prec == '/':
+                return x[:-1]
+            else:
+                x = x + c
         else:
             x = x + c
+        
+        prec = c
     return x
 
 
 def is_effect_line(string):
-    for c in string:
+    for i, c  in enumerate(string):
         if c == '#':
             return False
         if c == ';':
             return False
+        if c == '/':
+            if string[i+1] == '*':
+                return False
+            else:
+                return True
         if c != ' ':
             return True
     return False
@@ -700,6 +714,9 @@ def location(mode):
 def main(filename,mode):
     data = open(filename, 'r')
     content = data.read()
+    lib_data = open("./cfile/lib/div.s",'r')
+    lib_content = lib_data.read()
+    content = content + lib_content
     program_location = location(mode)
     res = create(content,program_location,mode)
     create_mif(res, filename[:-1]+'mif')
