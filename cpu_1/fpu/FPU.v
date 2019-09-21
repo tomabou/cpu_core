@@ -145,6 +145,11 @@ module FPU(
         inst[19:15],
         inst[24:20],
         inst[31:27],
+        rdi_buf[0],
+        rdi_buf[1],
+        rdi_buf[2],
+        rdi_buf[3],
+        rdi_buf[4],
         use_rs1,
         use_rs2,
         use_rs3,
@@ -163,11 +168,6 @@ module FPU(
         is_hazard_2_buf[2],
         is_hazard_3_buf[3],
         is_hazard_4_buf[4],
-        rdi_buf[0],
-        rdi_buf[1],
-        rdi_buf[2],
-        rdi_buf[3],
-        rdi_buf[4],
         hazard
     );
 

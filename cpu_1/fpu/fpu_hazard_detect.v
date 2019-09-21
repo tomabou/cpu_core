@@ -2,6 +2,11 @@ module fpu_hazard_detect(
     rs1i,
     rs2i,
     rs3i,
+    rdi_0,
+    rdi_1,
+    rdi_2,
+    rdi_3,
+    rdi_4,
     use_rs1,
     use_rs2,
     use_rs3,
@@ -20,16 +25,16 @@ module fpu_hazard_detect(
     is_hazard_2,
     is_hazard_3,
     is_hazard_4,
-    rdi_0,
-    rdi_1,
-    rdi_2,
-    rdi_3,
-    rdi_4,
     hazard
 );
     input [4:0] rs1i;
     input [4:0] rs2i;
     input [4:0] rs3i;
+    input [4:0] rdi_0;
+    input [4:0] rdi_1;
+    input [4:0] rdi_2;
+    input [4:0] rdi_3;
+    input [4:0] rdi_4;
     input use_rs1;
     input use_rs2;
     input use_rs3;
@@ -48,11 +53,6 @@ module fpu_hazard_detect(
     input is_hazard_2;
     input is_hazard_3;
     input is_hazard_4;
-    input [4:0] rdi_0;
-    input [4:0] rdi_1;
-    input [4:0] rdi_2;
-    input [4:0] rdi_3;
-    input [4:0] rdi_4;
     output hazard;
 
     wire hazard0;
