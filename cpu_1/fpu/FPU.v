@@ -20,19 +20,25 @@ module FPU(
     reg [4:0] rdi_buf[0:6];
     reg [4:0] rs1_buf;
     reg [4:0] rs2_buf;
+    reg [4:0] rs3_buf;
     wire [31:0] write_data;
     wire [31:0] readdata1;
     wire [31:0] readdata2;
+    wire [31:0] readdata3;
     wire [31:0] ope1;
     wire [31:0] ope2;
+    wire [31:0] ope3;
     wire [31:0] from_intreg_cvt;
 
     reg [31:0] result [0:6];
     wire [31:0] to_result [0:6];
 
+    reg [31:0] readdata3_buf [0:3];
+
     wire [31:0] addsub_out;
     wire [31:0] mul_out;
     wire [31:0] fsgn_out;
+    wire [31:0] fmad_out;
 
     reg [31:0] from_mem_buf_3;
     
@@ -48,6 +54,12 @@ module FPU(
     wire rg2_forward_4;
     wire rg2_forward_5;
     wire rg2_forward_6;
+    wire rg3_forward_1;
+    wire rg3_forward_2;
+    wire rg3_forward_3;
+    wire rg3_forward_4;
+    wire rg3_forward_5;
+    wire rg3_forward_6;
 
     wire reg_write;
     wire is_sub;
@@ -64,8 +76,11 @@ module FPU(
     wire is_sgnn;
     wire is_sgnx;
     wire is_fmad;
+    wire is_FSUB;
+    wire is_FNEG;
     wire use_rs1;
     wire use_rs2;
+    wire use_rs3;
     wire is_hazard_0;
     wire is_hazard_1;
     wire is_hazard_2;
@@ -88,6 +103,8 @@ module FPU(
     reg [6:0] is_sgnn_buf = 7'b0;
     reg [6:0] is_sgnx_buf = 7'b0;
     reg [6:0] is_fmad_buf = 7'b0;
+    reg [6:0] is_FSUB_buf = 7'b0;
+    reg [6:0] is_FNEG_buf = 7'b0;
     reg [6:0] is_hazard_0_buf = 7'b0;
     reg [6:0] is_hazard_1_buf = 7'b0;
     reg [6:0] is_hazard_2_buf = 7'b0;
@@ -113,19 +130,24 @@ module FPU(
         is_sgnn,
         is_sgnx,
         is_fmad,
+        is_FSUB,
+        is_FNEG,
         is_hazard_0,
         is_hazard_1,
         is_hazard_2,
         is_hazard_3,
         is_hazard_4,
         use_rs1,
-        use_rs2);
+        use_rs2,
+        use_rs3);
 
     fpu_hazard_detect fpu_hazard_detect1(
         inst[19:15],
         inst[24:20],
+        inst[31:27],
         use_rs1,
         use_rs2,
+        use_rs3,
         reg_write_buf[0],
         reg_write_buf[1],
         reg_write_buf[2],
@@ -153,11 +175,13 @@ module FPU(
         clk,
         inst[19:15],
         inst[24:20],
+        inst[31:27],
         rdi_buf[6],
         write_data,
         reg_write_buf[6] & is_legl_buf[6],
         readdata1,
-        readdata2);
+        readdata2,
+        readdata3);
 
     mux_forward mux_forward1(
         readdata1,
@@ -193,9 +217,27 @@ module FPU(
         rg2_forward_6
     );
 
+    mux_forward mux_forward3(
+        readdata3,
+        to_result[2],
+        to_result[3],
+        to_result[4],
+        to_result[5],
+        to_result[6],
+        write_data,
+        ope3,
+        rg3_forward_1,
+        rg3_forward_2,
+        rg3_forward_3,
+        rg3_forward_4,
+        rg3_forward_5,
+        rg3_forward_6
+    );
+
     fpu_forward_ctrl fpu_forward_ctrl1(
         rs1_buf,
         rs2_buf,
+        rs3_buf,
         rdi_buf[1],
         rdi_buf[2], 
         rdi_buf[3], 
@@ -219,7 +261,13 @@ module FPU(
         rg2_forward_3,
         rg2_forward_4,
         rg2_forward_5,
-        rg2_forward_6);
+        rg2_forward_6,
+        rg3_forward_1,
+        rg3_forward_2,
+        rg3_forward_3,
+        rg3_forward_4,
+        rg3_forward_5,
+        rg3_forward_6);
 
     float_to_int float_to_int1(
         clk,
@@ -236,6 +284,14 @@ module FPU(
 
     fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
     fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
+    fmad_add fmad_add1(
+        clk,
+        mul_out,
+        readdata3_buf[3],
+        is_FSUB_buf[3],
+        is_FNEG_buf[3],
+        fmad_out);
+
     sign_injection sign_injection1(
         ope1,ope2,is_sgnn_buf[0],is_sgnx_buf[0],fsgn_out);
 
@@ -251,7 +307,8 @@ module FPU(
                         : is_load_buf[3] ? from_mem_buf_3
                         : result[3];
     assign to_result[5] = result[4];
-    assign to_result[6] = result[5];
+    assign to_result[6] = is_fmad_buf[5] ? fmad_out
+                        : result[5];
     assign write_data   = result[6];
 
     always @ (posedge clk) begin
@@ -265,6 +322,7 @@ module FPU(
 
         rs1_buf <= inst[19:15];
         rs2_buf <= inst[24:20];
+        rs3_buf <= inst[31:27];
 
         from_mem_buf_3 <= from_mem;
 
@@ -274,6 +332,11 @@ module FPU(
         result[4] <= to_result[4];
         result[5] <= to_result[5];
         result[6] <= to_result[6];
+
+        readdata3_buf[0] <= ope3;
+        readdata3_buf[1] <= readdata3_buf[0];
+        readdata3_buf[2] <= readdata3_buf[1];
+        readdata3_buf[3] <= readdata3_buf[2];
 
         reg_write_buf <= {reg_write_buf[5:0],reg_write};
         is_sub_buf <=  {is_sub_buf[5:0] , is_sub};
@@ -291,6 +354,8 @@ module FPU(
         is_sgnn_buf <= {is_sgnn_buf[5:0],is_sgnn};
         is_sgnx_buf <= {is_sgnx_buf[5:0],is_sgnx};
         is_fmad_buf <= {is_fmad_buf[5:0],is_fmad};
+        is_FSUB_buf <= {is_FSUB_buf[5:0],is_FSUB};
+        is_FNEG_buf <= {is_FNEG_buf[5:0],is_FNEG};
         is_hazard_0_buf <= {is_hazard_0_buf[5:0],is_hazard_0};
         is_hazard_1_buf <= {is_hazard_1_buf[5:0],is_hazard_1};
         is_hazard_2_buf <= {is_hazard_2_buf[5:0],is_hazard_2};

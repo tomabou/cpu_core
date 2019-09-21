@@ -17,13 +17,16 @@ module fpu_control(
     is_sgnn,
     is_sgnx,
     is_fmad,
+    is_FSUB,
+    is_FNEG,
     is_hazard_0,
     is_hazard_1,
     is_hazard_2,
     is_hazard_3,
     is_hazard_4,
     use_rs1,
-    use_rs2);
+    use_rs2,
+    use_rs3);
 
     input [4:0] funct5;
     input [2:0] funct3;
@@ -43,6 +46,8 @@ module fpu_control(
     output is_sgnn;
     output is_sgnx;
     output is_fmad;
+    output is_FSUB;
+    output is_FNEG;
     output is_hazard_0;
     output is_hazard_1;
     output is_hazard_2;
@@ -50,6 +55,7 @@ module fpu_control(
     output is_hazard_4;
     output use_rs1;
     output use_rs2;
+    output use_rs3;
 
     parameter OPFP = 7'b1010011;
     parameter LOADFP = 7'b0000111;
@@ -62,6 +68,9 @@ module fpu_control(
     wire is_FMSUB;
     wire is_FNMSUB;
     wire is_FNMADD;
+
+    assign is_FSUB = is_FMSUB | is_FNMSUB;
+    assign is_FNEG = is_FNMADD | is_FNMSUB;
 
     assign is_opfp = (opcode == OPFP);
     assign is_FMADD = (opcode == 7'b1000011);
@@ -88,6 +97,7 @@ module fpu_control(
     assign use_rs1 = is_opfp & (~is_itof);
     assign is_sqrt = is_opfp & (funct5 == 5'b01011);
     assign use_rs2 = is_opfp & (~is_ftoi) & (~is_itof); 
+    assign use_rs3 = is_fmad;
 
     assign is_hazard_4 = 1'b0;
     assign is_hazard_3 = is_hazard_4

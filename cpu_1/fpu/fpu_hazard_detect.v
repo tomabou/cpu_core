@@ -1,8 +1,10 @@
 module fpu_hazard_detect(
     rs1i,
     rs2i,
+    rs3i,
     use_rs1,
     use_rs2,
+    use_rs3,
     is_regwrite_0,
     is_regwrite_1,
     is_regwrite_2,
@@ -27,8 +29,10 @@ module fpu_hazard_detect(
 );
     input [4:0] rs1i;
     input [4:0] rs2i;
+    input [4:0] rs3i;
     input use_rs1;
     input use_rs2;
+    input use_rs3;
     input is_regwrite_0;
     input is_regwrite_1;
     input is_regwrite_2;
@@ -62,27 +66,32 @@ module fpu_hazard_detect(
 
 
     assign hazard0 = (((rs1i == rdi_0) | use_rs1) 
-                    |((rs2i == rdi_0) | use_rs2))
+                    |((rs2i == rdi_0) | use_rs2)
+                    |((rs3i == rdi_0) | use_rs3))
                   & is_regwrite_0
                   & is_legal_0
                   & is_hazard_0;
     assign hazard1 = (((rs1i == rdi_1) | use_rs1) 
-                    |((rs2i == rdi_1) | use_rs2))
+                    |((rs2i == rdi_1) | use_rs2)
+                    |((rs3i == rdi_1) | use_rs3))
                   & is_regwrite_1
                   & is_legal_1
                   & is_hazard_1;
     assign hazard2 = (((rs1i == rdi_2) | use_rs1) 
-                    |((rs2i == rdi_2) | use_rs2))
+                    |((rs2i == rdi_2) | use_rs2)
+                    |((rs3i == rdi_2) | use_rs3))
                   & is_regwrite_2
                   & is_legal_2
                   & is_hazard_2;
     assign hazard3 = (((rs1i == rdi_3) | use_rs1) 
-                    |((rs2i == rdi_3) | use_rs2))
+                    |((rs2i == rdi_3) | use_rs2)
+                    |((rs3i == rdi_3) | use_rs3))
                   & is_regwrite_3
                   & is_legal_3
                   & is_hazard_3;
     assign hazard4 = (((rs1i == rdi_4) | use_rs1) 
-                    |((rs2i == rdi_4) | use_rs2))
+                    |((rs2i == rdi_4) | use_rs2)
+                    |((rs3i == rdi_4) | use_rs3))
                   & is_regwrite_4
                   & is_legal_4
                   & is_hazard_4;
