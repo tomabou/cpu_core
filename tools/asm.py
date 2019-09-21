@@ -42,6 +42,8 @@ def jalr(op, rd, rs1, imm):
     return x & (2**32 - 1)
 
 def opfp(op, rd, rs1, rs2 = 0):
+    rdstring = rd
+    rs1string = rs1
     rd = int(rd[1:])
     rs1 = int(rs1[1:])
     if rs2 == 'rtz':
@@ -50,11 +52,22 @@ def opfp(op, rd, rs1, rs2 = 0):
         rs2 = int(rs2[1:])
     opcode = 0b1010011
 
+    if op[0:4] == 'fcvt':
+        if rdstring[0] == 'f' and rs1string[0] == 'x':
+            op = 'fcvt.w.s'
+        elif rdstring[0] == 'x' and rs1string[0] == 'f':
+            op = 'fcvt.s.w'
+        else:
+            print(rdstring)
+            print(rs1string)
+            print("cvterror")
+            exit(1)
+
     func7_set = {
         'fcvt.w.s':  0b1100000,
-        'fcvt.wu.s': 0b1100000,
+#        'fcvt.wu.s': 0b1100000,
         'fcvt.s.w':  0b1101000,
-        'fcvt.s.wu': 0b1101000,
+#        'fcvt.s.wu': 0b1101000,
         'fmv.w.x' :  0b1111000,
         'fmv.x.w' :  0b1110000,
         'fmv.s.x' :  0b1111000,

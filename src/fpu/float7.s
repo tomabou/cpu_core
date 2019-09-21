@@ -17,5 +17,5 @@ main:
 
     addi    t2, t2, 16
     sw      t2, 0(zero)
-.LBB0_1
+.LBB0_1:
     j       .LBB0_1
