@@ -2,9 +2,11 @@
 
 void init_ppm(int w, int h) {
     print_string("P2\r\n");
-    print_int(35);
+    print_int(w);
     nibu_output(' ');
-    print_int(-40);
+    print_int(h);
+    print_string("\r\n");
+    print_int(255);
     print_string("\r\n");
     return;
 }
@@ -27,8 +29,27 @@ int mandel(float r, float l, int max_iter) {
 }
 
 int main() {
-    init_ppm(256, 256);
-    int x = mandel(0.253, 0, 211);
-    print_int(x);
+    int X = 256;
+    int Y = 256;
+    init_ppm(X, Y);
+    for (int i = 0; i < X; i++) {
+        for (int j = 0; j < Y; j++) {
+            // x -1.5 ~ 0.5
+            // y -1 ~ 1
+            float r = 2.0f * (float)i / X - 1.5f;
+            float l = 2.0f * (float)j / Y - 1.0f;
+            int a = mandel(r, l, 256);
+            if (a == 256) {
+                a = 0;
+            }
+            a *= 10;
+            if (a > 255) {
+                a = 255;
+            }
+            print_int(a);
+            print_string(" ");
+        }
+        print_string("\r\n");
+    }
     return 0;
 }
