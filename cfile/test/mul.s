@@ -179,7 +179,8 @@ main:
 	beq	a4,a3,.L34
 	addi	a4,a4,-48
 	addi	a5,a5,-48
-	mul	a5,a5,a4
+	sub	a5,a5,a4
+	srai a5,a5,20
 #APP
 # 26 "cfile/test/../header/nibuio.h" 1
 	sw      a5, 0(zero);

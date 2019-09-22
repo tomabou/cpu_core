@@ -1,9 +1,10 @@
 #include <stdbool.h>
-#include <stdint.h>
+//#include <stdint.h>
 
-typedef uint32_t rep_t;
-typedef int32_t srep_t;
-#define REP_C UINT32_C
+typedef int rep_t;
+typedef unsigned int srep_t;
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
 typedef int si_int;
 typedef unsigned su_int;
 typedef float fp_t;
@@ -14,9 +15,9 @@ typedef float fp_t;
 #define maxExponent ((1 << exponentBits) - 1)
 #define exponentBias (maxExponent >> 1)
 
-#define implicitBit (REP_C(1) << significandBits)
+#define implicitBit (1 << significandBits)
 #define significandMask (implicitBit - 1U)
-#define signBit (REP_C(1) << (significandBits + exponentBits))
+#define signBit (1 << (significandBits + exponentBits))
 #define absMask (signBit - 1U)
 #define exponentMask (absMask ^ significandMask)
 #define oneRep ((rep_t)exponentBias << significandBits)
@@ -129,7 +130,7 @@ fp_t test__divsf3(fp_t a, fp_t b) {
     // polynomial approximation: reciprocal = 3/4 + 1/sqrt(2) - b/2.  This
     // is accurate to about 3.5 binary digits.
     uint32_t q31b = bSignificand << 8;
-    uint32_t reciprocal = UINT32_C(0x7504f333) - q31b;
+    uint32_t reciprocal = 0x7504f333u - q31b;
 
     // Now refine the reciprocal estimate using a Newton-Raphson iteration:
     //

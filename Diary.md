@@ -616,3 +616,8 @@ todo  divのソフトウェア実装
 integer divはソフトウェア実装をgccのライブラリからコピペしたら出来た
 非常に単純なリンカーの実装をした
 floatのdivをどうするかが問題
+
+9/22
+divのsoft float実装をコピペした
+ちょっとバグる
+add とxorはok
