@@ -200,7 +200,7 @@ main:
 	beq	a4,s0,.L35
 	addi	a4,a4,-48
 	fcvt.s.w	fa4,a4
-	fmadd.s	fa5,fa3,fa5,fa4
+	fnmsub.s	fa5,fa3,fa5,fa4
 	fcvt.w.s a0,fa5,rtz
 	call	print_int
 	li	a4,10
