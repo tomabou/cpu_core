@@ -208,6 +208,26 @@ def store(op, src, base, offset):
         (funct3 << 12)+(imm4_0 << 7) + opcode
     return x
 
+def fmadd(op,rd,rs1,rs2,rs3):
+    rd = int(rd[1:])
+    rs1 = int(rs1[1:])
+    rs2 = int(rs2[1:])
+    rs3 = int(rs3[1:])
+
+    OPCODE = {
+        'fmadd.s' : 0b1000011,
+        'fmsub.s' : 0b1000111,
+        'fnmadd.s' : 0b1001011,
+        'fnmsub.s' : 0b1001111,
+    }
+
+    func3 = 0
+    opcode = OPCODE[op] 
+
+    x = rs3 * (2**27) + rs2*(2**20) + rs1 * (2**15) + \
+        func3 * (2**12) + rd * (2**7) + opcode
+    return x
+
 
 def utype(op, rd, offset):
     rd = int(rd[1:])
@@ -303,6 +323,10 @@ def decode_op(labels, index, tks):
 
     if tks[0] == '.word':
         return int(tks[1])
+    
+    FMADD = ['fmadd.s','fmsub.s','fnmsub.s','fnmadd.s']
+    if tks[0] in FMADD:
+        return fmadd(tks[0],tks[1],tks[2],tks[3],tks[4])
 
     print(tks)
     return -1
