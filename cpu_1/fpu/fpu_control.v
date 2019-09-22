@@ -78,7 +78,7 @@ module fpu_control(
     assign is_FNMSUB = (opcode ==7'b1001011);
     assign is_FNMADD = (opcode ==7'b1001111);
 
-    assign reg_write = (opcode == LOADFP) | ((opcode == OPFP) & (is_ftoi != 1'b1));
+    assign reg_write = (opcode == LOADFP) | ((opcode == OPFP) & (is_ftoi != 1'b1)) | is_fmad;
     assign is_sub = (opcode == OPFP) & (funct5 == 5'b00001);
     assign is_load = (opcode ==LOADFP);
     assign is_adsb = is_opfp & (funct5[4:1] == 4'b0000);

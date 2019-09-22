@@ -333,8 +333,7 @@ module FPU(
         result[5] <= to_result[5];
         result[6] <= to_result[6];
 
-        readdata3_buf[0] <= ope3;
-        readdata3_buf[1] <= readdata3_buf[0];
+        readdata3_buf[1] <= ope3;
         readdata3_buf[2] <= readdata3_buf[1];
         readdata3_buf[3] <= readdata3_buf[2];
 
