@@ -3,6 +3,9 @@
 
 typedef uint32_t rep_t;
 typedef int32_t srep_t;
+#define REP_C UINT32_C
+typedef int si_int;
+typedef unsigned su_int;
 typedef float fp_t;
 #define CHAR_BIT 8
 #define significandBits 23
@@ -37,13 +40,35 @@ static __inline fp_t fromRep(rep_t x) {
     return rep.f;
 }
 
+si_int clzsi2(si_int a) {
+    su_int x = (su_int)a;
+    si_int t = ((x & 0xFFFF0000) == 0) << 4;  // if (x is small) t = 16 else 0
+    x >>= 16 - t;                             // x = [0 - 0xFFFF]
+    su_int r = t;                             // r = [0, 16]
+    // return r + clz(x)
+    t = ((x & 0xFF00) == 0) << 3;
+    x >>= 8 - t;  // x = [0 - 0xFF]
+    r += t;       // r = [0, 8, 16, 24]
+    // return r + clz(x)
+    t = ((x & 0xF0) == 0) << 2;
+    x >>= 4 - t;  // x = [0 - 0xF]
+    r += t;       // r = [0, 4, 8, 12, 16, 20, 24, 28]
+    // return r + clz(x)
+    t = ((x & 0xC) == 0) << 1;
+    x >>= 2 - t;  // x = [0 - 3]
+    r += t;       // r = [0 - 30] and is even
+    return r + ((2 - x) & -((x & 2) == 0));
+}
+
+static __inline int rep_clz(rep_t a) { return clzsi2(a); }
+
 static __inline int normalize(rep_t *significand) {
     const int shift = rep_clz(*significand) - rep_clz(implicitBit);
     *significand <<= shift;
     return 1 - shift;
 }
 
-fp_t __divsf3(fp_t a, fp_t b) {
+fp_t test__divsf3(fp_t a, fp_t b) {
     const unsigned int aExponent = toRep(a) >> significandBits & maxExponent;
     const unsigned int bExponent = toRep(b) >> significandBits & maxExponent;
     const rep_t quotientSign = (toRep(a) ^ toRep(b)) & signBit;
