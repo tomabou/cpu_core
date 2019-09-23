@@ -739,8 +739,10 @@ def main(filename,mode):
     data = open(filename, 'r')
     content = data.read()
     lib_data = open("./cfile/lib/div.s",'r')
+    flib_data = open("./cfile/lib/fdiv.s",'r')
     lib_content = lib_data.read()
-    content = content + lib_content
+    flib_content = flib_data.read()
+    content = content + lib_content + flib_content
     program_location = location(mode)
     res = create(content,program_location,mode)
     create_mif(res, filename[:-1]+'mif')

@@ -161,6 +161,7 @@ print_int:
 	.align	2
 .LC0:
 	.string	"\r\n"
+	.globl	__divsf3
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
@@ -181,43 +182,34 @@ main:
 #NO_APP
 	beq	a5,s0,.L33
 	addi	a5,a5,-48
-	fcvt.s.w	fa3,a5
+	fcvt.s.w	fa0,a5
 .L34:
 #APP
 # 8 "cfile/test/../header/nibuio.h" 1
-	lw    a4, 4(zero);
+	lw    a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a4,s0,.L34
-	addi	a4,a4,-48
-	fcvt.s.w	fa5,a4
-.L35:
-#APP
-# 8 "cfile/test/../header/nibuio.h" 1
-	lw    a4, 4(zero);
-# 0 "" 2
-#NO_APP
-	beq	a4,s0,.L35
-	addi	a4,a4,-48
-	fcvt.s.w	fa4,a4
-	fnmsub.s	fa5,fa3,fa5,fa4
-	fcvt.w.s a0,fa5,rtz
+	beq	a5,s0,.L34
+	addi	a5,a5,-48
+	fcvt.s.w	fa1,a5
+	call	__divsf3
+	fcvt.w.s a0,fa0,rtz
 	call	print_int
 	li	a4,10
 	mv	a5,s1
 	li	a3,13
-	j	.L37
-.L44:
+	j	.L36
+.L42:
 	mv	a3,a4
 	lbu	a4,1(a5)
-.L37:
+.L36:
 #APP
 # 21 "cfile/test/../header/nibuio.h" 1
 	sw      a3, 4(zero);
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L44
+	bne	a4,zero,.L42
 	j	.L33
 	.size	main, .-main
 	.ident	"GCC: (GNU) 9.2.0"
