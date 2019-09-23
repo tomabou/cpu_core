@@ -22,12 +22,12 @@ int mandel(float r, float l, int max_iter) {
     float ny;
     for (int i = 0; i < max_iter; i++) {
         nx = r + x * x - y * y;
-        // print_int(nx * 100);
-        // print_string("\r\n");
         ny = l + 2 * x * y;
         if (4 < nx * nx + ny * ny) {
             return i;
         }
+        // print_int(nx * 100);
+        // print_string("\r\n");
         x = nx;
         y = ny;
     }
