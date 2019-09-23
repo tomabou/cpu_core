@@ -12,10 +12,6 @@ void init_ppm(int w, int h) {
 }
 
 int mandel(float r, float l, int max_iter) {
-    print_int(r * 100);
-    print_string(" rl ");
-    print_int(l * 100);
-    print_string("\r\n");
     float x = 0;
     float y = 0;
     float nx;
@@ -26,8 +22,6 @@ int mandel(float r, float l, int max_iter) {
         if (4 < nx * nx + ny * ny) {
             return i;
         }
-        // print_int(nx * 100);
-        // print_string("\r\n");
         x = nx;
         y = ny;
     }
@@ -35,8 +29,8 @@ int mandel(float r, float l, int max_iter) {
 }
 
 int create_im() {
-    int X = 3;
-    int Y = 3;
+    int X = 5;
+    int Y = 5;
     init_ppm(X, Y);
     for (int i = 0; i < X; i++) {
         for (int j = 0; j < Y; j++) {
@@ -53,34 +47,14 @@ int create_im() {
                 a = 255;
             }
             print_int(a);
-            print_string("\r\n");
+            print_string(" ");
         }
         print_string("\r\n");
     }
     return 0;
 }
 
-void test() {
-    int X = 3;
-    int Y = 3;
-    int i = 2;
-    int j = 0;
-    float r = 2.0f * (float)i / X - 1.5f;
-    float l = 2.0f * (float)j / (float)Y - 1.0f;
-    int a = mandel(r, l, 256);
-    if (a == 256) {
-        a = 0;
-    }
-    // a *= 10;
-    if (a > 255) {
-        a = 255;
-    }
-    print_int(a);
-    print_string("\r\n");
-    return;
-}
-
 int main() {
-    test();
+    create_im();
     return 0;
 }
