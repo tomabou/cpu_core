@@ -415,44 +415,81 @@ create_im:
 	.globl	test
 	.type	test, @function
 test:
-	lui	a5,%hi(.LC8)
-	flw	fa1,%lo(.LC8)(a5)
-	lui	a5,%hi(.LC9)
-	flw	fa0,%lo(.LC9)(a5)
-	addi	sp,sp,-16
+	addi	sp,sp,-64
+	lui	a5,%hi(.LC5)
+	fsw	fs1,24(sp)
+	flw	fs1,%lo(.LC5)(a5)
+	lui	a5,%hi(.LC6)
+	fsw	fs4,12(sp)
+	flw	fs4,%lo(.LC6)(a5)
+	lui	a5,%hi(.LC7)
+	fsw	fs2,20(sp)
+	fsw	fs3,16(sp)
+	flw	fs2,%lo(.LC7)(a5)
+	fmv.s	fs3,fs1
+	sw	s2,48(sp)
+	lui	s2,%hi(.LC1)
+	sw	s1,52(sp)
+	sw	s3,44(sp)
+	sw	ra,60(sp)
+	sw	s0,56(sp)
+	fsw	fs0,28(sp)
+	addi	s2,s2,%lo(.LC1)
+	li	s1,-1
+	li	s3,255
+.L65:
+#APP
+# 8 "cfile/mandel/../header/nibuio.h" 1
+	lw    a5, 4(zero);
+# 0 "" 2
+#NO_APP
+	beq	a5,s1,.L65
+	addi	s0,a5,-48
+.L66:
+#APP
+# 8 "cfile/mandel/../header/nibuio.h" 1
+	lw    a5, 4(zero);
+# 0 "" 2
+#NO_APP
+	beq	a5,s1,.L66
+	addi	a5,a5,-48
+	fcvt.s.w	fa0,a5
+	fmv.s	fa1,fs1
+	fadd.s	fa0,fa0,fa0
+	call	__divsf3
+	fcvt.s.w	fa5,s0
+	fsub.s	fs0,fa0,fs4
+	fmv.s	fa1,fs3
+	fadd.s	fa0,fa5,fa5
+	call	__divsf3
+	fsub.s	fa0,fa0,fs2
+	fmv.s	fa1,fs0
 	li	a0,256
-	sw	ra,12(sp)
 	call	mandel
 	mv	a5,a0
 	li	a4,256
 	li	a0,0
-	beq	a5,a4,.L65
+	beq	a5,a4,.L67
 	mv	a0,a5
-	li	a5,255
-	bgt	a0,a5,.L71
-.L65:
+	ble	a5,s3,.L67
+	li	a0,255
+.L67:
 	call	print_int
-	lui	a5,%hi(.LC1)
 	li	a4,10
-	addi	a5,a5,%lo(.LC1)
+	mv	a5,s2
 	li	a3,13
-	j	.L68
-.L72:
+	j	.L70
+.L77:
 	mv	a3,a4
 	lbu	a4,1(a5)
-.L68:
+.L70:
 #APP
 # 21 "cfile/mandel/../header/nibuio.h" 1
 	sw      a3, 4(zero);
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L72
-	lw	ra,12(sp)
-	addi	sp,sp,16
-	jr	ra
-.L71:
-	li	a0,255
+	bne	a4,zero,.L77
 	j	.L65
 	.size	test, .-test
 	.section	.text.startup,"ax",@progbits
@@ -463,10 +500,6 @@ main:
 	addi	sp,sp,-16
 	sw	ra,12(sp)
 	call	test
-	lw	ra,12(sp)
-	li	a0,0
-	addi	sp,sp,16
-	jr	ra
 	.size	main, .-main
 	.section	.srodata.cst4,"aM",@progbits,4
 	.align	2
@@ -484,11 +517,5 @@ main:
 	.align	2
 .LC7:
 	.word	1069547520
-	.align	2
-.LC8:
-	.word	3212836864
-	.align	2
-.LC9:
-	.word	3190467240
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits

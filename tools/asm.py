@@ -78,14 +78,17 @@ def opfp(op, rd, rs1, rs2 = 0):
         'feq.s'  :   0b1010000,
         'flt.s'  :   0b1010000,
         'fle.s'  :   0b1010000,
+        'fsgnj.s' :  0b0010000,
+        'fsgnjn.s':  0b0010000,
+        'fsgnjx.s':  0b0010000,
     }
 
     if op in ['fcvt.wu.s','fcvt.s.wu']:
         rs2 = 1
         
-    if op in ['feq.s']:
+    if op in ['feq.s','fsgnjx.s']:
         func3 = 2
-    elif op in ['flt.s']:
+    elif op in ['flt.s','fsgnjn.s']:
         func3 = 1
     else:
         func3 = 0
@@ -314,6 +317,9 @@ def decode_op(labels, index, tks):
         'feq.s',
         'flt.s',
         'fle.s',
+        'fsgnj.s',
+        'fsgnjn.s',
+        'fsgnjx.s',
     ]
     if tks[0] in OP_FP3:
         return opfp(tks[0],tks[1],tks[2],tks[3])
@@ -433,6 +439,11 @@ def pseudoinst(tks):
 
     if (tks[0] == 'fgt.s'):
         return ['flt.s',tks[1],tks[3],tks[2]]
+
+    if (tks[0] == 'fmv.s'):
+        return ['fsgnj.s', tks[1],tks[2],tks[2]]
+    if (tks[0] == 'fneg.s'):
+        return ['fsgnjn.s', tks[1],tks[2],tks[2]]
 
     if (tks[0] == 'beqz'):
         return ['beq',tks[1],'zero',tks[2]]
