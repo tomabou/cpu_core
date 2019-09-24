@@ -19,7 +19,7 @@
 ## PROGRAM "Quartus Prime"
 ## VERSION "Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition"
 
-## DATE    "Sat Sep 07 11:47:01 2019"
+## DATE    "Tue Sep 24 09:37:43 2019"
 
 ##
 ## DEVICE  "10M50DAF484C7G"
@@ -45,8 +45,8 @@ create_clock -name {clk} -period 20.000 -waveform { 0.000 10.000 } [get_ports {c
 # Create Generated Clock
 #**************************************************************
 
+create_generated_clock -name {pll_slow1|altpll_component|auto_generated|pll1|clk[0]} -source [get_pins {pll_slow1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 71 -divide_by 7704 -master_clock {clk} [get_pins {pll_slow1|altpll_component|auto_generated|pll1|clk[0]}] 
 create_generated_clock -name {pll_core1|altpll_component|auto_generated|pll1|clk[0]} -source [get_pins {pll_core1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 9 -divide_by 10 -master_clock {clk} [get_pins {pll_core1|altpll_component|auto_generated|pll1|clk[0]}] 
-create_generated_clock -name {pll_slow1|altpll_component|auto_generated|pll1|clk[0]} -source [get_pins {pll_slow1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 12 -divide_by 15625 -master_clock {clk} [get_pins {pll_slow1|altpll_component|auto_generated|pll1|clk[0]}] 
 
 
 #**************************************************************
