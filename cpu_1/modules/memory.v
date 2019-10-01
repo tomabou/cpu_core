@@ -102,8 +102,9 @@ module memory(
 
     always @ (*) begin
         case (state)
+            0 : rdreq <= (addr == 32'b100 & readctrl & (~empty));
             1 : rdreq <= ~empty;
-            default : rdreq <= (addr == 32'b100 & readctrl & (~empty));
+            default : rdreq <= 1'b0;
         endcase
     end
 
