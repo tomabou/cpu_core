@@ -19,7 +19,7 @@ module memory(
     input [7:0] uart_in;
     output [7:0] uart_out;
     output wrreq;
-    output rdreq;
+    output reg rdreq;
     output reg [15:0] seg_io;
 
     wire [31:0] ram_readdata;
@@ -99,7 +99,15 @@ module memory(
 
     assign uart_out = writedata[7:0];
     assign wrreq = (addr == 32'b100 & writectrl);
-    assign rdreq = (addr == 32'b100 & readctrl & (~empty));
+
+    always @ (*) begin
+        case (state)
+            1 : rdreq <= ~empty;
+            default : rdreq <= (addr == 32'b100 & readctrl & (~empty));
+        endcase
+    end
+
+
     ram_2port ram_2port1(
         addr_inst[16:2],
         addr[16:2],
@@ -113,7 +121,7 @@ module memory(
 
     always @ (posedge clk) begin
         case (state)
-            0 : begin
+            4'd0 : begin
                 if (addr == 32'b0 & writectrl)
                     seg_io <= writedata[15:0];
                 isuart_pre <= (addr == 32'b100 & readctrl);
@@ -121,6 +129,11 @@ module memory(
                 funct3_pre <= funct3;
                 low_addr_pre <= addr[1:0];
                 readdata_pre <= readdata;
+            end
+
+            4'd1 : begin 
+                if (~empty) 
+                    state <= 4'd0;
             end 
         endcase
     end
