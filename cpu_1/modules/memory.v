@@ -35,6 +35,9 @@ module memory(
     reg [31:0] h_data;
     reg [31:0] hu_data;
 
+    reg [3:0] state = 4'd0;
+    reg [31:0] readdata_pre;
+
     //little endian
     always @ (*) begin
         case (low_addr_pre[1:0])
@@ -80,12 +83,16 @@ module memory(
     end
 
     always @ (*) begin
-        if (~isuart_pre) 
-            readdata<=mod_readdata;
-        else if (~empty_pre)
-            readdata<={24'b0,uart_in};
+        if (state == 4'd0) begin
+            if (~isuart_pre) 
+                readdata<=mod_readdata;
+            else if (~empty_pre)
+                readdata<={24'b0,uart_in};
+            else
+                readdata<={32{1'b1}};
+        end
         else
-            readdata<={32{1'b1}};
+            readdata <= readdata_pre;
     end
 
 
@@ -105,12 +112,17 @@ module memory(
         ram_readdata);
 
     always @ (posedge clk) begin
-        if (addr == 32'b0 & writectrl)
-            seg_io <= writedata[15:0];
-        isuart_pre <= (addr == 32'b100 & readctrl);
-        empty_pre <= empty;
-        funct3_pre <= funct3;
-        low_addr_pre <= addr[1:0];
+        case (state)
+            0 : begin
+                if (addr == 32'b0 & writectrl)
+                    seg_io <= writedata[15:0];
+                isuart_pre <= (addr == 32'b100 & readctrl);
+                empty_pre <= empty;
+                funct3_pre <= funct3;
+                low_addr_pre <= addr[1:0];
+                readdata_pre <= readdata;
+            end 
+        endcase
     end
 
 endmodule
