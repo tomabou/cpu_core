@@ -174,6 +174,7 @@ module FPU(
     );
 
     float_register freg1(
+        clken,
         clk,
         inst[19:15],
         inst[24:20],
@@ -272,6 +273,7 @@ module FPU(
         rg3_forward_6);
 
     float_to_int float_to_int1(
+        clken,
         clk,
         ope1,
         ope2,

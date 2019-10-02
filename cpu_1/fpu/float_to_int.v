@@ -1,4 +1,5 @@
 module float_to_int(
+    clken,
     clk,
     x,
     ope2,   
@@ -7,6 +8,7 @@ module float_to_int(
     is_eq,
     is_le,
     y);
+    input clken;
     input clk;
     input [31:0] x;
     input [31:0] ope2;
@@ -24,11 +26,12 @@ module float_to_int(
              : is_cmp ? cmp_res
              : x_buf ;
 
-    cvt_ftoi cvt_ftoi1(clk,1'b0,x,x_cvt);
-    fpu_cmp fpu_cmp(clk,x,ope2,is_eq,is_le,cmp_res);
+    cvt_ftoi cvt_ftoi1(clk,1'b0,clken,x,x_cvt);
+    fpu_cmp fpu_cmp(clken,clk,x,ope2,is_eq,is_le,cmp_res);
 
     always @ (posedge clk) begin
-        x_buf <= x;
+        if (clken)
+            x_buf <= x;
     end
 
 endmodule

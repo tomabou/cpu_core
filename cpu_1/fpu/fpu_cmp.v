@@ -1,4 +1,5 @@
 module fpu_cmp(
+    clken,
     clk,
     a,
     b,
@@ -6,6 +7,7 @@ module fpu_cmp(
     is_le,
     q
 );
+    input clken;
     input clk;
     input [31:0] a;
     input [31:0] b;
@@ -16,8 +18,8 @@ module fpu_cmp(
     wire eq;
     wire lt;
 
-    fpu_equal fpu_equal1(clk,1'b0,a,b,eq);
-    less_than less_than1(clk,1'b0,a,b,lt);
+    fpu_equal fpu_equal1(clk,1'b0,clken,a,b,eq);
+    less_than less_than1(clk,1'b0,clken,a,b,lt);
 
     assign q = is_eq ? {31'b0,eq}
              : is_le ? {31'b0,(eq | lt)}
