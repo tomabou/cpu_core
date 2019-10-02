@@ -1,7 +1,7 @@
 module memory(
     clk,
     funct3,
-    addr_inst,readdata_inst,
+    addr_inst,inst_out,
     addr,writedata,readdata,
     writectrl,readctrl,
     empty,uart_in,uart_out,wrreq,rdreq,
@@ -13,7 +13,7 @@ module memory(
     input [31:0] addr_inst;
     input [31:0] writedata;
     output reg [31:0] readdata;
-    output [31:0] readdata_inst;
+    output [31:0] inst_out;
     input writectrl;
     input readctrl;
     input empty;
@@ -38,7 +38,11 @@ module memory(
     reg [31:0] hu_data;
 
     reg [3:0] state = 4'd0;
+    reg [3:0] pre_state = 4'd0;
     reg [31:0] readdata_pre;
+    reg [31:0] readdata_inst_pre;
+    wire [31:0] readdata_inst;
+    
 
     //little endian
     always @ (*) begin
@@ -88,10 +92,10 @@ module memory(
         if (state == 4'd0) begin
             if (~isuart_pre) 
                 readdata<=mod_readdata;
-            else if (~empty_pre)
+            else //if (~empty_pre)
                 readdata<={24'b0,uart_in};
-            else
-                readdata<={32{1'b1}};
+            //else
+            //    readdata<={32{1'b1}};
         end
         else
             readdata <= readdata_pre;
@@ -111,6 +115,7 @@ module memory(
     end
 
     assign clken = (state == 4'd0);
+    assign inst_out = (pre_state == 4'd0) ? readdata_inst : readdata_inst_pre;
 
 
     ram_2port ram_2port1(
@@ -126,8 +131,13 @@ module memory(
         ram_readdata);
 
     always @ (posedge clk) begin
+        pre_state <= state;
+        if (pre_state == 4'd0)
+            readdata_inst_pre <= readdata_inst;
         case (state)
             4'd0 : begin
+                if (addr == 32'b100 & readctrl & (empty))
+                    state <= 4'd1;
                 if (addr == 32'b0 & writectrl)
                     seg_io <= writedata[15:0];
                 isuart_pre <= (addr == 32'b100 & readctrl);
