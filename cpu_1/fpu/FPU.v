@@ -283,12 +283,13 @@ module FPU(
         is_leth_buf[1],
         to_intreg);
 
-    int_to_float int_to_float1(clk,from_intreg,from_intreg_cvt);
+    int_to_float int_to_float1(clken,clk,from_intreg,from_intreg_cvt);
     assign to_mem = ope2;
 
-    fp_addsub fp_addsub1(clk,ope1,ope2,is_sub_buf[0],addsub_out);
-    fpu_mult fp_mult1 (clk,ope1,ope2,mul_out);
+    fp_addsub fp_addsub1(clken,clk,ope1,ope2,is_sub_buf[0],addsub_out);
+    fpu_mult fp_mult1 (clken,clk,ope1,ope2,mul_out);
     fmad_add fmad_add1(
+        clken,
         clk,
         mul_out,
         readdata3_buf[3],
@@ -316,54 +317,55 @@ module FPU(
     assign write_data   = result[6];
 
     always @ (posedge clk) begin
-        rdi_buf[0] <= inst[11:7];
-        rdi_buf[1] <= rdi_buf[0];
-        rdi_buf[2] <= rdi_buf[1];
-        rdi_buf[3] <= rdi_buf[2];
-        rdi_buf[4] <= rdi_buf[3];
-        rdi_buf[5] <= rdi_buf[4];
-        rdi_buf[6] <= rdi_buf[5];
+        if (clken) begin
+            rdi_buf[0] <= inst[11:7];
+            rdi_buf[1] <= rdi_buf[0];
+            rdi_buf[2] <= rdi_buf[1];
+            rdi_buf[3] <= rdi_buf[2];
+            rdi_buf[4] <= rdi_buf[3];
+            rdi_buf[5] <= rdi_buf[4];
+            rdi_buf[6] <= rdi_buf[5];
 
-        rs1_buf <= inst[19:15];
-        rs2_buf <= inst[24:20];
-        rs3_buf <= inst[31:27];
+            rs1_buf <= inst[19:15];
+            rs2_buf <= inst[24:20];
+            rs3_buf <= inst[31:27];
 
-        from_mem_buf_3 <= from_mem;
+            from_mem_buf_3 <= from_mem;
 
-        result[1] <= to_result[1];
-        result[2] <= to_result[2];
-        result[3] <= to_result[3];
-        result[4] <= to_result[4];
-        result[5] <= to_result[5];
-        result[6] <= to_result[6];
+            result[1] <= to_result[1];
+            result[2] <= to_result[2];
+            result[3] <= to_result[3];
+            result[4] <= to_result[4];
+            result[5] <= to_result[5];
+            result[6] <= to_result[6];
 
-        readdata3_buf[1] <= ope3;
-        readdata3_buf[2] <= readdata3_buf[1];
-        readdata3_buf[3] <= readdata3_buf[2];
+            readdata3_buf[1] <= ope3;
+            readdata3_buf[2] <= readdata3_buf[1];
+            readdata3_buf[3] <= readdata3_buf[2];
 
-        reg_write_buf <= {reg_write_buf[5:0],reg_write};
-        is_sub_buf <=  {is_sub_buf[5:0] , is_sub};
-        is_load_buf <= {is_load_buf[5:0],is_load};
-        is_adsb_buf <= {is_adsb_buf[5:0],is_adsb};
-        is_mult_buf <= {is_mult_buf[5:0],is_mult};
-        is_cvrt_buf <= {is_cvrt_buf[5:0],is_cvrt};
-        is_ftoi_buf <= {is_ftoi_buf[5:0],is_ftoi};
-        is_cvif_buf <= {is_cvif_buf[5:0],is_cvif};
-        is_legl_buf <= {is_legl_buf[5:0],is_legl};
-        is_fcmp_buf <= {is_fcmp_buf[5:0],is_fcmp};
-        is_eqal_buf <= {is_eqal_buf[5:0],is_eqal};
-        is_leth_buf <= {is_leth_buf[5:0],is_leth};
-        is_fsgn_buf <= {is_fsgn_buf[5:0],is_fsgn};
-        is_sgnn_buf <= {is_sgnn_buf[5:0],is_sgnn};
-        is_sgnx_buf <= {is_sgnx_buf[5:0],is_sgnx};
-        is_fmad_buf <= {is_fmad_buf[5:0],is_fmad};
-        is_FSUB_buf <= {is_FSUB_buf[5:0],is_FSUB};
-        is_FNEG_buf <= {is_FNEG_buf[5:0],is_FNEG};
-        is_hazard_0_buf <= {is_hazard_0_buf[5:0],is_hazard_0};
-        is_hazard_1_buf <= {is_hazard_1_buf[5:0],is_hazard_1};
-        is_hazard_2_buf <= {is_hazard_2_buf[5:0],is_hazard_2};
-        is_hazard_3_buf <= {is_hazard_3_buf[5:0],is_hazard_3};
-        is_hazard_4_buf <= {is_hazard_4_buf[5:0],is_hazard_4};
+            reg_write_buf <= {reg_write_buf[5:0],reg_write};
+            is_sub_buf <=  {is_sub_buf[5:0] , is_sub};
+            is_load_buf <= {is_load_buf[5:0],is_load};
+            is_adsb_buf <= {is_adsb_buf[5:0],is_adsb};
+            is_mult_buf <= {is_mult_buf[5:0],is_mult};
+            is_cvrt_buf <= {is_cvrt_buf[5:0],is_cvrt};
+            is_ftoi_buf <= {is_ftoi_buf[5:0],is_ftoi};
+            is_cvif_buf <= {is_cvif_buf[5:0],is_cvif};
+            is_legl_buf <= {is_legl_buf[5:0],is_legl};
+            is_fcmp_buf <= {is_fcmp_buf[5:0],is_fcmp};
+            is_eqal_buf <= {is_eqal_buf[5:0],is_eqal};
+            is_leth_buf <= {is_leth_buf[5:0],is_leth};
+            is_fsgn_buf <= {is_fsgn_buf[5:0],is_fsgn};
+            is_sgnn_buf <= {is_sgnn_buf[5:0],is_sgnn};
+            is_sgnx_buf <= {is_sgnx_buf[5:0],is_sgnx};
+            is_fmad_buf <= {is_fmad_buf[5:0],is_fmad};
+            is_FSUB_buf <= {is_FSUB_buf[5:0],is_FSUB};
+            is_FNEG_buf <= {is_FNEG_buf[5:0],is_FNEG};
+            is_hazard_0_buf <= {is_hazard_0_buf[5:0],is_hazard_0};
+            is_hazard_1_buf <= {is_hazard_1_buf[5:0],is_hazard_1};
+            is_hazard_2_buf <= {is_hazard_2_buf[5:0],is_hazard_2};
+            is_hazard_3_buf <= {is_hazard_3_buf[5:0],is_hazard_3};
+            is_hazard_4_buf <= {is_hazard_4_buf[5:0],is_hazard_4};
+        end
     end 
-
 endmodule
