@@ -669,3 +669,10 @@ DRAMコントローラーをくっつける
 
 todo 
 uart readのstate管理をちゃんとやってみる
+uart readのstate管理がちゃんと出来た
+
+todo
+-1に関するループを取って大丈夫か確認
+uart sendもfullに関して同じことをやる
+
+メモリの実装
