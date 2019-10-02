@@ -5,7 +5,8 @@ module memory(
     addr,writedata,readdata,
     writectrl,readctrl,
     empty,uart_in,uart_out,wrreq,rdreq,
-    seg_io);
+    seg_io,
+    clken);
     input clk;
     input [2:0] funct3;
     input [31:0] addr;
@@ -21,6 +22,7 @@ module memory(
     output wrreq;
     output reg rdreq;
     output reg [15:0] seg_io;
+    output clken;
 
     wire [31:0] ram_readdata;
     reg isuart_pre = 1'b0;
@@ -107,6 +109,8 @@ module memory(
             default : rdreq <= 1'b0;
         endcase
     end
+
+    assign clken = (state == 4'd0);
 
 
     ram_2port ram_2port1(

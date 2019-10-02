@@ -1,4 +1,5 @@
-module mul_unit (clk,a,b,funct3,res);
+module mul_unit (clken,clk,a,b,funct3,res);
+    input clken;
     input clk;
     input [31:0] a;
     input [31:0] b;
@@ -33,11 +34,13 @@ module mul_unit (clk,a,b,funct3,res);
     assign res = is_upperbit_buf2 ? q[63:32] 
                : q[31:0];
 
-    multipl_ip multipl_ip1(clk,ope1,ope2,q);
+    multipl_ip multipl_ip1(clken,clk,ope1,ope2,q);
 
     always @ (posedge clk) begin
-        is_upperbit_buf1 <= is_upperbit;
-        is_upperbit_buf2 <= is_upperbit_buf1;
+        if (clken) begin
+            is_upperbit_buf1 <= is_upperbit;
+            is_upperbit_buf2 <= is_upperbit_buf1;
+        end
     end
 
 endmodule

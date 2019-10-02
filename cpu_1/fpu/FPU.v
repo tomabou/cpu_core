@@ -1,4 +1,5 @@
 module FPU(
+    clken,
     clk,
     is_legl,
     inst,
@@ -8,6 +9,7 @@ module FPU(
     to_intreg,
     hazard);
 
+    input clken;
     input clk;
     input is_legl;
     input [31:0] inst;

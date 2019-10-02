@@ -29,6 +29,7 @@ module nibu (
 
     reg [31:0] show_buf;
 
+    wire clken;
     wire [31:0] address;
     wire [31:0] pc_out;
     reg [31:0] address_buf = 32'b0;
@@ -134,12 +135,12 @@ module nibu (
     seg7 seg7_5(seg_io[11:8],segment7_5);
     seg7 seg7_6(seg_io[15:12],segment7_6);
 
-    FPU FPU1(clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,fpu_hazard);
+    FPU FPU1(clken,clk,is_legal_op,inst,from_intreg,from_mem,into_mem,into_intreg,fpu_hazard);
     assign from_intreg = read_data1;
     assign from_mem = memory_read;
     mux mux_memwrite(read_data2,into_mem,memory_write,is_fstoreop_buf[0]);
 
-    pc pc1(clk,chosen_next_address,pc_out);
+    pc pc1(clken,clk,chosen_next_address,pc_out);
     add add1(address,32'b100,next_address);
     add add_jump(address_buf2,immediate_buf,next_address_immjump);//imm_buff is delay 2clk;
     mux mux_jalr(next_address_immjump,alu_res,next_address_jump,is_jalr_buf[0]);
@@ -163,6 +164,7 @@ module nibu (
     );
 
     registers regs1(
+        clken,
         clk,
         inst[19:15],
         inst[24:20],
@@ -230,7 +232,7 @@ module nibu (
     mux mux1(read_data2,immediate_buf,operand2,is_use_imme_buf[0]);
     alu_control ac1({inst[30],inst[14:12]},opcode_alu_ctrl,alu_ctrl);
     alu alu1(operand1,operand2,alu_res,alu_ctrl_buf);
-    mul_unit mul_unit1(clk,operand1,operand2,funct3_buf[0],mul_out);
+    mul_unit mul_unit1(clken,clk,operand1,operand2,funct3_buf[0],mul_out);
 
     memory mem1(clk,
         funct3_buf[1],
@@ -243,7 +245,8 @@ module nibu (
         uart_out,
         uart_wrreq,
         uart_rdreq,
-        seg_io);
+        seg_io,
+        clken);
 
     assign to_result[1] = is_pc_toreg_buf[0] ? next_address_d2
                         : alu_res;
@@ -268,47 +271,49 @@ module nibu (
 
 
     always @ (posedge clk) begin
-        next_address_d1 <= next_address;
-        next_address_d2 <= next_address_d1;
-        address_buf <= address;
-        address_buf2 <= address_buf;
-        immediate_buf <= immediate;
-        rsi1_buf <= inst[19:15];
-        rsi2_buf <= inst[24:20];
-        alu_ctrl_buf <= alu_ctrl;
-        do_branch_buf <= {do_branch_buf[1:0],do_branch};
-        alu_res_d1 <= alu_res;
-        show_buf <= alu_res;
+        if (clken) begin
+            next_address_d1 <= next_address;
+            next_address_d2 <= next_address_d1;
+            address_buf <= address;
+            address_buf2 <= address_buf;
+            immediate_buf <= immediate;
+            rsi1_buf <= inst[19:15];
+            rsi2_buf <= inst[24:20];
+            alu_ctrl_buf <= alu_ctrl;
+            do_branch_buf <= {do_branch_buf[1:0],do_branch};
+            alu_res_d1 <= alu_res;
+            show_buf <= alu_res;
 
-        memory_write_d1 <= memory_write;
+            memory_write_d1 <= memory_write;
 
 
-        rdi_buffer[0] <= inst[11:7];
-        rdi_buffer[1] <= rdi_buffer[0];
-        rdi_buffer[2] <= rdi_buffer[1];
+            rdi_buffer[0] <= inst[11:7];
+            rdi_buffer[1] <= rdi_buffer[0];
+            rdi_buffer[2] <= rdi_buffer[1];
 
-        funct3_buf[0] <= inst[14:12];
-        funct3_buf[1] <= funct3_buf[0];
-        funct3_buf[2] <= funct3_buf[1];
+            funct3_buf[0] <= inst[14:12];
+            funct3_buf[1] <= funct3_buf[0];
+            funct3_buf[2] <= funct3_buf[1];
 
-        result[0] <= to_result[0];
-        result[1] <= to_result[1];
-        result[2] <= to_result[2];
+            result[0] <= to_result[0];
+            result[1] <= to_result[1];
+            result[2] <= to_result[2];
 
-        is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
-        is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
-        is_memtoreg_buf <= {is_memtoreg_buf[1:0],is_memtoreg};
-        is_pc_toreg_buf <= {is_pc_toreg_buf[1:0],is_pc_toreg};
-        is_branchop_buf <= {is_branchop_buf[1:0],is_branchop};
-        is_cond_bra_buf <= {is_cond_bra_buf[1:0],is_cond_bra};
-        is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
-        is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
-        is_legal_op_buf <= {is_legal_op_buf[1:0],is_legal_op};
-        is_hazard_0_buf <= {is_hazard_0_buf[1:0],is_hazard_0};
-        is_from_fpu_buf <= {is_from_fpu_buf[1:0],is_from_fpu};
-        is_multiply_buf <= {is_multiply_buf[1:0],is_multiply};
-        is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
-        is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
-        is_lui_buf      <= {is_lui_buf[1:0],is_lui};
+            is_regwrite_buf <= {is_regwrite_buf[1:0],is_regwrite};
+            is_use_imme_buf <= {is_use_imme_buf[1:0],is_use_imme};
+            is_memtoreg_buf <= {is_memtoreg_buf[1:0],is_memtoreg};
+            is_pc_toreg_buf <= {is_pc_toreg_buf[1:0],is_pc_toreg};
+            is_branchop_buf <= {is_branchop_buf[1:0],is_branchop};
+            is_cond_bra_buf <= {is_cond_bra_buf[1:0],is_cond_bra};
+            is_fstoreop_buf <= {is_fstoreop_buf[1:0],is_fstoreop};
+            is_memwrite_buf <= {is_memwrite_buf[1:0],is_memwrite};
+            is_legal_op_buf <= {is_legal_op_buf[1:0],is_legal_op};
+            is_hazard_0_buf <= {is_hazard_0_buf[1:0],is_hazard_0};
+            is_from_fpu_buf <= {is_from_fpu_buf[1:0],is_from_fpu};
+            is_multiply_buf <= {is_multiply_buf[1:0],is_multiply};
+            is_jalr_buf     <= {is_jalr_buf[1:0],is_jalr};
+            is_auipc_buf    <= {is_auipc_buf[1:0],is_auipc};
+            is_lui_buf      <= {is_lui_buf[1:0],is_lui};
+        end
     end
 endmodule

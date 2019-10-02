@@ -37,11 +37,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module multipl_ip (
+	clken,
 	clock,
 	dataa,
 	datab,
 	result);
 
+	input	  clken;
 	input	  clock;
 	input	[39:0]  dataa;
 	input	[39:0]  datab;
@@ -51,12 +53,12 @@ module multipl_ip (
 	wire [79:0] result = sub_wire0[79:0];
 
 	lpm_mult	lpm_mult_component (
+				.clken (clken),
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
 				.result (sub_wire0),
 				.aclr (1'b0),
-				.clken (1'b1),
 				.sclr (1'b0),
 				.sum (1'b0));
 	defparam
@@ -88,7 +90,7 @@ endmodule
 // Retrieval info: PRIVATE: WidthB NUMERIC "40"
 // Retrieval info: PRIVATE: WidthP NUMERIC "80"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
-// Retrieval info: PRIVATE: clken NUMERIC "0"
+// Retrieval info: PRIVATE: clken NUMERIC "1"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: PRIVATE: optimize NUMERIC "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
@@ -99,10 +101,12 @@ endmodule
 // Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "40"
 // Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "40"
 // Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "80"
+// Retrieval info: USED_PORT: clken 0 0 0 0 INPUT NODEFVAL "clken"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 40 0 INPUT NODEFVAL "dataa[39..0]"
 // Retrieval info: USED_PORT: datab 0 0 40 0 INPUT NODEFVAL "datab[39..0]"
 // Retrieval info: USED_PORT: result 0 0 80 0 OUTPUT NODEFVAL "result[79..0]"
+// Retrieval info: CONNECT: @clken 0 0 0 0 clken 0 0 0 0
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 40 0 dataa 0 0 40 0
 // Retrieval info: CONNECT: @datab 0 0 40 0 datab 0 0 40 0
