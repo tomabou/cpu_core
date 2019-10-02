@@ -39,6 +39,7 @@
 module ram_2port (
 	address_a,
 	address_b,
+	byteena_b,
 	clock,
 	data_a,
 	data_b,
@@ -49,6 +50,7 @@ module ram_2port (
 
 	input	[14:0]  address_a;
 	input	[14:0]  address_b;
+	input	[3:0]  byteena_b;
 	input	  clock;
 	input	[31:0]  data_a;
 	input	[31:0]  data_b;
@@ -59,6 +61,7 @@ module ram_2port (
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
+	tri1	[3:0]  byteena_b;
 	tri1	  clock;
 	tri0	  wren_a;
 	tri0	  wren_b;
@@ -74,6 +77,7 @@ module ram_2port (
 	altsyncram	altsyncram_component (
 				.address_a (address_a),
 				.address_b (address_b),
+				.byteena_b (byteena_b),
 				.clock0 (clock),
 				.data_a (data_a),
 				.data_b (data_b),
@@ -86,7 +90,6 @@ module ram_2port (
 				.addressstall_a (1'b0),
 				.addressstall_b (1'b0),
 				.byteena_a (1'b1),
-				.byteena_b (1'b1),
 				.clock1 (1'b1),
 				.clocken0 (1'b1),
 				.clocken1 (1'b1),
@@ -97,6 +100,8 @@ module ram_2port (
 				.rden_b (1'b1));
 	defparam
 		altsyncram_component.address_reg_b = "CLOCK0",
+		altsyncram_component.byteena_reg_b = "CLOCK0",
+		altsyncram_component.byte_size = 8,
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_input_b = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
@@ -121,7 +126,7 @@ module ram_2port (
 		altsyncram_component.width_a = 32,
 		altsyncram_component.width_b = 32,
 		altsyncram_component.width_byteena_a = 1,
-		altsyncram_component.width_byteena_b = 1,
+		altsyncram_component.width_byteena_b = 4,
 		altsyncram_component.wrcontrol_wraddress_reg_b = "CLOCK0";
 
 
@@ -135,7 +140,7 @@ endmodule
 // Retrieval info: PRIVATE: BYTEENA_ACLR_A NUMERIC "0"
 // Retrieval info: PRIVATE: BYTEENA_ACLR_B NUMERIC "0"
 // Retrieval info: PRIVATE: BYTE_ENABLE_A NUMERIC "0"
-// Retrieval info: PRIVATE: BYTE_ENABLE_B NUMERIC "0"
+// Retrieval info: PRIVATE: BYTE_ENABLE_B NUMERIC "1"
 // Retrieval info: PRIVATE: BYTE_SIZE NUMERIC "8"
 // Retrieval info: PRIVATE: BlankMemory NUMERIC "0"
 // Retrieval info: PRIVATE: CLOCK_ENABLE_INPUT_A NUMERIC "0"
@@ -191,6 +196,8 @@ endmodule
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: ADDRESS_REG_B STRING "CLOCK0"
+// Retrieval info: CONSTANT: BYTEENA_REG_B STRING "CLOCK0"
+// Retrieval info: CONSTANT: BYTE_SIZE NUMERIC "8"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_B STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
@@ -215,10 +222,11 @@ endmodule
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "32"
 // Retrieval info: CONSTANT: WIDTH_B NUMERIC "32"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
-// Retrieval info: CONSTANT: WIDTH_BYTEENA_B NUMERIC "1"
+// Retrieval info: CONSTANT: WIDTH_BYTEENA_B NUMERIC "4"
 // Retrieval info: CONSTANT: WRCONTROL_WRADDRESS_REG_B STRING "CLOCK0"
 // Retrieval info: USED_PORT: address_a 0 0 15 0 INPUT NODEFVAL "address_a[14..0]"
 // Retrieval info: USED_PORT: address_b 0 0 15 0 INPUT NODEFVAL "address_b[14..0]"
+// Retrieval info: USED_PORT: byteena_b 0 0 4 0 INPUT VCC "byteena_b[3..0]"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
 // Retrieval info: USED_PORT: data_a 0 0 32 0 INPUT NODEFVAL "data_a[31..0]"
 // Retrieval info: USED_PORT: data_b 0 0 32 0 INPUT NODEFVAL "data_b[31..0]"
@@ -228,6 +236,7 @@ endmodule
 // Retrieval info: USED_PORT: wren_b 0 0 0 0 INPUT GND "wren_b"
 // Retrieval info: CONNECT: @address_a 0 0 15 0 address_a 0 0 15 0
 // Retrieval info: CONNECT: @address_b 0 0 15 0 address_b 0 0 15 0
+// Retrieval info: CONNECT: @byteena_b 0 0 4 0 byteena_b 0 0 4 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @data_a 0 0 32 0 data_a 0 0 32 0
 // Retrieval info: CONNECT: @data_b 0 0 32 0 data_b 0 0 32 0

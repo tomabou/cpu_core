@@ -658,3 +658,14 @@ todo
 uart readをemptyのとき-1を返すのではなく、入力されるまで停止するようにする
 uart writeもfullに関してそれをやる
 DRAMコントローラーをくっつける
+
+10/2
+全体にclkenbaleportを生やした
+2port ramを見るとbyte enableというportを作れることに気づいた
+これを使えばsb shも自然に実装できそう。
+しかしclk enableはない
+なので、クロックを止めたときのinstmemoryの感じなどはちゃんと設計する必要がある
+内部で1段なので、多分バッファーが一つあれば大丈夫
+
+todo 
+uart readのstate管理をちゃんとやってみる

@@ -116,6 +116,7 @@ module memory(
     ram_2port ram_2port1(
         addr_inst[16:2],
         addr[16:2],
+        4'b1111,
         clk,
         32'b0,
         writedata,
