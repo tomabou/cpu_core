@@ -4,7 +4,7 @@ module memory(
     addr_inst,inst_out,
     addr,writedata,readdata,
     writectrl,readctrl,
-    empty,uart_in,uart_out,wrreq,rdreq,
+    empty,full,uart_in,uart_out,wrreq,rdreq,
     seg_io,
     clken);
     input clk;
@@ -17,9 +17,10 @@ module memory(
     input writectrl;
     input readctrl;
     input empty;
+    input full;
     input [7:0] uart_in;
     output [7:0] uart_out;
-    output wrreq;
+    output reg wrreq;
     output reg rdreq;
     output reg [15:0] seg_io;
     output clken;
@@ -40,6 +41,7 @@ module memory(
     reg [3:0] state = 4'd0;
     reg [3:0] pre_state = 4'd0;
     reg [31:0] readdata_pre;
+    reg [31:0] writedata_pre;
     reg [31:0] readdata_inst_pre;
     wire [31:0] readdata_inst;
     
@@ -103,8 +105,15 @@ module memory(
 
 
 
-    assign uart_out = writedata[7:0];
-    assign wrreq = (addr == 32'b100 & writectrl);
+    assign uart_out = (state == 4'd0) ? writedata[7:0] : writedata_pre[7:0];
+
+    always @ (*) begin
+        case (state)
+            0 : wrreq <= (addr == 32'b100 & writectrl & (~full));
+            2 : wrreq <= ~full;
+            default : wrreq <= 1'b0;
+        endcase
+    end
 
     always @ (*) begin
         case (state)
@@ -138,6 +147,9 @@ module memory(
             4'd0 : begin
                 if (addr == 32'b100 & readctrl & (empty))
                     state <= 4'd1;
+                else if (addr == 32'b100 & writectrl & (full))
+                    state <= 4'd2;
+                
                 if (addr == 32'b0 & writectrl)
                     seg_io <= writedata[15:0];
                 isuart_pre <= (addr == 32'b100 & readctrl);
@@ -145,12 +157,17 @@ module memory(
                 funct3_pre <= funct3;
                 low_addr_pre <= addr[1:0];
                 readdata_pre <= readdata;
+                writedata_pre <= writedata;
             end
 
             4'd1 : begin 
                 if (~empty) 
                     state <= 4'd0;
             end 
+            4'd2 : begin
+                if (~full)
+                    state <= 4'd0;
+            end
         endcase
     end
 

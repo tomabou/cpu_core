@@ -8,6 +8,7 @@ module nibu (
     segment7_5,
     segment7_6,
     uart_empty,
+    uart_full,
     uart_in,
     uart_out,
     uart_rdreq,
@@ -22,6 +23,7 @@ module nibu (
     output [6:0] segment7_5;
     output [6:0] segment7_6;
     input uart_empty;
+    input uart_full;
     input [7:0] uart_in;
     output [7:0] uart_out;
     output uart_wrreq;
@@ -241,6 +243,7 @@ module nibu (
         is_memwrite_buf[1] & is_legal_op_buf[1],
         is_memtoreg_buf[1] & is_legal_op_buf[1],//readctrl
         uart_empty,
+        uart_full,
         uart_in,
         uart_out,
         uart_wrreq,

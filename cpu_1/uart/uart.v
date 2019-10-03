@@ -7,7 +7,8 @@ module uart(
     write_data,
     rdreq,
     read_data,
-    empty);
+    empty,
+    wrfull);
 
     input slow_clk;
     input rxd;
@@ -18,6 +19,7 @@ module uart(
     input rdreq;
     output [7:0] read_data;
     output empty;
+    output wrfull;
 
     wire is_send;
     wire from_cpu_empty;
@@ -30,7 +32,6 @@ module uart(
     uart_send uart_send1(slow_clk,from_cpu,send_enable,txd,is_send);
 
     wire fifo_full;
-    wire wrfull;
     fifo fifo_tocpu(
         rcv_data,
         clk,

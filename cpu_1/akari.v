@@ -16,6 +16,7 @@ module akari(slow_clk,core_clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,s
     wire uart_rdreq;
     wire uart_wrreq;
     wire uart_empty;
+    wire uart_full;
 
     nibu nibu1(
         core_clk,
@@ -27,6 +28,7 @@ module akari(slow_clk,core_clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,s
         segment7_5,
         segment7_6,
         uart_empty,
+        uart_full,
         uart_in,
         uart_out,
         uart_rdreq,
@@ -38,7 +40,8 @@ module akari(slow_clk,core_clk,rxd,segment7_1,segment7_2,segment7_3,segment7_4,s
         uart_out,
         uart_rdreq,
         uart_in,
-        uart_empty);
+        uart_empty,
+        uart_full);
 
 
 endmodule
