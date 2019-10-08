@@ -243,17 +243,16 @@ mandel:
 .L41:
 	ret
 	.size	mandel, .-mandel
-	.globl	__divsf3
 	.align	2
 	.globl	create_im
 	.type	create_im, @function
 create_im:
 	addi	sp,sp,-64
-	li	a1,5
-	li	a0,5
+	li	a1,8
+	li	a0,8
+	sw	s1,52(sp)
+	sw	s2,48(sp)
 	sw	s3,44(sp)
-	sw	s4,40(sp)
-	sw	s5,36(sp)
 	fsw	fs1,24(sp)
 	fsw	fs2,20(sp)
 	fsw	fs3,16(sp)
@@ -261,88 +260,83 @@ create_im:
 	fsw	fs5,8(sp)
 	sw	ra,60(sp)
 	sw	s0,56(sp)
-	sw	s1,52(sp)
-	sw	s2,48(sp)
+	sw	s4,40(sp)
 	fsw	fs0,28(sp)
 	call	init_ppm
 	lui	a5,%hi(.LC3)
-	flw	fs4,%lo(.LC3)(a5)
+	flw	fs3,%lo(.LC3)(a5)
 	lui	a5,%hi(.LC5)
-	flw	fs5,%lo(.LC5)(a5)
+	flw	fs4,%lo(.LC5)(a5)
 	lui	a5,%hi(.LC4)
-	flw	fs2,%lo(.LC4)(a5)
+	flw	fs1,%lo(.LC4)(a5)
 	lui	a5,%hi(.LC2)
-	fmv.s	fs3,fs4
-	flw	fs1,%lo(.LC2)(a5)
-	lui	s4,%hi(.LC1)
-	li	s3,0
-	addi	s4,s4,%lo(.LC1)
-	li	s5,256
+	fmv.s	fs2,fs3
+	flw	fs5,%lo(.LC2)(a5)
+	lui	s2,%hi(.LC1)
+	li	s1,0
+	addi	s2,s2,%lo(.LC1)
+	li	s3,256
 .L44:
-	fcvt.s.w	fa0,s3
-	fmv.s	fa1,fs4
-	li	s0,0
-	fadd.s	fa0,fa0,fa0
-	li	s2,32
-	li	s1,5
-	call	__divsf3
-	fsub.s	fs0,fa0,fs5
-.L47:
-	fcvt.s.w	fa0,s0
-	fmv.s	fa1,fs3
-	fadd.s	fa0,fa0,fa0
-	call	__divsf3
+	fcvt.s.w	fs0,s1
+	li	s4,0
+	li	s0,255
+	fadd.s	fs0,fs0,fs0
+	fmadd.s	fs0,fs0,fs3,fs4
+.L49:
+	fcvt.s.w	fa2,s4
 	fmv.s.x	fa4,zero
-	fsub.s	fa0,fa0,fs2
-	li	a0,0
+	li	a4,0
+	fadd.s	fa2,fa2,fa2
 	fmv.s	fa5,fa4
+	fmadd.s	fa2,fa2,fs2,fs1
 .L46:
 	fmv.s	fa3,fa5
 	fmadd.s	fa5,fa5,fa5,fs0
 	fadd.s	fa3,fa3,fa3
 	fnmsub.s	fa5,fa4,fa4,fa5
-	fmadd.s	fa4,fa3,fa4,fa0
+	fmadd.s	fa4,fa3,fa4,fa2
 	fmul.s	fa3,fa4,fa4
 	fmadd.s	fa3,fa5,fa5,fa3
-	fgt.s	a5,fa3,fs1
+	fgt.s	a5,fa3,fs5
 	bne	a5,zero,.L45
-	addi	a0,a0,1
-	bne	a0,s5,.L46
+	addi	a4,a4,1
+	bne	a4,s3,.L46
 	li	a0,0
-.L45:
+.L47:
 	call	print_int
+	li	a5,32
 #APP
 # 21 "cfile/mandel/../header/nibuio.h" 1
-	sw      s2, 4(zero);
+	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	addi	s0,s0,1
-	bne	s0,s1,.L47
+	li	a5,8
+	addi	s4,s4,1
+	bne	s4,a5,.L49
 	li	a4,10
-	mv	a5,s4
+	mv	a5,s2
 	li	a3,13
-	j	.L49
-.L54:
+	j	.L51
+.L56:
 	mv	a3,a4
 	lbu	a4,1(a5)
-.L49:
+.L51:
 #APP
 # 21 "cfile/mandel/../header/nibuio.h" 1
 	sw      a3, 4(zero);
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L54
-	addi	s3,s3,1
-	li	a5,5
-	bne	s3,a5,.L44
+	bne	a4,zero,.L56
+	addi	s1,s1,1
+	li	a5,8
+	bne	s1,a5,.L44
 	lw	ra,60(sp)
 	lw	s0,56(sp)
 	lw	s1,52(sp)
 	lw	s2,48(sp)
 	lw	s3,44(sp)
 	lw	s4,40(sp)
-	lw	s5,36(sp)
 	flw	fs0,28(sp)
 	flw	fs1,24(sp)
 	flw	fs2,20(sp)
@@ -352,6 +346,13 @@ create_im:
 	li	a0,0
 	addi	sp,sp,64
 	jr	ra
+.L45:
+	slli	a0,a4,2
+	add	a4,a0,a4
+	slli	a0,a4,1
+	ble	a0,s0,.L47
+	li	a0,255
+	j	.L47
 	.size	create_im, .-create_im
 	.section	.text.startup,"ax",@progbits
 	.align	2
@@ -372,12 +373,12 @@ main:
 	.word	1082130432
 	.align	2
 .LC3:
-	.word	1084227584
+	.word	1040187392
 	.align	2
 .LC4:
-	.word	1065353216
+	.word	3212836864
 	.align	2
 .LC5:
-	.word	1069547520
+	.word	3217031168
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits
