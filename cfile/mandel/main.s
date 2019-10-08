@@ -248,8 +248,8 @@ mandel:
 	.type	create_im, @function
 create_im:
 	addi	sp,sp,-64
-	li	a1,8
-	li	a0,8
+	li	a1,256
+	li	a0,256
 	sw	s1,52(sp)
 	sw	s2,48(sp)
 	sw	s3,44(sp)
@@ -310,9 +310,8 @@ create_im:
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	li	a5,8
 	addi	s4,s4,1
-	bne	s4,a5,.L49
+	bne	s4,s3,.L49
 	li	a4,10
 	mv	a5,s2
 	li	a3,13
@@ -329,8 +328,7 @@ create_im:
 	addi	a5,a5,1
 	bne	a4,zero,.L56
 	addi	s1,s1,1
-	li	a5,8
-	bne	s1,a5,.L44
+	bne	s1,s3,.L44
 	lw	ra,60(sp)
 	lw	s0,56(sp)
 	lw	s1,52(sp)
@@ -373,7 +371,7 @@ main:
 	.word	1082130432
 	.align	2
 .LC3:
-	.word	1040187392
+	.word	998244352
 	.align	2
 .LC4:
 	.word	3212836864
