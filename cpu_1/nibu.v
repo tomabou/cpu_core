@@ -12,7 +12,13 @@ module nibu (
     uart_in,
     uart_out,
     uart_rdreq,
-    uart_wrreq);
+    uart_wrreq,
+    fifo_wr_data,
+    fifo_wr,
+    fifo_wr_addr,
+    fifo_rd_data,
+    fifo_rd,
+    fifo_rd_addr);
 
     input clk;
     output [9:0] show;
@@ -28,6 +34,12 @@ module nibu (
     output [7:0] uart_out;
     output uart_wrreq;
     output uart_rdreq;
+    output [15:0] fifo_wr_data;
+    output fifo_wr;
+    output [24:0] fifo_wr_addr;
+    input [15:0] fifo_rd_data;
+    input fifo_rd;
+    output [24:0] fifo_rd_addr;
 
     reg [31:0] show_buf;
 
