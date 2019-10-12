@@ -29,8 +29,8 @@ int mandel(float r, float l, int max_iter) {
 }
 
 int create_im() {
-    int X = 256;
-    int Y = 256;
+    int X = 10;
+    int Y = 10;
     init_ppm(X, Y);
     for (int i = 0; i < X; i++) {
         for (int j = 0; j < Y; j++) {

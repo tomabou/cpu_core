@@ -243,16 +243,17 @@ mandel:
 .L41:
 	ret
 	.size	mandel, .-mandel
+	.globl	__divsf3
 	.align	2
 	.globl	create_im
 	.type	create_im, @function
 create_im:
 	addi	sp,sp,-64
-	li	a1,256
-	li	a0,256
-	sw	s1,52(sp)
+	li	a1,10
+	li	a0,10
 	sw	s2,48(sp)
 	sw	s3,44(sp)
+	sw	s4,40(sp)
 	fsw	fs1,24(sp)
 	fsw	fs2,20(sp)
 	fsw	fs3,16(sp)
@@ -260,47 +261,51 @@ create_im:
 	fsw	fs5,8(sp)
 	sw	ra,60(sp)
 	sw	s0,56(sp)
-	sw	s4,40(sp)
+	sw	s1,52(sp)
 	fsw	fs0,28(sp)
 	call	init_ppm
 	lui	a5,%hi(.LC3)
-	flw	fs3,%lo(.LC3)(a5)
+	flw	fs4,%lo(.LC3)(a5)
 	lui	a5,%hi(.LC5)
-	flw	fs4,%lo(.LC5)(a5)
+	flw	fs5,%lo(.LC5)(a5)
 	lui	a5,%hi(.LC4)
-	flw	fs1,%lo(.LC4)(a5)
+	flw	fs2,%lo(.LC4)(a5)
 	lui	a5,%hi(.LC2)
-	fmv.s	fs2,fs3
-	flw	fs5,%lo(.LC2)(a5)
-	lui	s2,%hi(.LC1)
-	li	s1,0
-	addi	s2,s2,%lo(.LC1)
-	li	s3,256
+	fmv.s	fs3,fs4
+	flw	fs1,%lo(.LC2)(a5)
+	lui	s3,%hi(.LC1)
+	li	s2,0
+	addi	s3,s3,%lo(.LC1)
+	li	s4,256
 .L44:
-	fcvt.s.w	fs0,s1
-	li	s4,0
-	li	s0,255
-	fadd.s	fs0,fs0,fs0
-	fmadd.s	fs0,fs0,fs3,fs4
+	fcvt.s.w	fa0,s2
+	fmv.s	fa1,fs4
+	li	s0,0
+	fadd.s	fa0,fa0,fa0
+	li	s1,255
+	call	__divsf3
+	fsub.s	fs0,fa0,fs5
 .L49:
-	fcvt.s.w	fa2,s4
+	fcvt.s.w	fa0,s0
+	fmv.s	fa1,fs3
+	fadd.s	fa0,fa0,fa0
+	call	__divsf3
 	fmv.s.x	fa4,zero
+	fsub.s	fa0,fa0,fs2
 	li	a4,0
-	fadd.s	fa2,fa2,fa2
 	fmv.s	fa5,fa4
-	fmadd.s	fa2,fa2,fs2,fs1
 .L46:
 	fmv.s	fa3,fa5
 	fmadd.s	fa5,fa5,fa5,fs0
 	fadd.s	fa3,fa3,fa3
 	fnmsub.s	fa5,fa4,fa4,fa5
-	fmadd.s	fa4,fa3,fa4,fa2
+	fmadd.s	fa4,fa3,fa4,fa0
 	fmul.s	fa3,fa4,fa4
 	fmadd.s	fa3,fa5,fa5,fa3
-	fgt.s	a5,fa3,fs5
+	fgt.s	a5,fa3,fs1
 	bne	a5,zero,.L45
 	addi	a4,a4,1
-	bne	a4,s3,.L46
+	bne	a4,s4,.L46
 	li	a0,0
 .L47:
 	call	print_int
@@ -310,10 +315,11 @@ create_im:
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	addi	s4,s4,1
-	bne	s4,s3,.L49
+	li	a5,10
+	addi	s0,s0,1
+	bne	s0,a5,.L49
 	li	a4,10
-	mv	a5,s2
+	mv	a5,s3
 	li	a3,13
 	j	.L51
 .L56:
@@ -327,8 +333,9 @@ create_im:
 #NO_APP
 	addi	a5,a5,1
 	bne	a4,zero,.L56
-	addi	s1,s1,1
-	bne	s1,s3,.L44
+	addi	s2,s2,1
+	li	a5,10
+	bne	s2,a5,.L44
 	lw	ra,60(sp)
 	lw	s0,56(sp)
 	lw	s1,52(sp)
@@ -348,7 +355,7 @@ create_im:
 	slli	a0,a4,2
 	add	a4,a0,a4
 	slli	a0,a4,1
-	ble	a0,s0,.L47
+	ble	a0,s1,.L47
 	li	a0,255
 	j	.L47
 	.size	create_im, .-create_im
@@ -371,12 +378,12 @@ main:
 	.word	1082130432
 	.align	2
 .LC3:
-	.word	998244352
+	.word	1092616192
 	.align	2
 .LC4:
-	.word	3212836864
+	.word	1065353216
 	.align	2
 .LC5:
-	.word	3217031168
+	.word	1069547520
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits
