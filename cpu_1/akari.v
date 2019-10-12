@@ -60,9 +60,11 @@ module akari(
     wire [15:0] fifo_wr_data;
     wire fifo_wr;
     wire [24:0] fifo_wr_addr;
+    wire fifo_wr_full;
     wire [15:0] fifo_rd_data;
     wire fifo_rd;
     wire [24:0] fifo_rd_addr;
+    wire fifo_rd_empty;
 
     nibu nibu1(
         core_clk,
@@ -82,9 +84,11 @@ module akari(
         fifo_wr_data,
         fifo_wr,
         fifo_wr_addr,
+        fifo_wr_full,
         fifo_rd_data,
         fifo_rd,
-        fifo_rd_addr);
+        fifo_rd_addr,
+        fifo_rd_empty);
 
     uart uart1(slow_clk,rxd,txd,
         core_clk,
@@ -105,6 +109,7 @@ module akari(
 		.WR_LENGTH(9'h80),
 		.WR_LOAD(1'b1),
 		.WR_CLK(core_clk),
+        .WR_FULL(fifo_wr_full),
 		//	FIFO Read Side 
 	    .RD_DATA(fifo_rd_data),
        	.RD(fifo_rd),
@@ -113,6 +118,7 @@ module akari(
 		.RD_LENGTH(9'h80),
        	.RD_LOAD(1'b1),
 		.RD_CLK(core_clk),
+        .RD_EMPTY(fifo_rd_empty),
         //	SDRAM Side
 	    .SA(DRAM_ADDR),
 	    .BA(DRAM_BA),

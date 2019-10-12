@@ -1,40 +1,40 @@
 module Sdram_Control(
-		//	HOST Side
-        REF_CLK,
-        RESET_N,
-		CLK,
-		//	FIFO Write Side 
-        WR_DATA,
-		WR,
-		WR_ADDR,
-		WR_MAX_ADDR,
-		WR_LENGTH,
-		WR_LOAD,
-		WR_CLK,
-		WR_FULL,
-		WR_USE,
-		//	FIFO Read Side 
-        RD_DATA,
-		RD,
-		RD_ADDR,
-		RD_MAX_ADDR,
-		RD_LENGTH,
-		RD_LOAD,	
-		RD_CLK,
-		RD_EMPTY,
-		RD_USE,
-		//	SDRAM Side
-        SA,
-        BA,
-        CS_N,
-        CKE,
-        RAS_N,
-        CAS_N,
-        WE_N,
-        DQ,
-        DQM,
-		SDR_CLK
-        );
+	//	HOST Side
+	REF_CLK,
+	RESET_N,
+	CLK,
+	//	FIFO Write Side 
+	WR_DATA,
+	WR,
+	WR_ADDR,
+	WR_MAX_ADDR,
+	WR_LENGTH,
+	WR_LOAD,
+	WR_CLK,
+	WR_FULL,
+	WR_USE,
+	//	FIFO Read Side 
+	RD_DATA,
+	RD,
+	RD_ADDR,
+	RD_MAX_ADDR,
+	RD_LENGTH,
+	RD_LOAD,	
+	RD_CLK,
+	RD_EMPTY,
+	RD_USE,
+	//	SDRAM Side
+	SA,
+	BA,
+	CS_N,
+	CKE,
+	RAS_N,
+	CAS_N,
+	WE_N,
+	DQ,
+	DQM,
+	SDR_CLK
+    );
 
     `include        "Sdram_Params.h"
     //	HOST Side

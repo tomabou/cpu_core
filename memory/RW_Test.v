@@ -1,16 +1,16 @@
 module RW_Test (
-      iCLK,
+    iCLK,
 		iRST_n,
 		iBUTTON,
-	   write,
+	  write,
 		writedata,
-	   read,
+	  read,
 		readdata,
-      drv_status_pass,
+    drv_status_pass,
 		drv_status_fail,
 		drv_status_test_complete,
 		c_state,		
-      same
+    same
 );
 
 parameter      ADDR_W             =     25;

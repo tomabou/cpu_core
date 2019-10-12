@@ -6,7 +6,16 @@ module memory(
     writectrl,readctrl,
     empty,full,uart_in,uart_out,wrreq,rdreq,
     seg_io,
-    clken);
+    clken,
+    fifo_wr_data,
+    fifo_wr,
+    fifo_wr_addr,
+    fifo_wr_full,
+    fifo_rd_data,
+    fifo_rd,
+    fifo_rd_addr,
+    fifo_rd_empty);
+
     input clk;
     input [2:0] funct3;
     input [31:0] addr;
@@ -25,8 +34,18 @@ module memory(
     output reg [15:0] seg_io;
     output clken;
 
+    output [15:0] fifo_wr_data;
+    output reg fifo_wr;
+    output [24:0] fifo_wr_addr;
+    input fifo_wr_full;
+    input [15:0] fifo_rd_data;
+    output reg fifo_rd;
+    output [24:0] fifo_rd_addr;
+    input fifo_rd_empty;
+
     wire [31:0] ram_readdata;
     reg isuart_pre = 1'b0;
+    reg isfifo_pre = 1'b0;
     reg empty_pre = 1'b0;
     reg [2:0] funct3_pre = 3'b0;
     reg [1:0] low_addr_pre = 2'b0;
@@ -92,12 +111,12 @@ module memory(
 
     always @ (*) begin
         if (state == 4'd0) begin
-            if (~isuart_pre) 
-                readdata<=mod_readdata;
-            else //if (~empty_pre)
+            if (isuart_pre) 
                 readdata<={24'b0,uart_in};
-            //else
-            //    readdata<={32{1'b1}};
+            else if (isfifo_pre)
+                readdata<={16'b0,fifo_rd_data};
+            else 
+                readdata<=mod_readdata;
         end
         else
             readdata <= readdata_pre;
@@ -106,6 +125,7 @@ module memory(
 
 
     assign uart_out = (state == 4'd0) ? writedata[7:0] : writedata_pre[7:0];
+    assign fifo_wr_data = (state == 4'd0) ? writedata[15:0] : writedata_pre[15:0];
 
     always @ (*) begin
         case (state)
@@ -123,6 +143,22 @@ module memory(
         endcase
     end
 
+    always @ (*) begin
+        case (state)
+            0 : fifo_wr <= (addr[25] == 1'b1 & writectrl & (~fifo_wr_full));
+            4 : fifo_wr <= ~fifo_wr_full;
+            default : fifo_wr <= 1'b0;
+        endcase
+    end
+
+    always @ (*) begin
+        case (state)
+            0 : fifo_rd <= (addr[25] == 1'b1 & readctrl & (~fifo_rd_empty));
+            3 : fifo_rd <= ~fifo_rd_empty;
+            default : fifo_rd <= 1'b0;
+        endcase
+    end
+
     assign clken = (state == 4'd0);
     assign inst_out = (pre_state == 4'd0) ? readdata_inst : readdata_inst_pre;
 
@@ -135,7 +171,7 @@ module memory(
         32'b0,
         writedata,
         1'b0,
-        writectrl & (addr != 32'b000) & (addr != 32'b100),
+        writectrl & (addr != 32'b000) & (addr != 32'b100) & (~addr[25]),
         readdata_inst,
         ram_readdata);
 
@@ -149,10 +185,15 @@ module memory(
                     state <= 4'd1;
                 else if (addr == 32'b100 & writectrl & (full))
                     state <= 4'd2;
+                else if (addr[25] & readctrl & fifo_rd_empty)
+                    state <= 4'd3;
+                else if (addr[25] & writectrl & fifo_wr_full)
+                    state <= 4'd4;
                 
                 if (addr == 32'b0 & writectrl)
                     seg_io <= writedata[15:0];
                 isuart_pre <= (addr == 32'b100 & readctrl);
+                isfifo_pre <= (addr[25] & readctrl);
                 empty_pre <= empty;
                 funct3_pre <= funct3;
                 low_addr_pre <= addr[1:0];
@@ -166,6 +207,14 @@ module memory(
             end 
             4'd2 : begin
                 if (~full)
+                    state <= 4'd0;
+            end
+            4'd3 : begin 
+                if (~fifo_rd_empty)
+                    state <= 4'd0;
+            end
+            4'd4 : begin
+                if (~fifo_wr_full)
                     state <= 4'd0;
             end
         endcase

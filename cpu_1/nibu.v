@@ -16,9 +16,11 @@ module nibu (
     fifo_wr_data,
     fifo_wr,
     fifo_wr_addr,
+    fifo_wr_full,
     fifo_rd_data,
     fifo_rd,
-    fifo_rd_addr);
+    fifo_rd_addr,
+    fifo_rd_empty);
 
     input clk;
     output [9:0] show;
@@ -37,9 +39,11 @@ module nibu (
     output [15:0] fifo_wr_data;
     output fifo_wr;
     output [24:0] fifo_wr_addr;
+    input fifo_wr_full;
     input [15:0] fifo_rd_data;
-    input fifo_rd;
+    output fifo_rd;
     output [24:0] fifo_rd_addr;
+    input fifo_rd_empty;
 
     reg [31:0] show_buf;
 
@@ -261,7 +265,15 @@ module nibu (
         uart_wrreq,
         uart_rdreq,
         seg_io,
-        clken);
+        clken,
+        fifo_wr_data,
+        fifo_wr,
+        fifo_wr_addr,
+        fifo_wr_full,
+        fifo_rd_data,
+        fifo_rd,
+        fifo_rd_addr,
+        fifo_rd_empty);
 
     assign to_result[1] = is_pc_toreg_buf[0] ? next_address_d2
                         : alu_res;
