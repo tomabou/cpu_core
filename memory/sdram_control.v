@@ -170,15 +170,15 @@ module Sdram_Control(
                     .READA(reada),
                     .WRITEA(writea),
                     .REFRESH(refresh),
-    				    .LOAD_MODE(load_mode),
+    				.LOAD_MODE(load_mode),
                     .PRECHARGE(precharge),
                     .REF_REQ(ref_req),
-    				    .INIT_REQ(init_req),
+    				.INIT_REQ(init_req),
                     .REF_ACK(ref_ack),
                     .CM_ACK(cm_ack),
                     .OE(oe),
-    				    .PM_STOP(PM_STOP),
-    				    .PM_DONE(PM_DONE),
+    				.PM_STOP(PM_STOP),
+    				.PM_DONE(PM_DONE),
                     .SA(ISA),
                     .BA(IBA),
                     .CS_N(ICS_N),
@@ -213,13 +213,13 @@ module Sdram_Control(
 reg flag;	 
 always@(posedge CLK or negedge RESET_N)
 begin
- if(!RESET_N)
- flag	<=	0;
- else
- begin
-  if(write_side_fifo_rusedw==WR_LENGTH)
-  flag	<=	1;
- end
+	if(!RESET_N)
+		flag	<=	0;
+	else
+	begin
+		if(write_side_fifo_rusedw==WR_LENGTH)
+			flag	<=	1;
+	end
 end				
 
 
@@ -372,6 +372,9 @@ begin
 	end
 end
 //	Auto Read/Write Control
+
+reg [4:0] test_st = 5'b0;
+
 always@(posedge CLK or negedge RESET_N)
 begin
 	if(!RESET_N)
@@ -389,9 +392,7 @@ begin
 			(WR_MASK==0)	&&	(RD_MASK==0) &&
 			(WR_LOAD==0)	&&	(RD_LOAD==0) &&(flag==1) )
 		begin
-		
-					//	Write Side 
-			 if( (write_side_fifo_rusedw >= WR_LENGTH) && (WR_LENGTH!=0) )
+			if( (write_side_fifo_rusedw >= WR_LENGTH) && (WR_LENGTH!=0) )
 			begin
 				mADDR	<=	rWR_ADDR;
 				mLENGTH	<=	WR_LENGTH;
@@ -401,7 +402,7 @@ begin
 				mRD		<=	0;
 			end
 			//	Read Side 
-			else if( (read_side_fifo_wusedw < RD_LENGTH) )
+			else if( (read_side_fifo_wusedw <RD_LENGTH) )
 			begin
 				mADDR	<=	rRD_ADDR;
 				mLENGTH	<=	RD_LENGTH;
@@ -410,7 +411,6 @@ begin
 				mWR		<=	0;
 				mRD		<=	1;				
 			end
-
 		end
 		if(mWR_DONE)
 		begin
