@@ -245,14 +245,6 @@ switch_func:
 	li	a3,0
 	j	.L45
 	.size	switch_func, .-switch_func
-	.section	.rodata.str1.4,"aMS",@progbits,1
-	.align	2
-.LC0:
-	.string	"first\r\n"
-	.align	2
-.LC1:
-	.string	"test\r\n"
-	.text
 	.align	2
 	.globl	main_func
 	.type	main_func, @function
@@ -263,75 +255,32 @@ main_func:
 	addi	a3,a5,%lo(workspace)
 	addi	a4,a4,-96
 	sw	ra,28(sp)
-	sw	s0,24(sp)
-	sw	s1,20(sp)
-	sw	s2,16(sp)
 	sw	a0,8(sp)
 	addi	a5,a5,%lo(workspace)
 	add	a4,a3,a4
 .L55:
 	sw	zero,0(a5)
 	addi	a5,a5,4
-	bne	a4,a5,.L55
-	lui	s2,%hi(.LC0)
-	lui	s1,%hi(.LC1)
+	bne	a5,a4,.L55
 	sw	a3,12(sp)
-	addi	s2,s2,%lo(.LC0)
-	addi	s1,s1,%lo(.LC1)
-.L61:
-	li	a4,105
-	mv	a5,s2
-	li	a3,102
 	j	.L57
-.L64:
-	mv	a3,a4
-	lbu	a4,1(a5)
-.L57:
-#APP
-# 21 "cfile/brainf*ck/../header/nibuio.h" 1
-	sw      a3, 4(zero);
-# 0 "" 2
-#NO_APP
-	addi	a5,a5,1
-	bne	a4,zero,.L64
-	addi	a1,sp,12
-	addi	a0,sp,8
-	call	switch_func
-	mv	s0,a0
-	li	a4,101
-	mv	a5,s1
-	li	a3,116
-	j	.L59
-.L65:
-	mv	a3,a4
-	lbu	a4,1(a5)
-.L59:
-#APP
-# 21 "cfile/brainf*ck/../header/nibuio.h" 1
-	sw      a3, 4(zero);
-# 0 "" 2
-#NO_APP
-	addi	a5,a5,1
-	bne	a4,zero,.L65
-	mv	a0,s0
-	call	print_int
-	bne	s0,zero,.L54
+.L60:
 	lw	a5,8(sp)
 	addi	a5,a5,4
 	sw	a5,8(sp)
-	j	.L61
-.L54:
+.L57:
+	addi	a1,sp,12
+	addi	a0,sp,8
+	call	switch_func
+	beq	a0,zero,.L60
 	lw	ra,28(sp)
-	lw	s0,24(sp)
-	lw	s1,20(sp)
-	lw	s2,16(sp)
 	addi	sp,sp,32
 	jr	ra
 	.size	main_func, .-main_func
-	.section	.rodata.str1.4
+	.section	.rodata.str1.4,"aMS",@progbits,1
 	.align	2
-.LC2:
-	.string	"start\r\n"
+.LC0:
+	.string	"\r\n"
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
@@ -346,14 +295,14 @@ main:
 	addi	a3,a0,%lo(sorce)
 	li	a4,-1
 	li	a2,64
-.L68:
+.L63:
 #APP
 # 8 "cfile/brainf*ck/../header/nibuio.h" 1
 	lw    a5, 4(zero);
 # 0 "" 2
 #NO_APP
-	beq	a5,a4,.L68
-	beq	a5,a2,.L74
+	beq	a5,a4,.L63
+	beq	a5,a2,.L69
 	sw	a5,0(a3)
 #APP
 # 21 "cfile/brainf*ck/../header/nibuio.h" 1
@@ -361,24 +310,24 @@ main:
 # 0 "" 2
 #NO_APP
 	addi	a3,a3,4
-	j	.L68
-.L74:
-	lui	a5,%hi(.LC2)
-	li	a4,116
-	addi	a5,a5,%lo(.LC2)
-	li	a3,115
-	j	.L71
-.L75:
+	j	.L63
+.L69:
+	lui	a5,%hi(.LC0)
+	li	a4,10
+	addi	a5,a5,%lo(.LC0)
+	li	a3,13
+	j	.L66
+.L70:
 	mv	a3,a4
 	lbu	a4,1(a5)
-.L71:
+.L66:
 #APP
 # 21 "cfile/brainf*ck/../header/nibuio.h" 1
 	sw      a3, 4(zero);
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L75
+	bne	a4,zero,.L70
 	addi	a0,a0,%lo(sorce)
 	call	main_func
 	lw	ra,12(sp)
@@ -402,42 +351,42 @@ loop_func:
 	mv	s0,a0
 	addi	s2,s2,4
 	mv	s1,a1
-	beq	a5,zero,.L81
-.L77:
+	beq	a5,zero,.L76
+.L72:
 	sw	s2,0(s0)
-	j	.L80
-.L91:
+	j	.L75
+.L86:
 	lw	a5,0(s0)
 	addi	a5,a5,4
 	sw	a5,0(s0)
-.L80:
+.L75:
 	mv	a1,s1
 	mv	a0,s0
 	call	switch_func
-	beq	a0,zero,.L91
+	beq	a0,zero,.L86
 	lw	a5,0(s1)
 	lw	a5,0(a5)
-	bne	a5,zero,.L77
-.L81:
+	bne	a5,zero,.L72
+.L76:
 	lw	a4,0(s2)
 	li	a1,93
 	li	a3,1
 	addi	a5,a4,-91
 	addi	a2,s2,4
 	seqz	a5,a5
-	beq	a4,a1,.L92
-.L82:
+	beq	a4,a1,.L87
+.L77:
 	add	a3,a3,a5
-.L85:
+.L80:
 	mv	s2,a2
 	lw	a4,0(s2)
 	addi	a2,s2,4
 	addi	a5,a4,-91
 	seqz	a5,a5
-	bne	a4,a1,.L82
-.L92:
+	bne	a4,a1,.L77
+.L87:
 	addi	a3,a3,-1
-	bne	a3,zero,.L85
+	bne	a3,zero,.L80
 	sw	s2,0(s0)
 	lw	ra,12(sp)
 	lw	s0,8(sp)

@@ -22,7 +22,7 @@ int main() {
         nibu_output(c);
         code_ptr++;
     }
-    print_string("start\r\n");
+    print_string("\r\n");
     main_func(global_start);
     return 0;
 }
@@ -35,10 +35,7 @@ void main_func(int *source) {
     }
     int *ptr = array;
     while (1) {
-        print_string("first\r\n");
         int res = switch_func(&code_ptr, &ptr);
-        print_string("test\r\n");
-        print_int(res);
         if (res) break;
         code_ptr++;
     }
