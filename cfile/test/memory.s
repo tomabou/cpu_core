@@ -1,4 +1,4 @@
-	.file	"fibo.c"
+	.file	"memory.c"
 	.option nopic
 	.text
 	.align	2
@@ -6,7 +6,7 @@
 	.type	nibu_input_func, @function
 nibu_input_func:
 #APP
-# 8 "cfile/fibo/../header/nibuio.h" 1
+# 8 "cfile/test/../header/nibuio.h" 1
 	lw    a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -19,7 +19,7 @@ nibu_input:
 	li	a5,-1
 .L4:
 #APP
-# 8 "cfile/fibo/../header/nibuio.h" 1
+# 8 "cfile/test/../header/nibuio.h" 1
 	lw    a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -31,7 +31,7 @@ nibu_input:
 	.type	nibu_output, @function
 nibu_output:
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      a0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -42,7 +42,7 @@ nibu_output:
 	.type	nibu_show, @function
 nibu_show:
 #APP
-# 26 "cfile/fibo/../header/nibuio.h" 1
+# 26 "cfile/test/../header/nibuio.h" 1
 	sw      a0, 0(zero);
 # 0 "" 2
 #NO_APP
@@ -56,7 +56,7 @@ print_string:
 	beq	a5,zero,.L8
 .L10:
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -94,7 +94,7 @@ __print_int:
 	sub	s0,s0,a0
 	addi	s0,s0,48
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      s0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -117,7 +117,7 @@ print_int:
 	bne	a0,zero,.L27
 	li	a5,48
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -129,7 +129,7 @@ print_int:
 .L31:
 	li	a5,45
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      a5, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -147,7 +147,7 @@ print_int:
 	sub	s0,s0,a0
 	addi	s0,s0,48
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
+# 21 "cfile/test/../header/nibuio.h" 1
 	sw      s0, 4(zero);
 # 0 "" 2
 #NO_APP
@@ -157,150 +157,39 @@ print_int:
 	addi	sp,sp,16
 	jr	ra
 	.size	print_int, .-print_int
-	.align	2
-	.globl	fibo
-	.type	fibo, @function
-fibo:
-	li	a5,1
-	ble	a0,a5,.L40
-	addi	sp,sp,-16
-	addi	a5,a0,-2
-	sw	s2,0(sp)
-	andi	a5,a5,-2
-	addi	s2,a0,-3
-	sw	s0,8(sp)
-	sw	s1,4(sp)
-	sw	ra,12(sp)
-	addi	s0,a0,-1
-	sub	s2,s2,a5
-	li	s1,0
-.L34:
-	mv	a0,s0
-	call	fibo
-	addi	s0,s0,-2
-	add	s1,s1,a0
-	bne	s0,s2,.L34
-	lw	ra,12(sp)
-	lw	s0,8(sp)
-	lw	s2,0(sp)
-	addi	a0,s1,1
-	lw	s1,4(sp)
-	addi	sp,sp,16
-	jr	ra
-.L40:
-	li	a0,1
-	ret
-	.size	fibo, .-fibo
-	.section	.rodata.str1.4,"aMS",@progbits,1
-	.align	2
-.LC0:
-	.string	"input number!\r\n"
-	.align	2
-.LC1:
-	.string	"answer is "
-	.align	2
-.LC2:
-	.string	" \r\n"
 	.section	.text.startup,"ax",@progbits
 	.align	2
 	.globl	main
 	.type	main, @function
 main:
-	addi	sp,sp,-48
-	sw	s4,24(sp)
-	sw	s5,20(sp)
-	sw	s6,16(sp)
-	lui	s4,%hi(.LC0)
-	lui	s6,%hi(.LC1)
-	lui	s5,%hi(.LC2)
-	sw	s1,36(sp)
-	sw	s2,32(sp)
-	sw	s3,28(sp)
-	sw	ra,44(sp)
-	sw	s0,40(sp)
-	sw	s7,12(sp)
-	addi	s4,s4,%lo(.LC0)
-	addi	s6,s6,%lo(.LC1)
-	addi	s5,s5,%lo(.LC2)
-	li	s1,-1
-	li	s3,9
-	li	s2,1
-.L43:
+	li	a5,0
+	li	s1,33554432
+	li	a4,65536
+	addi a4, a4, 600
+.L33:
 #APP
-# 8 "cfile/fibo/../header/nibuio.h" 1
-	lw    a5, 4(zero);
-# 0 "" 2
-#NO_APP
-	beq	a5,s1,.L43
-	addi	s0,a5,-48
-	bleu	s0,s3,.L44
-	li	a4,110
-	mv	a5,s4
-	li	a3,105
-	j	.L46
-.L63:
-	mv	a3,a4
-	lbu	a4,1(a5)
-.L46:
-#APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
-	sw      a3, 4(zero);
+# 21 "cfile/test/../header/nibuio.h" 1
+	sw      a5, 4(s1);
+	sw      a5, 0(zero);
+	nop 5
 # 0 "" 2
 #NO_APP
 	addi	a5,a5,1
-	bne	a4,zero,.L63
-	j	.L43
-.L44:
-	li	s7,0
-	ble	s0,s2,.L64
-.L47:
-	addi	a0,s0,-1
-	call	fibo
-	addi	s0,s0,-2
-	add	s7,s7,a0
-	bgt	s0,s2,.L47
-	addi	a0,s7,1
-.L49:
-	li	a4,110
-	mv	a5,s6
-	li	a3,97
-	j	.L48
-.L50:
-	lbu	a4,1(a5)
-.L48:
+	bne	a5,a4,.L33
+	li	a5,65536
+.L34:
 #APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
-	sw      a3, 4(zero);
+# 8 "cfile/test/../header/nibuio.h" 1
+	lw    a4, 4(s1);
+# 0 "" 2
+# 26 "cfile/test/../header/nibuio.h" 1
+	sw      a4, 0(zero);
 # 0 "" 2
 #NO_APP
-	mv	a3,a4
-	addi	a5,a5,1
-	bne	a4,zero,.L50
-#APP
-# 26 "cfile/fibo/../header/nibuio.h" 1
-	sw      a0, 0(zero);
-# 0 "" 2
-#NO_APP
-	call	print_int
-	li	a4,13
-	mv	a5,s5
-	li	a3,32
-	j	.L51
-.L65:
-	mv	a3,a4
-	lbu	a4,1(a5)
-.L51:
-#APP
-# 21 "cfile/fibo/../header/nibuio.h" 1
-	sw      a3, 4(zero);
-# 0 "" 2
-#NO_APP
-	addi	a5,a5,1
-	bne	a4,zero,.L65
-	j	.L43
-.L64:
-	li	a0,1
-	j	.L49
+	addi	a5,a5,-1
+	bne	a5,zero,.L34
+	li	a0,0
+	ret
 	.size	main, .-main
 	.ident	"GCC: (GNU) 9.2.0"
 	.section	.note.GNU-stack,"",@progbits

@@ -29,10 +29,11 @@ int mandel(float r, float l, int max_iter) {
 }
 
 int create_im() {
-    int X = 10;
-    int Y = 10;
+    int X = 128;
+    int Y = 128;
     init_ppm(X, Y);
     for (int i = 0; i < X; i++) {
+        nibu_show(i);
         for (int j = 0; j < Y; j++) {
             // x -1.5 ~ 0.5
             // y -1 ~ 1
@@ -42,7 +43,7 @@ int create_im() {
             if (a == 256) {
                 a = 0;
             }
-            a *= 10;
+            a *= 9;
             if (a > 255) {
                 a = 255;
             }

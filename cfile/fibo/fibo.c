@@ -14,7 +14,8 @@ int main() {
             print_string("input number!\r\n");
         } else {
             int y = fibo((x - (int)'0'));
-            print_string("anser is ");
+            print_string("answer is ");
+            nibu_show(y);
             print_int(y);
             print_string(" \r\n");
         }
