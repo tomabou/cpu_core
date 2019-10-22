@@ -6,7 +6,8 @@ from typing import List
 def op_imm(op, rd, rs1, imm):
     rd = int(rd[1:])
     rs1 = int(rs1[1:])
-    imm = int(imm)
+    if type(imm) == str:
+        imm = int(imm,0)
     imm = imm & (2**12 - 1)
     op_imm_code = 0b0010011
     func3_set = {
@@ -328,7 +329,11 @@ def decode_op(labels, index, tks):
         return string_constant(tks[1])
 
     if tks[0] == '.word':
-        return int(tks[1])
+        if type(tks[1]) == str and tks[1][0] == '.':
+            ans = labels[tks[1]]
+        else:
+            ans = int(tks[1])
+        return ans
     
     FMADD = ['fmadd.s','fmsub.s','fnmsub.s','fnmadd.s']
     if tks[0] in FMADD:
@@ -345,7 +350,7 @@ def string_constant(s):
     return ans
 
 
-def decode_op_func(content, labels):
+def decode_op_func(content, labels,program_location):
     new_content = []
     for i, tks in enumerate(content):
         new_content.append(decode_op(labels, i, tks))
@@ -356,15 +361,18 @@ def is_not_label(tks):
     return tks[0][-1] != ':'
 
 
-def label_func(content: List[List[str]]):
+def label_func(content: List[List[str]],program_location):
+    gl_pos = len(content)* 4 + program_location
     new_content = []
     labels = dict()
     for tks in content:
-        if is_not_label(tks):
+        if tks[0] == '.comm':
+            labels[tks[1]] = gl_pos
+            gl_pos = gl_pos + int(tks[2])
+        elif is_not_label(tks):
             new_content.append(tks)
         else:
             labels[tks[0][:-1]] = 4*len(new_content)
-
     return new_content, labels
 
 
@@ -691,7 +699,7 @@ def create(content,program_location,mode):
     content = map(pseudoinst, content)
     content = map(decode_ls, content)
     content = list(map(lambda tks: list(map(rename_register, tks)), content))
-    content, labels = label_func(content)
+    content, labels = label_func(content,program_location)
     content = decode_lo_hi(content,labels,program_location)
     for i, tks in enumerate(list(content)):
         print(str(i).rjust(4),end = ' ')
@@ -701,7 +709,7 @@ def create(content,program_location,mode):
     for key,index in labels.items():
         print(key.rjust(20) , end=' ')
         print(str(index //4).rjust(4))
-    content = decode_op_func(content, labels)
+    content = decode_op_func(content, labels,program_location)
     return content
 
 
